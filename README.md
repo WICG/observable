@@ -169,14 +169,6 @@ partial interface EventTarget {
   Observable on(DOMString type, optional AddEventListenerOptions options);
 };
 
-[Exposed=Window]
-interface Subscriber {
-  void next(any result);
-  void complete();
-  void error(any error);
-  readonly attribute AbortSignal signal;
-};
-
 callback SubscribeCallback = void (Subscriber subscriber);
 callback ObserverCallback = void (any value);
 callback ObserverCompleteCallback = void ();
@@ -185,12 +177,15 @@ dictionary Observer {
   ObserverCallback next;
   ObserverCompleteCallback complete;
   ObserverCallback error;
+  AbortSignal signal;
 };
 
-[Exposed=Window]
+[Exposed=*]
 interface Observable {
     constructor(SubscribeCallback callback);
     subscribe(Observer observer);
+
+    // TODO: Consider operators
 };
 ```
 
