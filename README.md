@@ -191,7 +191,7 @@ interface Observable {
 
 ### `EventTarget` integration
 
-While native `Observable`s are theoretically useful on their own, the primary use case that we're
+While native Observables are theoretically useful on their own, the primary use case that we're
 unlocking with them is more *ergonomic* and *composable* event handling. This necessitates
 tight integration with the [`EventTarget`](https://dom.spec.whatwg.org/#interface-eventtarget) DOM
 interface.
@@ -280,9 +280,9 @@ To prevent scope creep, this proposal certainly does not involve shipping the en
 libraries like RxJS. As has been [said](https://github.com/whatwg/dom/issues/544#:~:text=What%20would%20I%20find%20to%20be%20acceptable%20criteria%20for%20a%20good%20Observable%20type%20in%20the%20platform%3F)
 in [previous discussions](https://github.com/whatwg/dom/issues/544#issuecomment-351454978),
 we expect userland libraries to implement and provide specific operators that integrate with the
-`Observable` API that's central to this proposal.
+Observable API that's central to this proposal.
 
-With that said, an initial set of common operators that come _with_ a native `Observable`
+With that said, an initial set of common operators that come _with_ a native Observable
 API could greatly increase utility and ease adoption, so we can consider including operators that
 already exist on other iterables as a part of this proposal; the exact set of operators is currently
 under consideration, but we can look to TC39's [iterator helpers proposal](https://github.com/tc39/proposal-iterator-helpers)
@@ -306,7 +306,7 @@ Some subset of these could be included in an initial Observables MVP, with other
 independently after, and more niche operators staying is userland libraries until/unless they
 get the momentum to graduate and ship on the platform. In any case it is important to realize that
 operators _are not_ the meat of this proposal, as thy could conceivably follow along at any time
-provided there is support for the actual native `Observable` API, which _is_ what this proposal principally
+provided there is support for the actual native Observable API, which _is_ what this proposal principally
 focuses on.
 
 ## Concerns
