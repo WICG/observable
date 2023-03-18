@@ -7,23 +7,23 @@ and composable event handling.
 ## Authors:
 
  - [Dominic Farolino](https://github.com/domfarolino)
+ - [Ben Lesh](https://github.com/benlesh)
 
 ## Table of contents
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Background](#background)
-  - [What is an Observable?](#what-is-an-observable)
-- [Problem](#problem)
-  - [Userland libraries](#userland-libraries)
-- [The `Observable` API](#the-observable-api)
+- [History](#history)
+- [Introduction](#introduction)
   - [`EventTarget` integration](#eventtarget-integration)
     - [Example 1](#example-1)
     - [Example 2](#example-2)
     - [Example 3](#example-3)
     - [Example 4](#example-4)
     - [Example 5](#example-5)
+  - [Userland libraries](#userland-libraries)
+- [The `Observable` API](#the-observable-api)
   - [Further platform integration](#further-platform-integration)
 - [Operators & combinators](#operators--combinators)
 - [Concerns](#concerns)
@@ -31,7 +31,7 @@ and composable event handling.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Background
+## History
 
 Observables were first proposed to the platform in [TC39](https://github.com/tc39/proposal-observable)
 in May of 2015. The proposal failed to gain traction, in part due to some opposition that
@@ -44,11 +44,53 @@ years (with some flux in the API design) due to a lack of implementer prioritiza
 This repository is an attempt to again breath life into the Observable proposal with the hope
 of shipping a version of it to the Web Platform.
 
-### What is an Observable?
+## Introduction
 
-To cover the basics, please read [this resource](https://rxjs.dev/guide/observable). But in short,
-an Observable is a glorified function: that is, it's an interface that gets constructed with a
-function that can be called any number of times by calling `subscribe()` on the constructed
+An Observable is a first-class object representing composable, repeated events.
+They are "lazy" in that they do not emit data until they are subscribed to,
+push-based in that the producer of data decides when the consumer receives it,
+and temporal in that they can push arbitrary amounts of data at any time.
+
+To illustrate of how producers and consumers interact with Observables compared
+to other primitives, see the below table, which is an attempt at combining
+[two](https://github.com/kriskowal/gtor#a-general-theory-of-reactivity)
+[different](https://rxjs.dev/guide/observable) tables:
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2">Singular</th>
+      <th colspan="2">Plural</th>
+    </tr>
+    <tr>
+      <th></td>
+      <th>Spatial</th>
+      <th>Temporal</th>
+      <th>Spatial</th>
+      <th>Temporal</th>
+    </tr>
+  </thead>
+ <tbody>
+    <tr>
+      <th>Push</th>
+      <td>Value</td>
+      <td>Promise</td>
+      <td colspan="2">Observable</td>
+    </tr>
+    <tr>
+      <th>Pull</th>
+      <td>Function</td>
+      <td>Async iterator</td>
+      <td>Iterable</td>
+      <td>Async iterator</td>
+    </tr>
+  </tbody>
+</table>
+
+To cover the basics of Observables, please read [this resource](https://rxjs.dev/guide/observable).
+But in short, an Observable is a glorified function: that is, it's an interface that gets
+constructed with a function that can be called any number of times by invoking `subscribe()` on the
 Observable. Subscribing to an observable synchronously invokes the function that was supplied upon
 construction and sets up a new "subscription" which can receive values from the Observable
 (synchronously or asynchronously) by calling a `next()` handler passed into `subscribe()`.
@@ -56,149 +98,20 @@ construction and sets up a new "subscription" which can receive values from the 
 It is in that sense that an Observable is a glorified function. Additionally, it has extra
 "safety" by telling the user exactly when:
  - It is forever finished emitting values for a particular subscription: by invoking a `done()` handler
- - It encounters an error (in which case it also stops emitting values to the subscriber) by invoking an `error()` handler
+ - It encounters an error (in which case it also stops emitting values to the subscriber) by invoking
+   an `error()` handler
  
- To illustrate of how producers and consumers of data interact, Observables compare with other primitives
- as described by this table, which is an attempt at combing
- [two](https://github.com/kriskowal/gtor#a-general-theory-of-reactivity) different
- [tables](https://rxjs.dev/guide/observable):
- 
- 
- <table>
- <thead>
- 	<tr>
-			<th></th>
-			<th colspan="2">Singular</th>
-			<th colspan="2">Plural</th>
-		</tr>
-		<tr>
-			<th></td>
-			<th>Spatial</th>
-			<th>Temporal</th>
-			<th>Spatial</th>
-			<th>Temporal</th>
-		</tr>
- </thead>
-	<tbody>
-		<tr>
-			<th>Push</th>
-			<td>Value</td>
-			<td>Promise</td>
-			<td colspan="2">Observable</td>
-		</tr>
-		<tr>
-			<th>Pull</th>
-			<td>Function</td>
-			<td>Async iterator</td>
-			<td>Iterable</td>
-			<td>Async iterator</td>
-		</tr>
-	</tbody>
-</table>
-
-
-<!-- A second version
-<table>
- <thead>
- 	<tr>
-			<th></th>
-			<th colspan="2">Spatial</th>
-			<th colspan="2">Temporal</th>
-		</tr>
-		<tr>
-			<th></td>
-			<th>Singular</th>
-			<th>Plural</th>
-			<th>Singular</th>
-			<th>Plural</th>
-		</tr>
- </thead>
-	<tbody>
-		<tr>
-			<td>Push</td>
-			<td>Value</td>
-			<td>Observable</td>
-			<td>Promise</td>
-			<td>Observable</td>
-		</tr>
-		<tr>
-			<td>Pull</td>
-			<td>Function</td>
-			<td>Iterable</td>
-			<td colspan="2">Async iterator</td>
-		</tr>
-	</tbody>
-</table>
--->
-
-## Problem
-
-Observables do not introduce new capabilities — which is why they can be [polyfilled](#userland-libraries)
-with full fidelity — but rather greatly enhance ergonomics around event handling, especially with the many
-operators and combinators used with Observables. Consider these examples:
-
-### Userland libraries
-
-In [prior discussion](https://github.com/whatwg/dom/issues/544#issuecomment-1433955626),
-[Ben Lesh](https://github.com/benlesh) has listed several custom userland implementations of the
-Observables primitive, of which RxJS is the most popular with "47,000,000+ downloads *per week*."
-
- - RxJS
- - React Router
- - Redux
- - Vue
- - Svelte
- - XState
- - MobX
- - Relay
- - Recoil
- - Apollo GraphQL
- - tRPC
-
-Given the extensive prior art in this area, there exists a public "[Observable Contract](https://reactivex.io/documentation/contract.html)" to which all userland implementations
-are expected to adhere — this scenario is not unlike the [Promises/A+](https://promisesaplus.com/)
-specification that was developed before `Promise`s were adopted into ES2015 as a first-class
-language primitive.
-
-## The `Observable` API
-
-The proposed `Observable` API shape is as follows:
-
-```cs
-partial interface EventTarget {
-  Observable on(DOMString type, optional AddEventListenerOptions options);
-};
-
-callback SubscribeCallback = void (Subscriber subscriber);
-callback ObserverCallback = void (any value);
-callback ObserverCompleteCallback = void ();
-
-dictionary Observer {
-  ObserverCallback next;
-  ObserverCompleteCallback complete;
-  ObserverCallback error;
-  AbortSignal signal;
-};
-
-[Exposed=*]
-interface Observable {
-    constructor(SubscribeCallback callback);
-    subscribe(Observer observer);
-
-    // TODO: Consider operators
-};
-```
-
-### `EventTarget` integration
-
 While native Observables are theoretically useful on their own, the primary use case that we're
 unlocking with them is more *ergonomic* and *composable* event handling. This necessitates
 tight integration with the [`EventTarget`](https://dom.spec.whatwg.org/#interface-eventtarget) DOM
 interface.
 
+### `EventTarget` integration
+
 This proposal adds an `.on()` method to `EventTarget` that becomes a better `addEventListener()`.
-Specifically `.on()` returns a new Observable constructed natively with a subscribe function that
-essentially adds a new event listener to the target and calls the `.next()` handler with each event.
+Specifically `.on()` returns a new Observable constructed with a native/internal
+"subscribe" function that essentially [adds a new event listener](https://dom.spec.whatwg.org/#add-an-event-listener)
+to the target and calls a subscriber's `.next()` handler with each event.
 
 This is useful because it turns event handling, filtering, and termination, into an explicit declarative
 flow that's easier to understand and
@@ -268,6 +181,60 @@ const maxY = await element.on("mousemove")
 
 We really need to mention that these are *synchronous*. https://github.com/whatwg/dom/issues/544#issuecomment-351758385
 is a good example to drive the point home.
+
+
+
+### Userland libraries
+
+In [prior discussion](https://github.com/whatwg/dom/issues/544#issuecomment-1433955626),
+[Ben Lesh](https://github.com/benlesh) has listed several custom userland implementations of the
+Observables primitive, of which RxJS is the most popular with "47,000,000+ downloads *per week*."
+
+ - RxJS
+ - React Router
+ - Redux
+ - Vue
+ - Svelte
+ - XState
+ - MobX
+ - Relay
+ - Recoil
+ - Apollo GraphQL
+ - tRPC
+
+Given the extensive prior art in this area, there exists a public "[Observable Contract](https://reactivex.io/documentation/contract.html)" to which all userland implementations
+are expected to adhere — this scenario is not unlike the [Promises/A+](https://promisesaplus.com/)
+specification that was developed before `Promise`s were adopted into ES2015 as a first-class
+language primitive.
+
+## The `Observable` API
+
+The proposed `Observable` API shape is as follows:
+
+```cs
+partial interface EventTarget {
+  Observable on(DOMString type, optional AddEventListenerOptions options);
+};
+
+callback SubscribeCallback = void (Subscriber subscriber);
+callback ObserverCallback = void (any value);
+callback ObserverCompleteCallback = void ();
+
+dictionary Observer {
+  ObserverCallback next;
+  ObserverCompleteCallback complete;
+  ObserverCallback error;
+  AbortSignal signal;
+};
+
+[Exposed=*]
+interface Observable {
+    constructor(SubscribeCallback callback);
+    subscribe(Observer observer);
+
+    // TODO: Consider operators
+};
+```
 
 ### Further platform integration
 
