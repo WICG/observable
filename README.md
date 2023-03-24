@@ -232,11 +232,19 @@ dictionary Observer {
 };
 
 [Exposed=*]
-interface Observable {
-    constructor(SubscribeCallback callback);
-    subscribe(Observer observer);
+interface Subscriber {
+  void next(any result);
+  void complete();
+  void error(any error);
+  readonly attribute AbortSignal signal;
+};
 
-    // TODO: Consider operators
+[Exposed=*]
+interface Observable {
+  constructor(SubscribeCallback callback);
+  subscribe(Observer observer);
+
+  // TODO: Consider operators
 };
 ```
 
