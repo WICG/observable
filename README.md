@@ -41,6 +41,10 @@ filed in December of 2017. Despite ample [developer demand](https://foolip.githu
 *lots* of discussion, and no strong objectors, the DOM Observables proposal sat mostly still for several
 years (with some flux in the API design) due to a lack of implementer prioritization.
 
+Later in 2019, [an attempt](https://github.com/tc39/proposal-observable/issues/201) at reviving the
+proposal was made back at the original TC39 repository, which involved some API simplifications and
+added support for the synchronous "firehose" problem.
+
 This repository is an attempt to again breath life into the Observable proposal with the hope
 of shipping a version of it to the Web Platform.
 
