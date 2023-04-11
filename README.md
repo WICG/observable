@@ -1,114 +1,10 @@
 # Observable
 
-This document is the [explainer](https://tag.w3.org/explainers/) for the Observable interface,
-a proposed addition to the WHATWG [DOM Standard](https://github.com/whatwg/dom) for more ergonomic
-and composable event handling.
-
-## Authors:
-
- - [Dominic Farolino](https://github.com/domfarolino)
- - [Ben Lesh](https://github.com/benlesh)
-
-## Table of contents
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [History](#history)
-- [Introduction](#introduction)
-  - [`EventTarget` integration](#eventtarget-integration)
-    - [Example 1](#example-1)
-    - [Example 2](#example-2)
-    - [Example 3](#example-3)
-    - [Example 4](#example-4)
-    - [Example 5](#example-5)
-  - [Userland libraries](#userland-libraries)
-- [The `Observable` API](#the-observable-api)
-  - [Further platform integration](#further-platform-integration)
-- [Operators & combinators](#operators--combinators)
-- [Concerns](#concerns)
-- [Standards venue](#standards-venue)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-## History
-
-Observables were first proposed to the platform in [TC39](https://github.com/tc39/proposal-observable)
-in May of 2015. The proposal failed to gain traction, in part due to some opposition that
-the API was suitable to be a language-level primitive. In an attempt to renew the proposal
-at a higher level of abstraction, a WHATWG [DOM issue](https://github.com/whatwg/dom/issues/544) was
-filed in December of 2017. Despite ample [developer demand](https://foolip.github.io/spec-reactions/),
-*lots* of discussion, and no strong objectors, the DOM Observables proposal sat mostly still for several
-years (with some flux in the API design) due to a lack of implementer prioritization.
-
-Later in 2019, [an attempt](https://github.com/tc39/proposal-observable/issues/201) at reviving the
-proposal was made back at the original TC39 repository, which involved some API simplifications and
-added support for the synchronous "firehose" problem.
-
-This repository is an attempt to again breath life into the Observable proposal with the hope
-of shipping a version of it to the Web Platform.
+This document is the [explainer](https://tag.w3.org/explainers/) for the Observable interface
+proposed to the WHATWG [DOM Standard](https://github.com/whatwg/dom) for more ergonomic and
+composable event handling.
 
 ## Introduction
-
-An Observable is a first-class object representing composable, repeated events.
-They are "lazy" in that they do not emit data until they are subscribed to,
-push-based in that the producer of data decides when the consumer receives it,
-and temporal in that they can push arbitrary amounts of data at any time.
-
-To illustrate of how producers and consumers interact with Observables compared
-to other primitives, see the below table, which is an attempt at combining
-[two](https://github.com/kriskowal/gtor#a-general-theory-of-reactivity)
-[different](https://rxjs.dev/guide/observable) tables:
-
-<table>
-  <thead>
-    <tr>
-      <th></th>
-      <th colspan="2">Singular</th>
-      <th colspan="2">Plural</th>
-    </tr>
-    <tr>
-      <th></td>
-      <th>Spatial</th>
-      <th>Temporal</th>
-      <th>Spatial</th>
-      <th>Temporal</th>
-    </tr>
-  </thead>
- <tbody>
-    <tr>
-      <th>Push</th>
-      <td>Value</td>
-      <td>Promise</td>
-      <td colspan="2">Observable</td>
-    </tr>
-    <tr>
-      <th>Pull</th>
-      <td>Function</td>
-      <td>Async iterator</td>
-      <td>Iterable</td>
-      <td>Async iterator</td>
-    </tr>
-  </tbody>
-</table>
-
-To cover the basics of Observables, please read [this resource](https://rxjs.dev/guide/observable).
-But in short, an Observable is a glorified function: that is, it's an interface that gets
-constructed with a function that can be called any number of times by invoking `subscribe()` on the
-Observable. Subscribing to an observable synchronously invokes the function that was supplied upon
-construction and sets up a new "subscription" which can receive values from the Observable
-(synchronously or asynchronously) by calling a `next()` handler passed into `subscribe()`.
-
-It is in that sense that an Observable is a glorified function. Additionally, it has extra
-"safety" by telling the user exactly when:
- - It is forever finished emitting values for a particular subscription: by invoking a `done()` handler
- - It encounters an error (in which case it also stops emitting values to the subscriber) by invoking
-   an `error()` handler
- 
-While native Observables are theoretically useful on their own, the primary use case that we're
-unlocking with them is more *ergonomic* and *composable* event handling. This necessitates
-tight integration with the [`EventTarget`](https://dom.spec.whatwg.org/#interface-eventtarget) DOM
-interface.
 
 ### `EventTarget` integration
 
@@ -186,32 +82,7 @@ const maxY = await element.on("mousemove")
 We really need to mention that these are *synchronous*. https://github.com/whatwg/dom/issues/544#issuecomment-351758385
 is a good example to drive the point home.
 
-
-
-### Userland libraries
-
-In [prior discussion](https://github.com/whatwg/dom/issues/544#issuecomment-1433955626),
-[Ben Lesh](https://github.com/benlesh) has listed several custom userland implementations of the
-Observables primitive, of which RxJS is the most popular with "47,000,000+ downloads *per week*."
-
- - RxJS
- - React Router
- - Redux
- - Vue
- - Svelte
- - XState
- - MobX
- - Relay
- - Recoil
- - Apollo GraphQL
- - tRPC
-
-Given the extensive prior art in this area, there exists a public "[Observable Contract](https://reactivex.io/documentation/contract.html)" to which all userland implementations
-are expected to adhere — this scenario is not unlike the [Promises/A+](https://promisesaplus.com/)
-specification that was developed before `Promise`s were adopted into ES2015 as a first-class
-language primitive.
-
-## The `Observable` API
+### The `Observable` API
 
 The proposed `Observable` API shape is as follows:
 
@@ -248,11 +119,7 @@ interface Observable {
 };
 ```
 
-### Further platform integration
-
-https://github.com/whatwg/dom/issues/544#issuecomment-631402455
-
-## Operators & combinators
+### Operators & combinators
 
 To prevent scope creep, this proposal certainly does not involve shipping the entire set of 
 [operators included in](https://rxjs.dev/api?query=operators&type=function) popular userland
@@ -287,6 +154,132 @@ get the momentum to graduate and ship on the platform. In any case it is importa
 operators _are not_ the meat of this proposal, as thy could conceivably follow along at any time
 provided there is support for the actual native Observable API, which _is_ what this proposal principally
 focuses on.
+
+### Further platform integration
+
+https://github.com/whatwg/dom/issues/544#issuecomment-631402455
+
+
+
+
+
+
+
+
+
+## Background
+
+### Introduction
+
+An Observable is a first-class object representing composable, repeated events.
+They are "lazy" in that they do not emit data until they are subscribed to,
+push-based in that the producer of data decides when the consumer receives it,
+and temporal in that they can push arbitrary amounts of data at any time.
+
+To illustrate of how producers and consumers interact with Observables compared
+to other primitives, see the below table, which is an attempt at combining
+[two](https://github.com/kriskowal/gtor#a-general-theory-of-reactivity)
+[different](https://rxjs.dev/guide/observable) tables:
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="2">Singular</th>
+      <th colspan="2">Plural</th>
+    </tr>
+    <tr>
+      <th></td>
+      <th>Spatial</th>
+      <th>Temporal</th>
+      <th>Spatial</th>
+      <th>Temporal</th>
+    </tr>
+  </thead>
+ <tbody>
+    <tr>
+      <th>Push</th>
+      <td>Value</td>
+      <td>Promise</td>
+      <td colspan="2">Observable</td>
+    </tr>
+    <tr>
+      <th>Pull</th>
+      <td>Function</td>
+      <td>Async iterator</td>
+      <td>Iterable</td>
+      <td>Async iterator</td>
+    </tr>
+  </tbody>
+</table>
+
+To cover the basics of Observables, please read [this resource](https://rxjs.dev/guide/observable).
+But in short, an Observable is a glorified function: that is, it's an interface that gets
+constructed with a function that can be called any number of times by invoking `subscribe()` on the
+Observable. Subscribing to an observable synchronously invokes the function that was supplied upon
+construction and sets up a new "subscription" which can receive values from the Observable
+(synchronously or asynchronously) by calling a `next()` handler passed into `subscribe()`.
+
+It is in that sense that an Observable is a glorified function. Additionally, it has extra
+"safety" by telling the user exactly when:
+ - It is forever finished emitting values for a particular subscription: by invoking a `done()` handler
+ - It encounters an error (in which case it also stops emitting values to the subscriber) by invoking
+   an `error()` handler
+ 
+While native Observables are theoretically useful on their own, the primary use case that we're
+unlocking with them is more *ergonomic* and *composable* event handling. This necessitates
+tight integration with the [`EventTarget`](https://dom.spec.whatwg.org/#interface-eventtarget) DOM
+interface.
+
+### History
+
+Observables were first proposed to the platform in [TC39](https://github.com/tc39/proposal-observable)
+in May of 2015. The proposal failed to gain traction, in part due to some opposition that
+the API was suitable to be a language-level primitive. In an attempt to renew the proposal
+at a higher level of abstraction, a WHATWG [DOM issue](https://github.com/whatwg/dom/issues/544) was
+filed in December of 2017. Despite ample [developer demand](https://foolip.github.io/spec-reactions/),
+*lots* of discussion, and no strong objectors, the DOM Observables proposal sat mostly still for several
+years (with some flux in the API design) due to a lack of implementer prioritization.
+
+Later in 2019, [an attempt](https://github.com/tc39/proposal-observable/issues/201) at reviving the
+proposal was made back at the original TC39 repository, which involved some API simplifications and
+added support for the synchronous "firehose" problem.
+
+This repository is an attempt to again breath life into the Observable proposal with the hope
+of shipping a version of it to the Web Platform.
+
+### Userland libraries
+
+In [prior discussion](https://github.com/whatwg/dom/issues/544#issuecomment-1433955626),
+[Ben Lesh](https://github.com/benlesh) has listed several custom userland implementations of the
+Observables primitive, of which RxJS is the most popular with "47,000,000+ downloads *per week*."
+
+ - RxJS
+ - React Router
+ - Redux
+ - Vue
+ - Svelte
+ - XState
+ - MobX
+ - Relay
+ - Recoil
+ - Apollo GraphQL
+ - tRPC
+
+Given the extensive prior art in this area, there exists a public
+"[Observable Contract](https://reactivex.io/documentation/contract.html)" to which all userland
+implementations are expected to adhere — this scenario is not unlike the
+[Promises/A+](https://promisesaplus.com/) specification that was developed before `Promise`s were
+adopted into ES2015 as a first-class language primitive.
+
+
+
+
+
+
+
+
+
 
 ## Concerns
 
@@ -377,5 +370,11 @@ reader to see the following discussion comments:
  - https://github.com/whatwg/dom/issues/544#issuecomment-351582862
  - https://github.com/whatwg/dom/issues/544#issuecomment-351607779
  - https://github.com/whatwg/dom/issues/544#issuecomment-351718686
+
+## Authors:
+
+ - [Dominic Farolino](https://github.com/domfarolino)
+ - [Ben Lesh](https://github.com/benlesh)
+
 
 [^1]: This appears [in the TC39 proposal's `README.md`](https://github.com/tc39/proposal-iterator-helpers#fromobject) file but not the spec, so its fate is unclear.
