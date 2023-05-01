@@ -9,15 +9,15 @@ composable event handling.
 ### `EventTarget` integration
 
 This proposal adds an `.on()` method to `EventTarget` that becomes a better `addEventListener()`.
-Specifically `.on()` returns a new Observable constructed with a native/internal
-"subscribe" function that essentially [adds a new event listener](https://dom.spec.whatwg.org/#add-an-event-listener)
-to the target and calls a subscriber's `.next()` handler with each event.
+Specifically, `.on()` returns a new `Observable` whose natively-defined "subscribe" callback adds a
+new event listener to the target and calls the subscriber's `.next()` handler with each event.
 
-This is useful because it turns event handling, filtering, and termination, into an explicit declarative
-flow that's easier to understand and
+Observables turn event handling, filtering, and termination, into an explicit, declarative flow
+that's easier to understand and
 [compose](https://stackoverflow.com/questions/44112364/what-does-this-mean-in-the-observable-tc-39-proposal)
-than today's imperative version, which often require nested calls to `addEventListener()` and hard-to-follow
-callback chains. Consider these examples:
+than today's imperative version, which often requires nested calls to `addEventListener()` and
+hard-to-follow callback chains. Consider these examples:
+
 
 #### Example 1
 
@@ -160,16 +160,7 @@ focuses on.
 https://github.com/whatwg/dom/issues/544#issuecomment-631402455
 
 
-
-
-
-
-
-
-
 ## Background
-
-### Introduction
 
 An Observable is a first-class object representing composable, repeated events.
 They are "lazy" in that they do not emit data until they are subscribed to,
@@ -179,7 +170,7 @@ and temporal in that they can push arbitrary amounts of data at any time.
 To illustrate of how producers and consumers interact with Observables compared
 to other primitives, see the below table, which is an attempt at combining
 [two](https://github.com/kriskowal/gtor#a-general-theory-of-reactivity)
-[different](https://rxjs.dev/guide/observable) tables:
+different [tables](https://rxjs.dev/guide/observable):
 
 <table>
   <thead>
@@ -271,14 +262,6 @@ Given the extensive prior art in this area, there exists a public
 implementations are expected to adhere — this scenario is not unlike the
 [Promises/A+](https://promisesaplus.com/) specification that was developed before `Promise`s were
 adopted into ES2015 as a first-class language primitive.
-
-
-
-
-
-
-
-
 
 
 ## Concerns
