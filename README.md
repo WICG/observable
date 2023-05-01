@@ -95,15 +95,15 @@ console.log('Two');
 
 ### The `Observable` API
 
-Observables are first-class object representing composable, repeated events.
-They're like Promises but for multiple events, and specifically with the
+Observables are first-class objects representing composable, repeated events.
+They're like Promises but for multiple events, and specifically with
 [`EventTarget` integration](#eventtarget-integration), they are to events what
 Promises are to callbacks. They can be:
 
- * Created directly by script or by platform APIs, and passed to anyone
-   interested in consuming events via `subscribe()`
- * Fed to [combinators](operators--combinators) like `Observable.map()`, to be
-   composed and transformed without a web of nested callbacks
+ * Created by script or by platform APIs, and passed to anyone interested in
+   consuming events via `subscribe()`
+ * Fed to [combinators](#operators--combinators) like `Observable.map()`, to be
+   composed & transformed without a web of nested callbacks
 
 Better yet, the transition from event handlers ➡️ Observables is simpler than
 that of callbacks ➡️ Promises, since Observables integrate nicely on top of
