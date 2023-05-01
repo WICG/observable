@@ -1,8 +1,7 @@
 # Observable
 
-This is the [explainer](https://tag.w3.org/explainers/) for the Observable interface proposed to the
-WHATWG [DOM Standard](https://github.com/whatwg/dom) for more ergonomic and composable event
-handling.
+This is the [explainer](https://tag.w3.org/explainers/) for the Observable API
+proposal for more ergonomic and composable event handling.
 
 ## Introduction
 
