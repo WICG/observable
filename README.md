@@ -1,8 +1,8 @@
 # Observable
 
-This document is the [explainer](https://tag.w3.org/explainers/) for the Observable interface
-proposed to the WHATWG [DOM Standard](https://github.com/whatwg/dom) for more ergonomic and
-composable event handling.
+This is the [explainer](https://tag.w3.org/explainers/) for the Observable interface proposed to the
+WHATWG [DOM Standard](https://github.com/whatwg/dom) for more ergonomic and composable event
+handling.
 
 ## Introduction
 
@@ -96,7 +96,25 @@ console.log('Two');
 
 ### The `Observable` API
 
-The proposed `Observable` API shape is as follows:
+Observables are first-class object representing composable, repeated events.
+They're like Promises but for multiple events, and specifically with the
+[`EventTarget` integration](#eventtarget-integration), they are to events what
+Promises are to callbacks. They can be:
+
+ * Created directly by script or by platform APIs, and passed to anyone
+   interested in consuming events via `subscribe()`
+ * Fed to [combinators](operators--combinators) like `Observable.map()`, to be
+   composed and transformed without a web of nested callbacks
+
+Better yet, the transition from event handlers ➡️ Observables is simpler than
+that of callbacks ➡️ Promises, since Observables integrate nicely on top of
+`EventTarget`, the de facto way of subscribing to events from the platform [and
+JavaScript](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget#examples).
+As a result, developers can use Observables without migrating tons of code on
+the platform, since it's an easy upgrade to drop in wherever you're handling
+events today.
+
+The proposed API shape is as follows:
 
 ```cs
 partial interface EventTarget {
@@ -173,24 +191,6 @@ https://github.com/whatwg/dom/issues/544#issuecomment-631402455
 
 
 ## Background
-
-An Observable is a first-class object representing composable, repeated events.
-They're like Promises but for multiple events, and specifically with the
-[`EventTarget` integration](#eventtarget-integration), they are to events what
-Promises are to callbacks. They can be:
-
- * Created directly by script or by platform APIs, and passed to anyone
-   interested in consuming events via `subscribe()`
- * Fed to [combinators](operators--combinators) like `Observable.map()`, to be
-   composed and transformed without a web of nested callbacks
-
-Better yet, the transition from event handlers ➡️ Observables is simpler than
-that of callbacks ➡️ Promises, since Observables integrate nicely on top of
-`EventTarget`, the de facto way of subscribing to events from the platform [and
-JavaScript](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget#examples).
-As a result, developers can use Observables without migrating tons of code on
-the platform, since it's an easy upgrade to drop in wherever you're handling
-events today.
 
 They are "lazy" in that they do not emit data until they are subscribed to,
 push-based in that the producer of data decides when the consumer receives it,
