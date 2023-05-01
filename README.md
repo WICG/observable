@@ -137,16 +137,13 @@ interface Observable {
 };
 ```
 
-The creator of an Observable passes in a callback that gets invoked every time
-`subscribe()` is called. The `subscribe()` method can be called *any number of
-times* on an Observable, and the callback it invokes sets up a new
-"subscription" by registering the caller of `subscribe()` as a Observer. With
-this in place, the Observable can signal any number of events to the Observer
-via the `next()` callback, optionally followed by a single call to either
-`complete()` or `error()` to signal that the stream of data is finished.
-
-Crucially, Observables are "lazy" in that they do not start emitting data until
-they are subscribed to, nor do they queue any data *before* subscription.
+The creator of an Observable passes in a callback that gets invoked
+synchronously when `subscribe()` is called. The `subscribe()` method can be
+called *any number of times* on an Observable, and the callback it invokes sets
+up a new "subscription" by registering the caller of `subscribe()` as a
+Observer. With this in place, the Observable can signal any number of events to
+the Observer via the `next()` callback, optionally followed by a single call to
+either `complete()` or `error()`, singaling that the stream of data is finished.
 
 Observables returned by the new `EventTarget#on()` method are created natively
 with an internal callback that uses the same [underlying
@@ -156,11 +153,13 @@ registers a new event listener whose events are exposed through the `Observer`
 interface and are composable with the various
 [combinators](#operators--combinators) available to all Observables.
 
+### Lazy, synchronous delivery
 
-### Synchronous delivery
-
-Event delivery with Observables is synchronous, unlike Promises which queue
-microtasks when invoking callbacks. Consider this
+Crucially, Observables are "lazy" in that they do not start emitting data until
+they are subscribed to, nor do they queue any data *before* subscription. They
+can also start emitting data synchronously during subscription, unlike Promises
+which always queue microtasks when invoking user-supplied `.then()`
+callbacks. Consider this
 [example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
 
 ```js
@@ -212,16 +211,13 @@ focuses on.
 https://github.com/whatwg/dom/issues/544#issuecomment-631402455
 
 
-## Background
+## Background & landscape
 
-Observables are "lazy" in that they do not emit data until they are subscribed
-to, push-based in that the producer of data decides when the consumer receives
-it, and temporal in that they can push arbitrary amounts of data at any time.
-
-To illustrate of how producers and consumers interact with Observables compared
-to other primitives, see the below table, which is an attempt at combining
+To illustrate how Observables fit into the current landscape of other reactive
+primitives, see the below table which is an attempt at combining
 [two](https://github.com/kriskowal/gtor#a-general-theory-of-reactivity)
-different [tables](https://rxjs.dev/guide/observable):
+other [tables](https://rxjs.dev/guide/observable) that classify reactive
+primitives by their interaction with producers & consumers:
 
 <table>
   <thead>
@@ -255,17 +251,10 @@ different [tables](https://rxjs.dev/guide/observable):
   </tbody>
 </table>
 
-To cover the basics of Observables, please read [this resource](https://rxjs.dev/guide/observable).
-But in short, an Observable is a glorified function: that is, it's an interface that gets
-constructed with a function that can be called any number of times by invoking `subscribe()` on the
-Observable. Subscribing to an observable synchronously invokes the function that was supplied upon
-construction and sets up a new "subscription" which can receive values from the Observable
-(synchronously or asynchronously) by calling a `next()` handler passed into `subscribe()`.
-
-It is in that sense that an Observable is a glorified function. Additionally, it has extra
+it is in that sense that an observable is a glorified function. additionally, it has extra
 "safety" by telling the user exactly when:
- - It is forever finished emitting values for a particular subscription: by invoking a `done()` handler
- - It encounters an error (in which case it also stops emitting values to the subscriber) by invoking
+ - it is forever finished emitting values for a particular subscription: by invoking a `done()` handler
+ - it encounters an error (in which case it also stops emitting values to the subscriber) by invoking
    an `error()` handler
  
 While native Observables are theoretically useful on their own, the primary use case that we're
