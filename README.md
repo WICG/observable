@@ -79,20 +79,6 @@ const maxY = await element.on("mousemove")
                           .reduce((y, soFar) => Math.max(y, soFar), 0);
 ```
 
-### Synchronous delivery
-
-Event delivery with Observables is synchronous, unlike Promises which queue
-microtasks when invoking callbacks. Consider this
-[example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
-
-```js
-el.on('click').subscribe(() => console.log('One'));
-el.on('click').first().then(() => console.log('Three'));
-el.click();
-console.log('Two');
-// Logs "One" "Two" "Three"
-```
-
 ### The `Observable` API
 
 Observables are first-class objects representing composable, repeated events.
@@ -169,6 +155,21 @@ mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) that
 registers a new event listener whose events are exposed through the `Observer`
 interface and are composable with the various
 [combinators](#operators--combinators) available to all Observables.
+
+
+### Synchronous delivery
+
+Event delivery with Observables is synchronous, unlike Promises which queue
+microtasks when invoking callbacks. Consider this
+[example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
+
+```js
+el.on('click').subscribe(() => console.log('One'));
+el.on('click').first().then(() => console.log('Three'));
+el.click();
+console.log('Two');
+// Logs "One" "Two" "Three"
+```
 
 ### Operators & combinators
 
