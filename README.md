@@ -83,10 +83,8 @@ const maxY = await element.on("mousemove")
 ### Synchronous delivery
 
 Event delivery with Observables is synchronous, unlike Promises which queue
-microtasks to invoke callbacks.
-
-This [example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385)
-demonstrates synchronous event delivery:
+microtasks when invoking callbacks. Consider this
+[example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
 
 ```js
 el.on('click').subscribe(() => console.log('One'));
