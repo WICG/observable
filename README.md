@@ -145,8 +145,32 @@ Observer. With this in place, the Observable can signal any number of events to
 the Observer via the `next()` callback, optionally followed by a single call to
 either `complete()` or `error()`, singaling that the stream of data is finished.
 
-Observables returned by the new `EventTarget#on()` method are created natively
-with an internal callback that uses the same [underlying
+```js
+const observable = new Observable(subscriber => {
+  let i = 0;
+  setInterval(() => {
+    if (i >= 10)
+      subscriber.complete();
+    else
+      subscriber.next(i++);
+  }, 2000);
+});
+
+observable.subscribe({
+  // Print each value the Observable produces.
+  next: console.log
+});
+```
+
+**Issue**: See https://github.com/domfarolino/observable/issues/3 for discussion
+about having the Observable constructor being able to register teardown upon
+unsubscription.
+
+While custom Observables can be useful on their own, the primary use case we
+unlock with them is with event handling. This necessitates tight integration
+with the [`EventTarget`](https://dom.spec.whatwg.org/#interface-eventtarget) DOM
+interface. Observables returned by the new `EventTarget#on()` method are created
+natively with an internal callback that uses the same [underlying
 mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) as
 `addEventListener()`. This means that calling `subscribe()` essentially
 registers a new event listener whose events are exposed through the `Observer`
@@ -169,6 +193,7 @@ el.click();
 console.log('Two');
 // Logs "One" "Two" "Three"
 ```
+
 
 ### Operators & combinators
 
@@ -250,17 +275,6 @@ primitives by their interaction with producers & consumers:
     </tr>
   </tbody>
 </table>
-
-it is in that sense that an observable is a glorified function. additionally, it has extra
-"safety" by telling the user exactly when:
- - it is forever finished emitting values for a particular subscription: by invoking a `done()` handler
- - it encounters an error (in which case it also stops emitting values to the subscriber) by invoking
-   an `error()` handler
- 
-While native Observables are theoretically useful on their own, the primary use case that we're
-unlocking with them is more *ergonomic* and *composable* event handling. This necessitates
-tight integration with the [`EventTarget`](https://dom.spec.whatwg.org/#interface-eventtarget) DOM
-interface.
 
 ### History
 
