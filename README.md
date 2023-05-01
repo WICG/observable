@@ -79,8 +79,21 @@ const maxY = await element.on("mousemove")
                           .reduce((y, soFar) => Math.max(y, soFar), 0);
 ```
 
-We really need to mention that these are *synchronous*. https://github.com/whatwg/dom/issues/544#issuecomment-351758385
-is a good example to drive the point home.
+### Synchronous delivery
+
+Event delivery with Observables is synchronous, unlike Promises which queue
+microtasks to invoke callbacks.
+
+This [example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385)
+demonstrates synchronous event delivery:
+
+```js
+el.on('click').subscribe(() => console.log('One'));
+el.on('click').first().then(() => console.log('Three'));
+el.click();
+console.log('Two');
+// Logs "One" "Two" "Three"
+```
 
 ### The `Observable` API
 
