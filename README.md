@@ -167,14 +167,16 @@ about having the Observable constructor being able to register teardown upon
 unsubscription.
 
 While custom Observables can be useful on their own, the primary use case we
-unlock with them is with event handling. Observables returned by the new
+unlock is with event handling. Observables returned by the new
 `EventTarget#on()` method are created natively with an internal callback that
 uses the same [underlying
 mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) as
-`addEventListener()`. This means that calling `subscribe()` essentially
-registers a new event listener whose events are exposed through the `Observer`
-interface and are composable with the various
+`addEventListener()`. Therefore calling `subscribe()` essentially registers a
+new event listener whose events are exposed through the Observer handler
+functions and are composable with the various
 [combinators](#operators--combinators) available to all Observables.
+
+TODO: A simple example.
 
 ### Lazy, synchronous delivery
 
