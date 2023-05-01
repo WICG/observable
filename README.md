@@ -138,7 +138,7 @@ interface Observable {
 ```
 
 The creator of an Observable passes in a callback that gets invoked every time
-`subscribe()` gets called. The `subscribe()` method can be called *any number of
+`subscribe()` is called. The `subscribe()` method can be called *any number of
 times* on an Observable, and the callback it invokes sets up a new
 "subscription" by registering the caller of `subscribe()` as a Observer. With
 this in place, the Observable can signal any number of events to the Observer
@@ -148,10 +148,10 @@ via the `next()` callback, optionally followed by a single call to either
 Crucially, Observables are "lazy" in that they do not start emitting data until
 they are subscribed to, nor do they queue any data *before* subscription.
 
-Observables returned by the `EventTarget#on()` method are created natively with
-an internal callback that uses the same [underlying
-mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) that
-`addEventListener()` uses. This means that calling `subscribe()` essentially
+Observables returned by the new `EventTarget#on()` method are created natively
+with an internal callback that uses the same [underlying
+mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) as
+`addEventListener()`. This means that calling `subscribe()` essentially
 registers a new event listener whose events are exposed through the `Observer`
 interface and are composable with the various
 [combinators](#operators--combinators) available to all Observables.
