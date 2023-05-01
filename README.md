@@ -119,6 +119,8 @@ partial interface EventTarget {
   Observable on(DOMString type, optional AddEventListenerOptions options);
 };
 
+// `SubscribeCallback` is where the Observable "creator's" code lives. It's
+// called when `subscribe()` is called, to set up a new subscription.
 callback SubscribeCallback = void (Subscriber subscriber);
 callback ObserverCallback = void (any value);
 callback ObserverCompleteCallback = void ();
@@ -135,6 +137,7 @@ interface Subscriber {
   void next(any result);
   void complete();
   void error(any error);
+
   readonly attribute AbortSignal signal;
 };
 
