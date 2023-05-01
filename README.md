@@ -16,7 +16,7 @@ Observables turn event handling, filtering, and termination, into an explicit, d
 that's easier to understand and
 [compose](https://stackoverflow.com/questions/44112364/what-does-this-mean-in-the-observable-tc-39-proposal)
 than today's imperative version, which often requires nested calls to `addEventListener()` and
-hard-to-follow callback chains. Consider these examples:
+hard-to-follow callback chains.
 
 
 #### Example 1
@@ -110,8 +110,7 @@ that of callbacks ➡️ Promises, since Observables integrate nicely on top of
 `EventTarget`, the de facto way of subscribing to events from the platform [and
 JavaScript](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget#examples).
 As a result, developers can use Observables without migrating tons of code on
-the platform, since it's an easy upgrade to drop in wherever you're handling
-events today.
+the platform, since it's an easy drop-in wherever you're handling events today.
 
 The proposed API shape is as follows:
 
