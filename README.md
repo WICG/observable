@@ -1,8 +1,7 @@
 # Observable
 
-This document is the [explainer](https://tag.w3.org/explainers/) for the Observable interface
-proposed to the WHATWG [DOM Standard](https://github.com/whatwg/dom) for more ergonomic and
-composable event handling.
+This is the [explainer](https://tag.w3.org/explainers/) for the Observable API
+proposal for more ergonomic and composable event handling.
 
 ## Introduction
 
@@ -17,7 +16,7 @@ Observables turn event handling, filtering, and termination, into an explicit, d
 that's easier to understand and
 [compose](https://stackoverflow.com/questions/44112364/what-does-this-mean-in-the-observable-tc-39-proposal)
 than today's imperative version, which often requires nested calls to `addEventListener()` and
-hard-to-follow callback chains. Consider these examples:
+hard-to-follow callback chains.
 
 
 #### Example 1
@@ -96,13 +95,32 @@ console.log('Two');
 
 ### The `Observable` API
 
-The proposed `Observable` API shape is as follows:
+Observables are first-class objects representing composable, repeated events.
+They're like Promises but for multiple events, and specifically with
+[`EventTarget` integration](#eventtarget-integration), they are to events what
+Promises are to callbacks. They can be:
+
+ * Created by script or by platform APIs, and passed to anyone interested in
+   consuming events via `subscribe()`
+ * Fed to [combinators](#operators--combinators) like `Observable.map()`, to be
+   composed & transformed without a web of nested callbacks
+
+Better yet, the transition from event handlers ➡️ Observables is simpler than
+that of callbacks ➡️ Promises, since Observables integrate nicely on top of
+`EventTarget`, the de facto way of subscribing to events from the platform [and
+JavaScript](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget#examples).
+As a result, developers can use Observables without migrating tons of code on
+the platform, since it's an easy drop-in wherever you're handling events today.
+
+The proposed API shape is as follows:
 
 ```cs
 partial interface EventTarget {
   Observable on(DOMString type, optional AddEventListenerOptions options);
 };
 
+// `SubscribeCallback` is where the Observable "creator's" code lives. It's
+// called when `subscribe()` is called, to set up a new subscription.
 callback SubscribeCallback = void (Subscriber subscriber);
 callback ObserverCallback = void (any value);
 callback ObserverCompleteCallback = void ();
@@ -119,6 +137,7 @@ interface Subscriber {
   void next(any result);
   void complete();
   void error(any error);
+
   readonly attribute AbortSignal signal;
 };
 
@@ -174,10 +193,9 @@ https://github.com/whatwg/dom/issues/544#issuecomment-631402455
 
 ## Background
 
-An Observable is a first-class object representing composable, repeated events.
-They are "lazy" in that they do not emit data until they are subscribed to,
-push-based in that the producer of data decides when the consumer receives it,
-and temporal in that they can push arbitrary amounts of data at any time.
+Observables are "lazy" in that they do not emit data until they are subscribed
+to, push-based in that the producer of data decides when the consumer receives
+it, and temporal in that they can push arbitrary amounts of data at any time.
 
 To illustrate of how producers and consumers interact with Observables compared
 to other primitives, see the below table, which is an attempt at combining
