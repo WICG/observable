@@ -193,9 +193,9 @@ https://github.com/whatwg/dom/issues/544#issuecomment-631402455
 
 ## Background
 
-They are "lazy" in that they do not emit data until they are subscribed to,
-push-based in that the producer of data decides when the consumer receives it,
-and temporal in that they can push arbitrary amounts of data at any time.
+Observables are "lazy" in that they do not emit data until they are subscribed
+to, push-based in that the producer of data decides when the consumer receives
+it, and temporal in that they can push arbitrary amounts of data at any time.
 
 To illustrate of how producers and consumers interact with Observables compared
 to other primitives, see the below table, which is an attempt at combining
