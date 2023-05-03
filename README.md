@@ -79,20 +79,6 @@ const maxY = await element.on("mousemove")
                           .reduce((y, soFar) => Math.max(y, soFar), 0);
 ```
 
-### Synchronous delivery
-
-Event delivery with Observables is synchronous, unlike Promises which queue
-microtasks when invoking callbacks. Consider this
-[example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
-
-```js
-el.on('click').subscribe(() => console.log('One'));
-el.on('click').first().then(() => console.log('Three'));
-el.click();
-console.log('Two');
-// Logs "One" "Two" "Three"
-```
-
 ### The `Observable` API
 
 Observables are first-class objects representing composable, repeated events.
@@ -129,6 +115,7 @@ dictionary Observer {
   ObserverCallback next;
   ObserverCompleteCallback complete;
   ObserverCallback error;
+
   AbortSignal signal;
 };
 
@@ -149,6 +136,65 @@ interface Observable {
   // TODO: Consider operators
 };
 ```
+
+The creator of an Observable passes in a callback that gets invoked
+synchronously when `subscribe()` is called. The `subscribe()` method can be
+called *any number of times* on an Observable, and the callback it invokes sets
+up a new "subscription" by registering the caller of `subscribe()` as a
+Observer. With this in place, the Observable can signal any number of events to
+the Observer via the `next()` callback, optionally followed by a single call to
+either `complete()` or `error()`, singaling that the stream of data is finished.
+
+```js
+const observable = new Observable(subscriber => {
+  let i = 0;
+  setInterval(() => {
+    if (i >= 10)
+      subscriber.complete();
+    else
+      subscriber.next(i++);
+  }, 2000);
+});
+
+observable.subscribe({
+  // Print each value the Observable produces.
+  next: console.log
+});
+```
+
+**Issue**: See https://github.com/domfarolino/observable/issues/3 for discussion
+about having the Observable constructor being able to register teardown upon
+unsubscription.
+
+While custom Observables can be useful on their own, the primary use case we
+unlock is with event handling. Observables returned by the new
+`EventTarget#on()` method are created natively with an internal callback that
+uses the same [underlying
+mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) as
+`addEventListener()`. Therefore calling `subscribe()` essentially registers a
+new event listener whose events are exposed through the Observer handler
+functions and are composable with the various
+[combinators](#operators--combinators) available to all Observables.
+
+TODO: A simple example.
+
+### Lazy, synchronous delivery
+
+Crucially, Observables are "lazy" in that they do not start emitting data until
+they are subscribed to, nor do they queue any data *before* subscription. They
+can also start emitting data synchronously during subscription, unlike Promises
+which always queue microtasks when invoking user-supplied `.then()`
+callbacks. Consider this
+[example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
+
+```js
+el.on('click').subscribe(() => console.log('One'));
+el.on('click').first().then(() => console.log('Three'));
+el.click();
+console.log('Two');
+// Logs "One" "Two" "Three"
+```
+
 
 ### Operators & combinators
 
@@ -191,16 +237,13 @@ focuses on.
 https://github.com/whatwg/dom/issues/544#issuecomment-631402455
 
 
-## Background
+## Background & landscape
 
-Observables are "lazy" in that they do not emit data until they are subscribed
-to, push-based in that the producer of data decides when the consumer receives
-it, and temporal in that they can push arbitrary amounts of data at any time.
-
-To illustrate of how producers and consumers interact with Observables compared
-to other primitives, see the below table, which is an attempt at combining
+To illustrate how Observables fit into the current landscape of other reactive
+primitives, see the below table which is an attempt at combining
 [two](https://github.com/kriskowal/gtor#a-general-theory-of-reactivity)
-different [tables](https://rxjs.dev/guide/observable):
+other [tables](https://rxjs.dev/guide/observable) that classify reactive
+primitives by their interaction with producers & consumers:
 
 <table>
   <thead>
@@ -233,24 +276,6 @@ different [tables](https://rxjs.dev/guide/observable):
     </tr>
   </tbody>
 </table>
-
-To cover the basics of Observables, please read [this resource](https://rxjs.dev/guide/observable).
-But in short, an Observable is a glorified function: that is, it's an interface that gets
-constructed with a function that can be called any number of times by invoking `subscribe()` on the
-Observable. Subscribing to an observable synchronously invokes the function that was supplied upon
-construction and sets up a new "subscription" which can receive values from the Observable
-(synchronously or asynchronously) by calling a `next()` handler passed into `subscribe()`.
-
-It is in that sense that an Observable is a glorified function. Additionally, it has extra
-"safety" by telling the user exactly when:
- - It is forever finished emitting values for a particular subscription: by invoking a `done()` handler
- - It encounters an error (in which case it also stops emitting values to the subscriber) by invoking
-   an `error()` handler
- 
-While native Observables are theoretically useful on their own, the primary use case that we're
-unlocking with them is more *ergonomic* and *composable* event handling. This necessitates
-tight integration with the [`EventTarget`](https://dom.spec.whatwg.org/#interface-eventtarget) DOM
-interface.
 
 ### History
 
