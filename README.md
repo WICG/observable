@@ -7,10 +7,11 @@ proposal for more ergonomic and composable event handling.
 
 ### `EventTarget` integration
 
-This proposal adds an `.on()` method to `EventTarget` that becomes a better `addEventListener()`.
-Specifically, `.on()` returns a [new `Observable`](#the-observable-api) whose natively-defined
-"subscribe" callback adds a new event listener to the target and calls the subscriber's `.next()`
-handler with each event.
+This proposal adds an `.on()` method to `EventTarget` that becomes a better
+`addEventListener()`; specifically it returns a [new
+`Observable`](#the-observable-api) that adds a new event listener to the target
+when its `subscribe()` method is called. The Observable calls the subscriber's
+`next()` handler with each event.
 
 Observables turn event handling, filtering, and termination, into an explicit, declarative flow
 that's easier to understand and
