@@ -102,22 +102,38 @@ const pattern = [
   'Enter',
 ];
 
+// Declarative 
 const keys = document.on('keydown').map((e) => e.key);
-
 keys
   .flatMap((firstKey) => {
-    if (pattern[0] === firstKey) {
+    if (firstKey === pattern[0]) {
       return keys
         .take(pattern.length - 1)
-        .toArray()
-        .filter((rest) =>
-          [firstKey, ...rest].every((key, i) => key === pattern[i])
-        );
+        .every((k, i) => k === pattern[i + 1]);
     }
   })
+  .filter(matched => matched)
   .subscribe(() => {
     console.log('Secret code matched!');
   });
+
+// Imperative
+document.addEventListener('keydown', e => {
+  const key = e.key;
+  if (key === pattern[0]) {
+    let i = 1;
+    const handler = (e) => {
+      const nextKey = e.key;
+      if (nextKey !== pattern[i++]) {
+        document.removeEventListener('keydown', handler)
+      } else if (pattern.length === i) {
+        console.log('Secret code matched!');
+        document.removeEventListener('keydown', handler)
+      }
+    }
+    document.addEventListener('keydown', handler)
+  }
+})
 ```
 
 ### The `Observable` API
