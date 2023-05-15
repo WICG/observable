@@ -80,6 +80,46 @@ const maxY = await element.on("mousemove")
                           .reduce((y, soFar) => Math.max(y, soFar), 0);
 ```
 
+#### Example 7
+
+Here we're leveraging observables to match a secret code, which is a pattern of
+keys the user might hit while using an app:
+
+```js
+const pattern = [
+  'ArrowUp',
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowLeft',
+  'ArrowRight',
+  'b',
+  'a',
+  'b',
+  'a',
+  'Enter',
+];
+
+const keys = document.on('keydown').map((e) => e.key);
+
+keys
+  .flatMap((firstKey) => {
+    if (pattern[0] === firstKey) {
+      return keys
+        .take(pattern.length - 1)
+        .toArray()
+        .filter((rest) =>
+          [firstKey, ...rest].every((key, i) => key === pattern[i])
+        );
+    }
+  })
+  .subscribe(() => {
+    console.log('Secret code matched!');
+  });
+```
+
 ### The `Observable` API
 
 Observables are first-class objects representing composable, repeated events.
