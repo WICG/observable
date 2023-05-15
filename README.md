@@ -87,7 +87,7 @@ const maxY = await element.on("mousemove")
                           .reduce((y, soFar) => Math.max(y, soFar), 0);
 ```
 
-#### Example 6
+#### Example 7
 
 Here we're leveraging observables to match a secret code, which is a pattern of
 keys the user might hit while using an app:
@@ -150,6 +150,51 @@ document.addEventListener('keydown', e => {
 })
 ```
 </details>
+
+#### Example 6
+
+Multiplexing a `WebSocket`, such that a subscription message is send on connection,
+and an unsubscription message is send to the server when the user unsubscribes.
+
+```js
+const socket = new WebSocket('wss://example.com');
+
+function multiplex({ startMsg, stopMsg, match }) {
+  if (socket.readyState !== WebSocket.OPEN) {
+    return socket
+      .on('open')
+      .flatMap(() => multiplex({ startMsg, stopMsg, match }));
+  } else {
+    socket.send(startMsg);
+    return socket
+      .on('message')
+      .filter(match)
+      .map(e => JSON.parse(e.data))
+      .finally(() => {
+        socket.send(stopMsg);
+      });
+  }
+}
+
+function streamStock(ticker) {
+  return multiplex({
+    startMsg: { ticker, type: 'sub' },
+    stopMsg: { ticker, type: 'unsub' },
+    match: (data) => data.ticker === ticker
+  });
+}
+
+const googTrades = streamStock('GOOG');
+const nflxTrades = streamStock('NFLX');
+
+const googSubscription = googTrades.subscribe(updateView);
+const nflxSubscription = nflxTrades.subscribe(updateView);
+
+// And the stream can disconnect later, which
+// automatically sends the unsubscription message
+// to the server.
+googSubscription.unsubscribe();
+```
 
 ### The `Observable` API
 
