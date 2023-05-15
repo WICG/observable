@@ -157,6 +157,7 @@ Multiplexing a `WebSocket`, such that a subscription message is send on connecti
 and an unsubscription message is send to the server when the user unsubscribes.
 
 ```js
+// Declarative
 const socket = new WebSocket('wss://example.com');
 
 function multiplex({ startMsg, stopMsg, match }) {
@@ -169,7 +170,9 @@ function multiplex({ startMsg, stopMsg, match }) {
     return socket
       .on('message')
       .filter(match)
-      .map(e => JSON.parse(e.data))
+      .takeUntil(socket.on('close'))
+      .takeUntil(socket.on('error'))
+      .map((e) => JSON.parse(e.data))
       .finally(() => {
         socket.send(JSON.stringify(stopMsg));
       });
@@ -180,7 +183,7 @@ function streamStock(ticker) {
   return multiplex({
     startMsg: { ticker, type: 'sub' },
     stopMsg: { ticker, type: 'unsub' },
-    match: (data) => data.ticker === ticker
+    match: (data) => data.ticker === ticker,
   });
 }
 
@@ -194,6 +197,66 @@ const nflxSubscription = nflxTrades.subscribe(updateView);
 // automatically sends the unsubscription message
 // to the server.
 googSubscription.unsubscribe();
+
+// Imperative
+function multiplex({ startMsg, stopMsg, match }) {
+  const start = (callback) => {
+    const teardowns = [];
+
+    if (socket.readyState !== WebSocket.OPEN) {
+      const openHandler = () => start({ startMsg, stopMsg, match })(callback);
+      socket.addEventListener('open', openHandler);
+      teardowns.push(() => {
+        socket.removeEventListener('open', openHandler);
+      });
+    } else {
+      socket.send(JSON.stringify(startMsg));
+      const messageHandler = (e) => {
+        const data = JSON.parse(e.data);
+        if (match(data)) {
+          callback(data);
+        }
+      };
+      socket.addEventListener('message', messageHandler);
+      teardowns.push(() => {
+        socket.send(JSON.stringify(stopMsg));
+        socket.removeEventListener('message', messageHandler);
+      });
+    }
+
+    const finalize = () => {
+      teardowns.forEach((t) => t());
+    };
+
+    socket.addEventListener('close', finalize);
+    teardowns.push(() => socket.removeEventListener('close', finalize));
+    socket.addEventListener('error', finalize);
+    teardowns.push(() => socket.removeEventListener('error', finalize));
+
+    return finalize;
+  };
+
+  return start;
+}
+
+function streamStock(ticker) {
+  return multiplex({
+    startMsg: { ticker, type: 'sub' },
+    stopMsg: { ticker, type: 'unsub' },
+    match: (data) => data.ticker === ticker,
+  });
+}
+
+const googTrades = streamStock('GOOG');
+const nflxTrades = streamStock('NFLX');
+
+const unsubGoogTrades = googTrades(updateView);
+const unsubNflxTrades = nflxTrades(updateView);
+
+// And the stream can disconnect later, which
+// automatically sends the unsubscription message
+// to the server.
+unsubGoogTrades();
 ```
 
 ### The `Observable` API
