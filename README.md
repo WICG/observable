@@ -165,13 +165,13 @@ function multiplex({ startMsg, stopMsg, match }) {
       .on('open')
       .flatMap(() => multiplex({ startMsg, stopMsg, match }));
   } else {
-    socket.send(startMsg);
+    socket.send(JSON.stringify(startMsg));
     return socket
       .on('message')
       .filter(match)
       .map(e => JSON.parse(e.data))
       .finally(() => {
-        socket.send(stopMsg);
+        socket.send(JSON.stringify(stopMsg));
       });
   }
 }
