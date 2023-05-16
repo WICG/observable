@@ -80,7 +80,7 @@ const maxY = await element.on("mousemove")
                           .reduce((y, soFar) => Math.max(y, soFar), 0);
 ```
 
-#### Example 7
+#### Example 6
 
 Here we're leveraging observables to match a secret code, which is a pattern of
 keys the user might hit while using an app:
