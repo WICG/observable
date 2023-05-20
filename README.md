@@ -48,7 +48,7 @@ await element.on("mousemove").
 #### Example 3
 
 ```js
-// Declarative:
+// Declarative
 element.on('mousemove').takeUntil(element.on('mouseup')).subscribe(console.log);
 
 ```
@@ -86,70 +86,6 @@ const maxY = await element.on("mousemove")
                           .map(e => e.clientY)
                           .reduce((y, soFar) => Math.max(y, soFar), 0);
 ```
-
-#### Example 7
-
-Here we're leveraging observables to match a secret code, which is a pattern of
-keys the user might hit while using an app:
-
-```js
-const pattern = [
-  'ArrowUp',
-  'ArrowUp',
-  'ArrowDown',
-  'ArrowDown',
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowLeft',
-  'ArrowRight',
-  'b',
-  'a',
-  'b',
-  'a',
-  'Enter',
-];
-
-// Declarative 
-const keys = document.on('keydown').map((e) => e.key);
-keys
-  .flatMap((firstKey) => {
-    if (firstKey === pattern[0]) {
-      return keys
-        .take(pattern.length - 1)
-        .every((k, i) => k === pattern[i + 1]);
-    }
-  })
-  .filter(matched => matched)
-  .subscribe(() => {
-    console.log('Secret code matched!');
-  });
-```
-
-<details>
-<summary>Imperative version</summary>
-
-```js
-const pattern = [...];
-
-// Imperative
-document.addEventListener('keydown', e => {
-  const key = e.key;
-  if (key === pattern[0]) {
-    let i = 1;
-    const handler = (e) => {
-      const nextKey = e.key;
-      if (nextKey !== pattern[i++]) {
-        document.removeEventListener('keydown', handler)
-      } else if (pattern.length === i) {
-        console.log('Secret code matched!');
-        document.removeEventListener('keydown', handler)
-      }
-    }
-    document.addEventListener('keydown', handler)
-  }
-})
-```
-</details>
 
 #### Example 6
 
@@ -197,7 +133,12 @@ const nflxSubscription = nflxTrades.subscribe(updateView);
 // automatically sends the unsubscription message
 // to the server.
 googSubscription.unsubscribe();
+```
 
+<details>
+<summary>Imperative version</summary>
+
+```js
 // Imperative
 function multiplex({ startMsg, stopMsg, match }) {
   const start = (callback) => {
@@ -258,6 +199,72 @@ const unsubNflxTrades = nflxTrades(updateView);
 // to the server.
 unsubGoogTrades();
 ```
+</details>
+
+#### Example 7
+
+Here we're leveraging observables to match a secret code, which is a pattern of
+keys the user might hit while using an app:
+
+```js
+const pattern = [
+  'ArrowUp',
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowLeft',
+  'ArrowRight',
+  'b',
+  'a',
+  'b',
+  'a',
+  'Enter',
+];
+
+// Declarative
+const keys = document.on('keydown').map((e) => e.key);
+keys
+  .flatMap((firstKey) => {
+    if (firstKey === pattern[0]) {
+      return keys
+        .take(pattern.length - 1)
+        .every((k, i) => k === pattern[i + 1]);
+    }
+  })
+  .filter(matched => matched)
+  .subscribe(() => {
+    console.log('Secret code matched!');
+  });
+```
+
+<details>
+<summary>Imperative version</summary>
+
+```js
+const pattern = [...];
+
+// Imperative
+document.addEventListener('keydown', e => {
+  const key = e.key;
+  if (key === pattern[0]) {
+    let i = 1;
+    const handler = (e) => {
+      const nextKey = e.key;
+      if (nextKey !== pattern[i++]) {
+        document.removeEventListener('keydown', handler)
+      } else if (pattern.length === i) {
+        console.log('Secret code matched!');
+        document.removeEventListener('keydown', handler)
+      }
+    }
+    document.addEventListener('keydown', handler)
+  }
+})
+```
+</details>
+
 
 ### The `Observable` API
 
