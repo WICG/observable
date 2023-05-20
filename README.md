@@ -123,16 +123,21 @@ function streamStock(ticker) {
   });
 }
 
+function finish(stopMsg) {
+  socket.send(JSON.stringify(stopMsg));
+}
+
 const googTrades = streamStock('GOOG');
 const nflxTrades = streamStock('NFLX');
 
-const googSubscription = googTrades.subscribe(updateView);
-const nflxSubscription = nflxTrades.subscribe(updateView);
+const googController = new AbortController();
+const googSubscription = googTrades.subscribe({next: updateView, signal: googController.signal});
+const nflxSubscription = nflxTrades.subscribe({next: updateView, ...});
 
 // And the stream can disconnect later, which
 // automatically sends the unsubscription message
 // to the server.
-googSubscription.unsubscribe();
+googController.abort();
 ```
 
 <details>
