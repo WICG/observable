@@ -51,13 +51,20 @@ await element.on("mousemove").
 // Declarative:
 element.on('mousemove').takeUntil(element.on('mouseup')).subscribe(console.log);
 
-// Imperative:
+```
+
+<details>
+<summary>Imperative version</summary>
+
+```js
+// Imperative
 const controller = new AbortController();
 element.addEventListener('mousemove', e => {
   element.addEventListener('mouseup', e => controller.abort());
   console.log(e);
 }, {signal});
 ```
+</details>
 
 #### Example 4
 
@@ -116,6 +123,13 @@ keys
   .subscribe(() => {
     console.log('Secret code matched!');
   });
+```
+
+<details>
+<summary>Imperative version</summary>
+
+```js
+const pattern = [...];
 
 // Imperative
 document.addEventListener('keydown', e => {
@@ -135,6 +149,7 @@ document.addEventListener('keydown', e => {
   }
 })
 ```
+</details>
 
 ### The `Observable` API
 
