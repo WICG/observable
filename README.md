@@ -48,7 +48,7 @@ await element.on("mousemove").
 #### Example 3
 
 ```js
-// Declarative:
+// Declarative
 element.on('mousemove').takeUntil(element.on('mouseup')).subscribe(console.log);
 
 ```
@@ -89,6 +89,125 @@ const maxY = await element.on("mousemove")
 
 #### Example 6
 
+Multiplexing a `WebSocket`, such that a subscription message is send on connection,
+and an unsubscription message is send to the server when the user unsubscribes.
+
+```js
+// Declarative
+const socket = new WebSocket('wss://example.com');
+
+function multiplex({ startMsg, stopMsg, match }) {
+  if (socket.readyState !== WebSocket.OPEN) {
+    return socket
+      .on('open')
+      .flatMap(() => multiplex({ startMsg, stopMsg, match }));
+  } else {
+    socket.send(JSON.stringify(startMsg));
+    return socket
+      .on('message')
+      .filter(match)
+      .takeUntil(socket.on('close'))
+      .takeUntil(socket.on('error'))
+      .map((e) => JSON.parse(e.data))
+      .finally(() => {
+        socket.send(JSON.stringify(stopMsg));
+      });
+  }
+}
+
+function streamStock(ticker) {
+  return multiplex({
+    startMsg: { ticker, type: 'sub' },
+    stopMsg: { ticker, type: 'unsub' },
+    match: (data) => data.ticker === ticker,
+  });
+}
+
+function finish(stopMsg) {
+  socket.send(JSON.stringify(stopMsg));
+}
+
+const googTrades = streamStock('GOOG');
+const nflxTrades = streamStock('NFLX');
+
+const googController = new AbortController();
+const googSubscription = googTrades.subscribe({next: updateView, signal: googController.signal});
+const nflxSubscription = nflxTrades.subscribe({next: updateView, ...});
+
+// And the stream can disconnect later, which
+// automatically sends the unsubscription message
+// to the server.
+googController.abort();
+```
+
+<details>
+<summary>Imperative version</summary>
+
+```js
+// Imperative
+function multiplex({ startMsg, stopMsg, match }) {
+  const start = (callback) => {
+    const teardowns = [];
+
+    if (socket.readyState !== WebSocket.OPEN) {
+      const openHandler = () => start({ startMsg, stopMsg, match })(callback);
+      socket.addEventListener('open', openHandler);
+      teardowns.push(() => {
+        socket.removeEventListener('open', openHandler);
+      });
+    } else {
+      socket.send(JSON.stringify(startMsg));
+      const messageHandler = (e) => {
+        const data = JSON.parse(e.data);
+        if (match(data)) {
+          callback(data);
+        }
+      };
+      socket.addEventListener('message', messageHandler);
+      teardowns.push(() => {
+        socket.send(JSON.stringify(stopMsg));
+        socket.removeEventListener('message', messageHandler);
+      });
+    }
+
+    const finalize = () => {
+      teardowns.forEach((t) => t());
+    };
+
+    socket.addEventListener('close', finalize);
+    teardowns.push(() => socket.removeEventListener('close', finalize));
+    socket.addEventListener('error', finalize);
+    teardowns.push(() => socket.removeEventListener('error', finalize));
+
+    return finalize;
+  };
+
+  return start;
+}
+
+function streamStock(ticker) {
+  return multiplex({
+    startMsg: { ticker, type: 'sub' },
+    stopMsg: { ticker, type: 'unsub' },
+    match: (data) => data.ticker === ticker,
+  });
+}
+
+const googTrades = streamStock('GOOG');
+const nflxTrades = streamStock('NFLX');
+
+const unsubGoogTrades = googTrades(updateView);
+const unsubNflxTrades = nflxTrades(updateView);
+
+// And the stream can disconnect later, which
+// automatically sends the unsubscription message
+// to the server.
+unsubGoogTrades();
+```
+</details>
+
+#### Example 7
+
 Here we're leveraging observables to match a secret code, which is a pattern of
 keys the user might hit while using an app:
 
@@ -109,7 +228,7 @@ const pattern = [
   'Enter',
 ];
 
-// Declarative 
+// Declarative
 const keys = document.on('keydown').map((e) => e.key);
 keys
   .flatMap((firstKey) => {
@@ -150,6 +269,7 @@ document.addEventListener('keydown', e => {
 })
 ```
 </details>
+
 
 ### The `Observable` API
 
