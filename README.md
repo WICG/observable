@@ -320,15 +320,29 @@ interface Subscriber {
   readonly attribute AbortSignal signal;
 };
 
-callback VoidCallback = undefined ();
+callback Predicate = boolean (any value);
 
 [Exposed=*]
 interface Observable {
   constructor(SubscribeCallback callback);
   subscribe(Observer observer);
 
+  // Operators:
   Observable takeUntil(Observable);
-  undefined finally(VoidCallback);
+  undefined finally(VoidFunction);
+
+  // See 'Operators & combinators' section below:
+  Observable map(Function);
+  Observable filter(Predicate);
+  Observable take(unsigned long long);
+  Observable drop(unsigned long long);
+  Observable flatMap(Function);
+  Observable reduce(Function, optional any);
+  Observable toArray();
+  Observable forEach(Function);
+  Observable some(Predicate);
+  Observable every(Predicate);
+  Observable find(Predicate);
 };
 ```
 
