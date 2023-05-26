@@ -320,12 +320,15 @@ interface Subscriber {
   readonly attribute AbortSignal signal;
 };
 
+callback VoidCallback = undefined ();
+
 [Exposed=*]
 interface Observable {
   constructor(SubscribeCallback callback);
   subscribe(Observer observer);
 
-  // TODO: Consider operators
+  Observable takeUntil(Observable);
+  undefined finally(VoidCallback);
 };
 ```
 
@@ -390,19 +393,23 @@ console.log('Two');
 
 ### Operators & combinators
 
-To prevent scope creep, this proposal certainly does not involve shipping the entire set of 
-[operators included in](https://rxjs.dev/api?query=operators&type=function) popular userland
-libraries like RxJS. As has been [said](https://github.com/whatwg/dom/issues/544#:~:text=What%20would%20I%20find%20to%20be%20acceptable%20criteria%20for%20a%20good%20Observable%20type%20in%20the%20platform%3F)
-in [previous discussions](https://github.com/whatwg/dom/issues/544#issuecomment-351454978),
-we expect userland libraries to implement and provide specific operators that integrate with the
-Observable API that's central to this proposal.
+We propose the following operators in addition to the `Observable` interface:
 
-With that said, an initial set of common operators that come _with_ a native Observable
-API could greatly increase utility and ease adoption, so we can consider including operators that
-already exist on other iterables as a part of this proposal; the exact set of operators is currently
-under consideration, but we can look to TC39's [iterator helpers proposal](https://github.com/tc39/proposal-iterator-helpers)
-for guidance, which adds the [following methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype)
-to `Iterator.prototype`:
+ - `takeUntil(Observable)`
+   - Returns an observable that mirrors the one that this method is called on,
+     until the input observable emits its first value
+ - `finally()`
+    - Like `Promise.finally()`, it takes a callback which gets fired after the
+      observable completes in any way (`done()`/`error()`)
+
+Versions of the above are often present in userland implementations of
+observables, but in addition to these we offer a set of common operators that
+aren't specific to the needs of observables, but can greatly increase utility
+and adoption. They already exist on other iterables, and are inspired by TC39's
+[iterator helpers proposal](https://github.com/tc39/proposal-iterator-helpers)
+which adds the [following
+methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
+`Iterator.prototype`:
 
  - `map()`
  - `filter()`
@@ -417,12 +424,14 @@ to `Iterator.prototype`:
  - `find()`
  - maybe: `from()`[^1]
 
-Some subset of these could be included in an initial Observables MVP, with others shipping
-independently after, and more niche operators staying is userland libraries until/unless they
-get the momentum to graduate and ship on the platform. In any case it is important to realize that
-operators _are not_ the meat of this proposal, as thy could conceivably follow along at any time
-provided there is support for the actual native Observable API, which _is_ what this proposal principally
-focuses on.
+Apart from these, we expect userland libraries to provide more niche operators
+that integrate with the `Observable` API central to this proposal, potentially
+shipping natively independently if they get enough momentum to graduate to the
+platform.
+
+In any case, operators are not the meat of this proposal, and any long tail of
+them could _conceivably_ follow along provided there is support for the actual
+native Observable API presented in this explainer.
 
 ### Further platform integration
 
