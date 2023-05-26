@@ -286,7 +286,7 @@ Promises are to callbacks. They can be:
 Better yet, the transition from event handlers ➡️ Observables is simpler than
 that of callbacks ➡️ Promises, since Observables integrate nicely on top of
 `EventTarget`, the de facto way of subscribing to events from the platform [and
-JavaScript](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget#examples).
+custom script](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget#examples).
 As a result, developers can use Observables without migrating tons of code on
 the platform, since it's an easy drop-in wherever you're handling events today.
 
