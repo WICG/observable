@@ -292,7 +292,7 @@ the platform, since it's an easy drop-in wherever you're handling events today.
 
 The proposed API shape is as follows:
 
-```cs
+```js
 partial interface EventTarget {
   Observable on(DOMString type, optional AddEventListenerOptions options);
 };
