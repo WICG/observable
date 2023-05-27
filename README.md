@@ -1,7 +1,7 @@
 # Observable
 
-This is the [explainer](https://tag.w3.org/explainers/) for the Observable API
-proposal for more ergonomic and composable event handling.
+This is the explainer for the Observable API proposal for more ergonomic and
+composable event handling.
 
 ## Introduction
 
@@ -24,33 +24,25 @@ hard-to-follow callback chains.
 
 ```js
 // Filtering and mapping:
-element.on("click").
-    filter(e => e.target.matches(".foo")).
-    map(e => ({x: e.clientX, y: e.clientY })).
-    subscribe(handleClickAtPoint);
+element.on('click')
+  .filter(e => e.target.matches('.foo'))
+  .map(e => ({x: e.clientX, y: e.clientY }))
+  .subscribe({next: handleClickAtPoint});
 ```
 
 #### Example 2
 
 ```js
-// Automatic/declarative unsubscription via the takeUntil method:
-element.on("mousemove").
-    takeUntil(document.on("mouseup")).
-    subscribe(etc => …);
+// Automatic, declarative unsubscription via the takeUntil method:
+element.on('mousemove')
+  .takeUntil(document.on('mouseup'))
+  .subscribe({next: e => … });
 
-// Since reduce and other terminators return promises, they also play
+// Since reduce and some other terminators return promises, they also play
 // well with async functions:
-await element.on("mousemove").
-    takeUntil(element.on("mouseup")).
-    reduce((e, soFar) => …);
-```
-
-#### Example 3
-
-```js
-// Declarative
-element.on('mousemove').takeUntil(element.on('mouseup')).subscribe(console.log);
-
+await element.on('mousemove')
+  .takeUntil(element.on('mouseup'))
+  .reduce((e, soFar) => …);
 ```
 
 <details>
@@ -66,28 +58,30 @@ element.addEventListener('mousemove', e => {
 ```
 </details>
 
-#### Example 4
+#### Example 3
 
-From https://github.com/whatwg/dom/issues/544#issuecomment-351705380:
+Tracking all link clicks within a container
+([example](https://github.com/whatwg/dom/issues/544#issuecomment-351705380)):
+
 ```js
-container.on('click').filter(e => e.target.closest('a')).subscribe(e => {
+container.on('click').filter(e => e.target.closest('a')).subscribe({next: e => {
   // …
-});
+}});
 ```
 
-#### Example 5
+#### Example 4
 
-From https://github.com/whatwg/dom/issues/544#issuecomment-351762493:
+Find the maximum Y coordinate while the mouse is held down
+([example](https://github.com/whatwg/dom/issues/544#issuecomment-351762493)):
 
 ```js
-// Find the maximum Y coordinate while the mouse is held down.
-const maxY = await element.on("mousemove")
-                          .takeUntil(element.on("mouseup"))
+const maxY = await element.on('mousemove')
+                          .takeUntil(element.on('mouseup'))
                           .map(e => e.clientY)
                           .reduce((y, soFar) => Math.max(y, soFar), 0);
 ```
 
-#### Example 6
+#### Example 5
 
 Multiplexing a `WebSocket`, such that a subscription message is send on connection,
 and an unsubscription message is send to the server when the user unsubscribes.
@@ -206,7 +200,7 @@ unsubGoogTrades();
 ```
 </details>
 
-#### Example 7
+#### Example 6
 
 Here we're leveraging observables to match a secret code, which is a pattern of
 keys the user might hit while using an app:
@@ -327,22 +321,23 @@ interface Observable {
   constructor(SubscribeCallback callback);
   subscribe(Observer observer);
 
-  // Operators:
-  Observable takeUntil(Observable);
   undefined finally(VoidFunction);
 
-  // See 'Operators & combinators' section below:
+  // Observable-returning operators. See "Operators" section below.
+  Observable takeUntil(Observable);
   Observable map(Function);
   Observable filter(Predicate);
   Observable take(unsigned long long);
   Observable drop(unsigned long long);
   Observable flatMap(Function);
-  Observable reduce(Function, optional any);
   Observable toArray();
   Observable forEach(Function);
-  Observable some(Predicate);
-  Observable every(Predicate);
-  Observable find(Predicate);
+
+  // Promise-returning. See "Concerns" section below.
+  Promise<any> every(Predicate);
+  Promise<any> find(Predicate);
+  Promise<any> some(Predicate);
+  Promise<any> reduce(Function, optional any);
 };
 ```
 
