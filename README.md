@@ -233,9 +233,9 @@ keys
     }
   })
   .filter(matched => matched)
-  .subscribe(() => {
+  .subscribe({next: _ => {
     console.log('Secret code matched!');
-  });
+  }});
 ```
 
 <details>
@@ -274,8 +274,8 @@ Promises are to callbacks. They can be:
 
  * Created by script or by platform APIs, and passed to anyone interested in
    consuming events via `subscribe()`
- * Fed to [combinators](#operators--combinators) like `Observable.map()`, to be
-   composed & transformed without a web of nested callbacks
+ * Fed to [operators](#operators) like `Observable.map()`, to be composed &
+   transformed without a web of nested callbacks
 
 Better yet, the transition from event handlers ➡️ Observables is simpler than
 that of callbacks ➡️ Promises, since Observables integrate nicely on top of
@@ -342,12 +342,12 @@ interface Observable {
 ```
 
 The creator of an Observable passes in a callback that gets invoked
-synchronously when `subscribe()` is called. The `subscribe()` method can be
-called *any number of times* on an Observable, and the callback it invokes sets
-up a new "subscription" by registering the caller of `subscribe()` as a
-Observer. With this in place, the Observable can signal any number of events to
-the Observer via the `next()` callback, optionally followed by a single call to
-either `complete()` or `error()`, singaling that the stream of data is finished.
+synchronously whenever `subscribe()` is called. The `subscribe()` method can be
+called *any number of times*, and the callback it invokes sets up a new
+"subscription" by registering the caller of `subscribe()` as a Observer. With
+this in place, the Observable can signal any number of events to the Observer
+via the `next()` callback, optionally followed by a single call to either
+`complete()` or `error()`, signaling that the stream of data is finished.
 
 ```js
 const observable = new Observable(subscriber => {
@@ -366,11 +366,10 @@ observable.subscribe({
 });
 ```
 
-**Issue**: See https://github.com/domfarolino/observable/issues/3 for discussion
-about having the Observable constructor being able to register teardown upon
-unsubscription.
+**Issue**: See https://github.com/domfarolino/observable/issues/3 about having
+the Observable constructor being able to register teardown upon unsubscription.
 
-While custom Observables can be useful on their own, the primary use case we
+While custom Observables can be useful on their own, the primary use case they
 unlock is with event handling. Observables returned by the new
 `EventTarget#on()` method are created natively with an internal callback that
 uses the same [underlying
@@ -378,29 +377,47 @@ mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) as
 `addEventListener()`. Therefore calling `subscribe()` essentially registers a
 new event listener whose events are exposed through the Observer handler
 functions and are composable with the various
-[combinators](#operators--combinators) available to all Observables.
+[combinators](#operators) available to all Observables.
 
-TODO: A simple example.
-
-### Lazy, synchronous delivery
+#### Lazy, synchronous delivery
 
 Crucially, Observables are "lazy" in that they do not start emitting data until
 they are subscribed to, nor do they queue any data *before* subscription. They
 can also start emitting data synchronously during subscription, unlike Promises
-which always queue microtasks when invoking user-supplied `.then()`
-callbacks. Consider this
+which always queue microtasks when invoking `.then()` handlers. Consider this
 [example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
 
 ```js
-el.on('click').subscribe(() => console.log('One'));
-el.on('click').first().then(() => console.log('Three'));
+el.on('click').subscribe({next: () => console.log('One')});
+el.on('click').find(() => {…}).then(() => console.log('Three'));
 el.click();
 console.log('Two');
 // Logs "One" "Two" "Three"
 ```
 
+#### Firehose of synchronous data
 
-### Operators & combinators
+By using `AbortController`, you can unsubscribe from an Observable even as it
+synchronously emits data _during_ subscription:
+
+```js
+// An observable that synchronously emits unlimited data during subscription.
+let observable = new Observable(subscriber => {
+  let i = 0;
+  while (true) {
+    subscriber.next(i++);
+  }
+});
+
+let controller = new AbortController();
+observable.subscribe({next: data => {
+  if (data > 100)
+    controller.abort();
+}, signal: controller.signal});
+```
+
+
+### Operators
 
 We propose the following operators in addition to the `Observable` interface:
 
@@ -436,15 +453,9 @@ methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
 Apart from these, we expect userland libraries to provide more niche operators
 that integrate with the `Observable` API central to this proposal, potentially
 shipping natively independently if they get enough momentum to graduate to the
-platform.
-
-In any case, operators are not the meat of this proposal, and any long tail of
-them could _conceivably_ follow along provided there is support for the actual
+platform. In any case, operators are not the meat of this proposal, and any long
+tail of them could conceivably follow along provided there is support for the
 native Observable API presented in this explainer.
-
-### Further platform integration
-
-https://github.com/whatwg/dom/issues/544#issuecomment-631402455
 
 
 ## Background & landscape
