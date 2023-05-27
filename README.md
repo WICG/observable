@@ -455,6 +455,11 @@ platform. In any case, operators are not the meat of this proposal, and any long
 tail of them could conceivably follow along provided there is support for the
 native Observable API presented in this explainer.
 
+Note that the operators `every()`, `find()`, `some()`, and `reduce()` return
+Promises whose scheduling differs from that of Observables, which sometimes
+means event handlers that call `e.preventDefault()` will run too late. See the
+[Concerns](#concerns) section which goes into more detail.
+
 
 ## Background & landscape
 
