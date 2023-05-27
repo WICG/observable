@@ -87,7 +87,6 @@ Multiplexing a `WebSocket`, such that a subscription message is send on connecti
 and an unsubscription message is send to the server when the user unsubscribes.
 
 ```js
-// Declarative
 const socket = new WebSocket('wss://example.com');
 
 function multiplex({ startMsg, stopMsg, match }) {
@@ -222,7 +221,6 @@ const pattern = [
   'Enter',
 ];
 
-// Declarative
 const keys = document.on('keydown').map((e) => e.key);
 keys
   .flatMap((firstKey) => {
