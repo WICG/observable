@@ -333,6 +333,7 @@ interface Observable {
 
   // Promise-returning. See "Concerns" section below.
   Promise<any> every(Predicate);
+  // Maybe? Promise<any> first();
   Promise<any> find(Predicate);
   Promise<any> some(Predicate);
   Promise<any> reduce(Function, optional any);
@@ -427,11 +428,12 @@ We propose the following operators in addition to the `Observable` interface:
       observable completes in any way (`done()`/`error()`)
 
 Versions of the above are often present in userland implementations of
-observables, but in addition to these we offer a set of common operators that
-aren't specific to the needs of observables, but can greatly increase utility
-and adoption. They already exist on other iterables, and are inspired by TC39's
-[iterator helpers proposal](https://github.com/tc39/proposal-iterator-helpers)
-which adds the [following
+observables as they are useful for observable-specific reasons, but in addition
+to these we offer a set of common operators that follow existing platform
+precedent and can greatly increase utility and adoption. These exist on other
+iterables, and are derived from TC39's [iterator helpers
+proposal](https://github.com/tc39/proposal-iterator-helpers) which adds the
+[following
 methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
 `Iterator.prototype`:
 
@@ -448,12 +450,20 @@ methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
  - `find()`
  - maybe: `from()`[^1]
 
-Apart from these, we expect userland libraries to provide more niche operators
-that integrate with the `Observable` API central to this proposal, potentially
-shipping natively independently if they get enough momentum to graduate to the
-platform. In any case, operators are not the meat of this proposal, and any long
-tail of them could conceivably follow along provided there is support for the
-native Observable API presented in this explainer.
+We expect userland libraries to provide more niche operators that integrate with
+the `Observable` API central to this proposal, potentially shipping natively if
+they get enough momentum to graduate to the platform. But for this initial
+proposal, we'd like to restrict the set of operators to those that follow the
+precedent stated above, similar to how web platform APIs that are declared
+[Setlike](https://webidl.spec.whatwg.org/#es-setlike) and
+[Maplike](https://webidl.spec.whatwg.org/#es-maplike) have native properties
+inspired by TC39's
+[Map](https://tc39.es/ecma262/#sec-properties-of-the-map-prototype-object) and
+[Set](https://tc39.es/ecma262/#sec-properties-of-the-set-prototype-object)
+objects. Therefore we'd consider most discussion of expanding this set as
+out-of-scope for the _initial_ proposal, suitable for discussion in an appendix.
+Any long tail of operators could _conceivably_ follow along if there is support
+for the native Observable API presented in this explainer.
 
 Note that the operators `every()`, `find()`, `some()`, and `reduce()` return
 Promises whose scheduling differs from that of Observables, which sometimes
