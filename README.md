@@ -531,25 +531,41 @@ of shipping a version of it to the Web Platform.
 ### Userland libraries
 
 In [prior discussion](https://github.com/whatwg/dom/issues/544#issuecomment-1433955626),
-[Ben Lesh](https://github.com/benlesh) has listed several custom userland implementations of the
-Observables primitive, of which RxJS is the most popular with "47,000,000+ downloads *per week*."
+[Ben Lesh](https://github.com/benlesh) has listed several custom userland implementations of
+observable primitives, of which RxJS is the most popular with "47,000,000+ downloads *per week*."
 
- - RxJS
- - React Router
- - Redux
- - Vue
- - Svelte
- - XState
- - MobX
- - Relay
- - Recoil
- - Apollo GraphQL
- - tRPC
+ - [RxJS](https://github.com/ReactiveX/rxjs/blob/9ddc27dd60ac23e95b2503716ae8013e64275915/src/internal/Observable.ts#L10): Started as a reference implementation of the TC39 proposal, is nearly identical to this proposal's observable.
+ - [Relay](https://github.com/facebook/relay/blob/af8a619d7f61ea6e2e26dd4ac4ab1973d68e6ff9/packages/relay-runtime/network/RelayObservable.js): A mostly identical contract with the addition of `start` and `unsubscribe` events for observation and acquiring the `Subscription` prior to the return.
+ - [tRPC](https://github.com/trpc/trpc/blob/21bcb5e6723023d3acb0b836b63627922407c682/packages/server/src/observable/observable.ts): A nearly identical implemention of observable to this proposal.
+ - [XState](https://github.com/statelyai/xstate/blob/754afa022047518ef4813f7aa85398218b39f960/packages/core/src/types.ts#L1711C19-L1737): uses an observable interface in several places in their library, in particular for their `Actor` type, to allow [subscriptions to changes in state, as shown in their `useActor` hook](https://github.com/statelyai/xstate/blob/754afa022047518ef4813f7aa85398218b39f960/packages/xstate-solid/src/useActor.ts#L47-L51). Using an identical observable is also a [documented part](https://github.com/statelyai/xstate/blob/754afa022047518ef4813f7aa85398218b39f960/packages/xstate-solid/README.md?plain=1#L355-L368) of access state machine changes when using XState with SolidJS.
+ - [SolidJS](https://github.com/solidjs/solid/blob/46e5e78710cdd9f170a7afd0ddc5311676d3532a/packages/solid/src/reactive/observable.ts#L46): An identical interface to this proposal is exposed for users to use.
+ - [Apollo GraphQL](https://github.com/apollographql/apollo-client/blob/a1dac639839ffc5c2de332db2ee4b29bb0723815/src/utilities/observables/Observable.ts): Actually re-exporting from [zen-observable](https://github.com/zenparsing/es-observable) as [their own thing](https://github.com/apollographql/apollo-client/blob/a1dac639839ffc5c2de332db2ee4b29bb0723815/src/core/index.ts#L76), giving some freedom to reimplement on their own or pivot to something like RxJS observable at some point.
+ - [zen-observable](https://github.com/zenparsing/zen-observable/tree/8406a7e3a3a3faa080ec228b9a743f48021fba8b): A reference implementation of the TC39 observable proposal. Nearly identical to this proposal.
+ - [React Router](https://github.com/remix-run/react-router/tree/610ce6edf0993384300ff3172fc6db00ead50d33): Uses a `{ subscribe(callback: (value: T) => void): () => void }` pattern in their [Router](https://github.com/remix-run/react-router/blob/610ce6edf0993384300ff3172fc6db00ead50d33/packages/router/router.ts#L931) and [DeferredData](https://github.com/remix-run/react-router/blob/610ce6edf0993384300ff3172fc6db00ead50d33/packages/router/utils.ts#L1338) code. This was pointed out by maintainers as being inspired by Observable.
+ - [Preact](https://github.com/preactjs/preact/blob/ac1f145877a74e49f4c341e6acbf888a96e60afe/src/jsx.d.ts#LL69C1-L73C3) Uses a `{ subscribe(callback: (value: T) => void): () => void }` interface for their signals.
+ - [TanStack](https://github.com/TanStack/query/blob/878d85e44c984822e2e868af94003ec260ddf80f/packages/query-core/src/subscribable.ts): Uses a subscribable interface that matches `{ subscribe(callback: (value: T) => void): () => void }` in [several places](https://github.com/search?q=repo%3ATanStack/query%20Subscribable&type=code)
+ - [Redux](https://github.com/reduxjs/redux/blob/c2b9785fa78ad234c4116cf189877dbab38e7bac/src/createStore.ts#LL344C12-L344C22): Implements an observable that is nearly identical to this proposal's observable as a means of subscribing to changes to a store.
+ - [Svelte](https://github.com/sveltejs/svelte): Supports [subscribing](https://github.com/sveltejs/svelte/blob/3bc791bcba97f0810165c7a2e215563993a0989b/src/runtime/internal/utils.ts#L69) to observables that fit this exact contract, and also exports and uses a [subscribable contract for stores](https://github.com/sveltejs/svelte/blob/3bc791bcba97f0810165c7a2e215563993a0989b/src/runtime/store/index.ts) like `{ subscribe(callback: (value: T) => void): () => void }`.
+ - [Dexis.js](https://github.com/dexie/Dexie.js): Has an [observable implementation](https://github.com/solidjs/solid/blob/46e5e78710cdd9f170a7afd0ddc5311676d3532a/packages/solid/src/reactive/observable.ts#L46) that is used for creating [live queries](https://github.com/dexie/Dexie.js/blob/bf9004b26228e43de74f7c1fa7dd60bc9d785e8d/src/live-query/live-query.ts#L36) to IndexedDB.
+ - [MobX](https://github.com/mobxjs/mobx): Uses [similar interface](https://github.com/mobxjs/mobx/blob/7cdc7ecd6947a6da10f10d2e4a1305297b816007/packages/mobx/src/types/observableobject.ts#L583) to Observable internally for observation: `{ observe_(callback: (value: T)): () => void }`.
+
+### UI Frameworks Supporting Observables
+
+ - [Svelte](https://github.com/sveltejs/svelte): Directly supports implicit subscription and unsubscription to observables simply by binding to them in templates.
+ - [Angular](https://github.com/angular/angular): Directly supports implicit subscription and unsubscription to observables using their `| async` "async pipe" functionality in templates.
+ - [Vue](https://github.com/vuejs/vuejs): maintains a [dedicated library](https://github.com/vuejs/vue-rx) specifically for using Vue with RxJS observables.
+ - [Cycle.js](https://github.com/cyclejs/cyclejs): A UI framework built entirely around observables
 
 Given the extensive prior art in this area, there exists a public
-"[Observable Contract](https://reactivex.io/documentation/contract.html)" to which all userland
-implementations are expected to adhere — this scenario is not unlike the
-[Promises/A+](https://promisesaplus.com/) specification that was developed before `Promise`s were
+"[Observable Contract](https://reactivex.io/documentation/contract.html)".
+
+Additionally many JavaScript APIs been trying to adhere to the contract defined by the [TC39 proposal from 2015](https://github.com/tc39/proposal-observable).
+To that end, there is a library, [symbol-observable](https://www.npmjs.com/package/symbol-observable?activeTab=dependents), 
+that ponyfills (polyfills) `Symbol.observable` to help with interoperability between observable types that adheres to exactly
+the interface defined here. `symbol-observable` has 479 dependent packages on npm, and is downloaded more than 13,000,000 times
+per week. This means that there are a minimum of 479 packages on npm that are using the observable contract in some way.
+
+This is similar to how [Promises/A+](https://promisesaplus.com/) specification that was developed before `Promise`s were
 adopted into ES2015 as a first-class language primitive.
 
 
