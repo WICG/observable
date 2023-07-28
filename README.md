@@ -291,13 +291,12 @@ partial interface EventTarget {
 
 // `SubscribeCallback` is where the Observable "creator's" code lives. It's
 // called when `subscribe()` is called, to set up a new subscription.
-callback SubscribeCallback = void (Subscriber subscriber);
-callback ObserverCallback = void (any value);
-callback ObserverCompleteCallback = void ();
+callback SubscribeCallback = undefined (Subscriber subscriber);
+callback ObserverCallback = undefined (any value);
 
 dictionary Observer {
   ObserverCallback next;
-  ObserverCompleteCallback complete;
+  VoidFunction complete;
   ObserverCallback error;
 
   AbortSignal signal;
@@ -305,9 +304,9 @@ dictionary Observer {
 
 [Exposed=*]
 interface Subscriber {
-  void next(any result);
-  void complete();
-  void error(any error);
+  undefined next(any result);
+  undefined complete();
+  undefined error(any error);
 
   readonly attribute AbortSignal signal;
 };
@@ -317,26 +316,27 @@ callback Predicate = boolean (any value);
 [Exposed=*]
 interface Observable {
   constructor(SubscribeCallback callback);
-  subscribe(Observer observer);
+  undefined subscribe(Observer observer);
 
-  undefined finally(VoidFunction);
+  undefined finally(VoidFunction callback);
 
   // Observable-returning operators. See "Operators" section below.
-  Observable takeUntil(Observable);
-  Observable map(Function);
-  Observable filter(Predicate);
+  // TODO: Use more specific callback types than `Function`.
+  Observable takeUntil(Observable notifier);
+  Observable map(Function project);
+  Observable filter(Predicate predicate);
   Observable take(unsigned long long);
   Observable drop(unsigned long long);
-  Observable flatMap(Function);
+  Observable flatMap(Function project);
   Observable toArray();
-  Observable forEach(Function);
+  Observable forEach(Function callback);
 
   // Promise-returning. See "Concerns" section below.
-  Promise<any> every(Predicate);
+  Promise<any> every(Predicate predicate);
   // Maybe? Promise<any> first();
-  Promise<any> find(Predicate);
-  Promise<any> some(Predicate);
-  Promise<any> reduce(Function, optional any);
+  Promise<any> find(Predicate predicate);
+  Promise<any> some(Predicate predicate);
+  Promise<any> reduce(Function accumulator, optional any);
 };
 ```
 
