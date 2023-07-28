@@ -425,7 +425,7 @@ We propose the following operators in addition to the `Observable` interface:
      until the input observable emits its first value
  - `finally()`
     - Like `Promise.finally()`, it takes a callback which gets fired after the
-      observable completes in any way (`done()`/`error()`)
+      observable completes in any way (`complete()`/`error()`)
 
 Versions of the above are often present in userland implementations of
 observables as they are useful for observable-specific reasons, but in addition
@@ -577,7 +577,7 @@ such as the proposed `first()`. The potential footgun here with microtask schedu
 integration. Specifically, the following innocent-looking code would not *always* work:
 
 ```js
-element.on('click').first.then(e => {
+element.on('click').first().then(e => {
   e.preventDefault();
   // Do something custom...
 });
