@@ -116,10 +116,6 @@ function streamStock(ticker) {
   });
 }
 
-function finish(stopMsg) {
-  socket.send(JSON.stringify(stopMsg));
-}
-
 const googTrades = streamStock('GOOG');
 const nflxTrades = streamStock('NFLX');
 
