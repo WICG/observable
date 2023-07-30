@@ -525,7 +525,7 @@ Later in 2019, [an attempt](https://github.com/tc39/proposal-observable/issues/2
 proposal was made back at the original TC39 repository, which involved some API simplifications and
 added support for the synchronous "firehose" problem.
 
-This repository is an attempt to again breath life into the Observable proposal with the hope
+This repository is an attempt to again breathe life into the Observable proposal with the hope
 of shipping a version of it to the Web Platform.
 
 ### Userland libraries
