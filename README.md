@@ -325,7 +325,7 @@ interface Observable {
   Observable drop(unsigned long long);
   Observable flatMap(Function project);
   Promise<sequence<any>> toArray();
-  undefined forEach(Function callback);
+  Promise<undefined> forEach(Function callback);
 
   // Promise-returning. See "Concerns" section below.
   Promise<any> every(Predicate predicate);
