@@ -42,7 +42,7 @@ element.on('mousemove')
 // well with async functions:
 await element.on('mousemove')
   .takeUntil(element.on('mouseup'))
-  .reduce((e, soFar) => …);
+  .reduce((soFar, e) => …);
 ```
 
 <details>
@@ -78,7 +78,7 @@ Find the maximum Y coordinate while the mouse is held down
 const maxY = await element.on('mousemove')
                           .takeUntil(element.on('mouseup'))
                           .map(e => e.clientY)
-                          .reduce((y, soFar) => Math.max(y, soFar), 0);
+                          .reduce((soFar, y) => Math.max(soFar, y), 0);
 ```
 
 #### Example 5
@@ -308,6 +308,7 @@ interface Subscriber {
 };
 
 callback Predicate = boolean (any value);
+callback Reducer = any (any accumulator, any currentValue)
 
 [Exposed=*]
 interface Observable {
@@ -332,7 +333,7 @@ interface Observable {
   // Maybe? Promise<any> first();
   Promise<any> find(Predicate predicate);
   Promise<any> some(Predicate predicate);
-  Promise<any> reduce(Function accumulator, optional any);
+  Promise<any> reduce(Reducer reducer, optional any initialValue);
 };
 ```
 
