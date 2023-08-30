@@ -298,6 +298,10 @@ dictionary Observer {
   AbortSignal signal;
 };
 
+dictionary PromiseOptions {
+  AbortSignal signal;
+};
+
 [Exposed=*]
 interface Subscriber {
   undefined next(any result);
@@ -325,15 +329,15 @@ interface Observable {
   Observable take(unsigned long long);
   Observable drop(unsigned long long);
   Observable flatMap(Function project);
-  Promise<sequence<any>> toArray();
-  Promise<undefined> forEach(Function callback);
+  Promise<sequence<any>> toArray(optional PromiseOptions options);
+  Promise<undefined> forEach(Function callback, optional PromiseOptions options);
 
   // Promise-returning. See "Concerns" section below.
-  Promise<any> every(Predicate predicate);
-  // Maybe? Promise<any> first();
-  Promise<any> find(Predicate predicate);
-  Promise<any> some(Predicate predicate);
-  Promise<any> reduce(Reducer reducer, optional any initialValue);
+  Promise<any> every(Predicate predicate, optional PromiseOptions options);
+  // Maybe? Promise<any> first(optional PromiseOptions options);
+  Promise<any> find(Predicate predicate, optional PromiseOptions options);
+  Promise<any> some(Predicate predicate, optional PromiseOptions options);
+  Promise<any> reduce(Reducer reducer, optional any initialValue, optional PromiseOptions options);
 };
 ```
 
