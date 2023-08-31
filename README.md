@@ -647,12 +647,26 @@ some confidence that baking this behavior into the web platform will not be dang
 There's been much discussion about which standards venue should ultimately host an Observables
 proposal. The venue is not inconsequential, as it effectively decides whether Observables becomes a
 language-level primitive like `Promise`s, that ship in all JavaScript browser engines, or a web platform
-primitive with *optional* consideration in other environments like Node.js (see [`AbortController`](https://nodejs.org/api/globals.html#class-abortcontroller) for example).
+primitive with likely (but technically *optional*) consideration in other environments like Node.js
+(see [`AbortController`](https://nodejs.org/api/globals.html#class-abortcontroller) for example).
 
-In previous discussion it had been decided that [WHATWG DOM Standard](https://github.com/whatwg/dom)
-is the right home for Observables due to its integration with the web platform event [event system](#this) and
-lack of new syntax or language capabilities. In attempt to avoid relitigating this discussion, we'd urge the
-reader to see the following discussion comments:
+Observables purposefully integrate frictionlessly with the main event-emitting interface
+(`EventTarget`) and cancellation primitive (`AbortController`) that live in the Web platform. As
+proposed here, observables join this existing strongly-connected component from the [DOM
+Standard](https://github.com/whatwg/dom): Observables depend on AbortController/AbortSignal, which
+depend on EventTarget, and EventTarget depends on both Observables and AbortController/AbortSignal.
+Because we feel that Observables fits in best where its supporting primitives live, the WHATWG
+standards venue is probably the best place to advance this proposal. Additionally, non-Web
+ECMAScript embedders like Node.js and Deno would still be able to adopt Observables, and are even
+likely to, given their commitment to Web platform [aborting and
+events](https://github.com/whatwg/dom/blob/bf5f6c2a8f2d770da884cb52f5625c59b5a880e7/PULL_REQUEST_TEMPLATE.md).
+
+This does not preclude future standardization of event-emitting and cancellation primitives in TC39
+in the future, something Observables could theoretically be layered on top of later. But for now, we
+are motivated to make progress in WHATWG.
+
+In attempt to avoid relitigating this discussion, we'd urge the reader to see the following
+discussion comments:
 
  - https://github.com/whatwg/dom/issues/544#issuecomment-351520728
  - https://github.com/whatwg/dom/issues/544#issuecomment-351561091
