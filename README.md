@@ -449,7 +449,7 @@ methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
  - `some()`
  - `every()`
  - `find()`
- - maybe: `from()`[^1]
+ - maybe: `from()`
 
 We expect userland libraries to provide more niche operators that integrate with
 the `Observable` API central to this proposal, potentially shipping natively if
@@ -679,5 +679,3 @@ discussion comments:
  - [Dominic Farolino](https://github.com/domfarolino)
  - [Ben Lesh](https://github.com/benlesh)
 
-
-[^1]: This appears [in the TC39 proposal's `README.md`](https://github.com/tc39/proposal-iterator-helpers#fromobject) file but not the spec, so its fate is unclear.
