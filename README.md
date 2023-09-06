@@ -313,6 +313,10 @@ interface Subscriber {
 
 callback Predicate = boolean (any value);
 callback Reducer = any (any accumulator, any currentValue)
+callback Mapper = any (any element, unsigned long long index)
+// Differs from `Mapper` only in return type, since this callback is exclusively
+// used to visit each element in a sequence, not transform it.
+callback Visitor = undefined (any element, unsigned long long index)
 
 [Exposed=*]
 interface Observable {
@@ -322,15 +326,14 @@ interface Observable {
   undefined finally(VoidFunction callback);
 
   // Observable-returning operators. See "Operators" section below.
-  // TODO: Use more specific callback types than `Function`.
   Observable takeUntil(Observable notifier);
-  Observable map(Function project);
+  Observable map(Mapper mapper);
   Observable filter(Predicate predicate);
   Observable take(unsigned long long);
   Observable drop(unsigned long long);
-  Observable flatMap(Function project);
+  Observable flatMap(Mapper mapper);
   Promise<sequence<any>> toArray(optional PromiseOptions options);
-  Promise<undefined> forEach(Function callback, optional PromiseOptions options);
+  Promise<undefined> forEach(Visitor callback, optional PromiseOptions options);
 
   // Promise-returning. See "Concerns" section below.
   Promise<any> every(Predicate predicate, optional PromiseOptions options);
