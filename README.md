@@ -677,6 +677,25 @@ discussion comments:
  - https://github.com/whatwg/dom/issues/544#issuecomment-351607779
  - https://github.com/whatwg/dom/issues/544#issuecomment-351718686
 
+## User needs
+
+Observables are designed to make event handling more ergonomic and composable.
+As such, their impact on end users is indirect, largely coming in the form of
+users having to download less JavaScript to implement patterns that developers
+currently use third-party libraries for. As stated [above in the
+explainer](https://github.com/domfarolino/observable#userland-libraries), there
+is a thriving userland Observables ecosystem which results in loads of excessive
+bytes being downloaded every day.
+
+In an attempt to codify the strong userland precedent of the Observable API,
+this proposal would save dozens of custom implementations from being downloaded
+every day.
+
+Additionally, as an API like `EventTarget`, `AbortController`, and one related
+to `Promise`s, it enables developers to build less-complicated event handling
+flows by constructing them declaratively, which may enable them to build more
+sound user experiences on the Web.
+
 ## Authors:
 
  - [Dominic Farolino](https://github.com/domfarolino)
