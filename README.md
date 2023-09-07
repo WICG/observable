@@ -325,8 +325,17 @@ interface Observable {
 
   undefined finally(VoidFunction callback);
 
+  // Constructs a native Observable from `value` if it's any of the following:
+  //   - Observable
+  //   - Promise
+  //   - Iterable
+  //   - AsyncIterable
+  static Observable from(any value);
+
   // Observable-returning operators. See "Operators" section below.
-  Observable takeUntil(Observable notifier);
+  // `takeUntil()` can consume promises, iterables, async iterables, and other
+  // observables.
+  Observable takeUntil(any notifier);
   Observable map(Mapper mapper);
   Observable filter(Predicate predicate);
   Observable take(unsigned long long);
@@ -381,6 +390,21 @@ mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) as
 new event listener whose events are exposed through the Observer handler
 functions and are composable with the various
 [combinators](#operators) available to all Observables.
+
+#### Constructing & converting objects to Observables
+
+Observables can be created by their native constructor, as demonstrated above,
+or by the `Observable.from()` static method. This method constructs a native
+Observable from any of the following objects:
+
+ - `Observable` (in which case it just returns the given object)
+ - `Promise` (or any thenable)
+ - `Iterable` (anything with `Symbol.iterator`)
+ - `AsyncIterable` (anything with `Symbol.asyncIterator`)
+
+Furthermore, any method on the platform that wishes to accept an `Observable`
+can take any of the above objects as well (by accepting a WebIDL `any`), which
+will be converted to a native Observable before being subscribed to.
 
 #### Lazy, synchronous delivery
 
@@ -452,7 +476,10 @@ methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
  - `some()`
  - `every()`
  - `find()`
- - maybe: `from()`
+
+And the following method statically on the `Iterator` constructor:
+
+ - `from()`
 
 We expect userland libraries to provide more niche operators that integrate with
 the `Observable` API central to this proposal, potentially shipping natively if
