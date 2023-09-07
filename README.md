@@ -688,8 +688,8 @@ is a thriving userland Observables ecosystem which results in loads of excessive
 bytes being downloaded every day.
 
 In an attempt to codify the strong userland precedent of the Observable API,
-this proposal would save dozens of custom implementations of it from being
-downloaded every day.
+this proposal would save dozens of custom implementations from being downloaded
+every day.
 
 Additionally, it enables developers to build less-complicated event handling
 flows by constructing them declaratively, which may enable them to build more
