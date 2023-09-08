@@ -327,9 +327,9 @@ interface Observable {
 
   // Constructs a native Observable from `value` if it's any of the following:
   //   - Observable
-  //   - Promise
-  //   - Iterable
   //   - AsyncIterable
+  //   - Iterable
+  //   - Promise
   static Observable from(any value);
 
   // Observable-returning operators. See "Operators" section below.
@@ -395,12 +395,12 @@ functions and are composable with the various
 
 Observables can be created by their native constructor, as demonstrated above,
 or by the `Observable.from()` static method. This method constructs a native
-Observable from any of the following objects:
+Observable from objects that are any of the following, _in this order_:
 
  - `Observable` (in which case it just returns the given object)
- - `Promise` (or any thenable)
- - `Iterable` (anything with `Symbol.iterator`)
  - `AsyncIterable` (anything with `Symbol.asyncIterator`)
+ - `Iterable` (anything with `Symbol.iterator`)
+ - `Promise` (or any thenable)
 
 Furthermore, any method on the platform that wishes to accept an `Observable`
 can take any of the above objects as well (by accepting a WebIDL `any`), which
