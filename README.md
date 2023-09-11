@@ -404,9 +404,9 @@ Observable from objects that are any of the following, _in this order_:
 
 Furthermore, any method on the platform that wishes to accept an Observable as a
 Web IDL argument, or return one from a callback whose return type is
-`Observable` can do so with any of the above objects as well. This can be
-accomplished in one of two ways that we'll finalize in the Observable
-specification:
+`Observable` can do so with any of the above objects as well, that get
+automatically converted to an Observable. We can accomplish this in one of two
+ways that we'll finalize in the Observable specification:
 
  1. By making the `Observable` type a special Web IDL type that performs this
     ECMAScript Object ➡️ Web IDL conversion automatically, like Web IDL does for
