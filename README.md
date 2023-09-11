@@ -413,7 +413,9 @@ ways that we'll finalize in the Observable specification:
     other types.
  2. Require methods and callbacks that work with Observables to specify the type
     `any`, and have the corresponding spec prose immediately invoke a conversion
-    algorithm that the Observable specification will supply.
+    algorithm that the Observable specification will supply. This is similar to
+    what the Streams Standard [does with async iterables
+    today](https://streams.spec.whatwg.org/#rs-from).
 
 The conversation in https://github.com/domfarolino/observable/pull/60 leans
 towards option (1).
