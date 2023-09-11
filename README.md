@@ -402,9 +402,21 @@ Observable from objects that are any of the following, _in this order_:
  - `Iterable` (anything with `Symbol.iterator`)
  - `Promise` (or any thenable)
 
-Furthermore, any method on the platform that wishes to accept an `Observable`
-can take any of the above objects as well (by accepting a WebIDL `any`), which
-will be converted to a native Observable before being subscribed to.
+Furthermore, any method on the platform that wishes to accept an Observable as a
+Web IDL argument, or return one from a callback whose return type is
+`Observable` can do so with any of the above objects as well. This can be
+accomplished in one of two ways that we'll finalize in the Observable
+specification:
+
+ 1. By making the `Observable` type a special Web IDL type that performs this
+    ECMAScript Object ➡️ Web IDL conversion automatically, like Web IDL does for
+    other types.
+ 2. Require methods and callbacks that work with Observables to specify the type
+    `any`, and have the corresponding spec prose immediately invoke a conversion
+    algorithm that the Observable specification will supply.
+
+The conversation in https://github.com/domfarolino/observable/pull/60 leans
+towards option (1).
 
 #### Lazy, synchronous delivery
 
