@@ -307,6 +307,7 @@ interface Subscriber {
   undefined next(any result);
   undefined complete();
   undefined error(any error);
+  undefined addTeardown(VoidFunction teardown);
 
   readonly attribute AbortSignal signal;
 };
@@ -455,6 +456,33 @@ observable.subscribe({next: data => {
   if (data > 100)
     controller.abort();
 }, signal: controller.signal});
+```
+
+#### Teardown
+
+It is critical for an Observable subscriber to be able to register an arbitrary
+teardown callback to clean up any resources relevant to the subscription. The
+teardown can be registered from within the subscription callback passed into the
+`Observable` constructor. When run (upon subscribing), the subscription callback
+can register a teardown function via `subscriber.addTeardown()`.
+
+If the subscriber has already been aborted (i.e., `subscriber.signal.aborted` is
+`true`), then the given teardown callback is invoked immediately from within
+`addTeardown()`. Otherwise, it is invoked synchronously:
+
+ - From `complete()`, after the subscriber's complete handler (if any) is
+   invoked
+ - From `error()`, after the subscriber's error handler (if any) is invoked
+ - Unsubscription
+
+Note that `addTeardown(cleanup)` is just syntactic sugar over the following:
+
+```js
+if (subscriber.signal.aborted) {
+  cleanup();
+} else {
+  subscriber.signal.onabort = cleanup;
+}
 ```
 
 
