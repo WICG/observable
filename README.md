@@ -325,8 +325,17 @@ interface Observable {
 
   undefined finally(VoidFunction callback);
 
+  // Constructs a native Observable from `value` if it's any of the following:
+  //   - Observable
+  //   - AsyncIterable
+  //   - Iterable
+  //   - Promise
+  static Observable from(any value);
+
   // Observable-returning operators. See "Operators" section below.
-  Observable takeUntil(Observable notifier);
+  // `takeUntil()` can consume promises, iterables, async iterables, and other
+  // observables.
+  Observable takeUntil(any notifier);
   Observable map(Mapper mapper);
   Observable filter(Predicate predicate);
   Observable take(unsigned long long);
@@ -381,6 +390,35 @@ mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) as
 new event listener whose events are exposed through the Observer handler
 functions and are composable with the various
 [combinators](#operators) available to all Observables.
+
+#### Constructing & converting objects to Observables
+
+Observables can be created by their native constructor, as demonstrated above,
+or by the `Observable.from()` static method. This method constructs a native
+Observable from objects that are any of the following, _in this order_:
+
+ - `Observable` (in which case it just returns the given object)
+ - `AsyncIterable` (anything with `Symbol.asyncIterator`)
+ - `Iterable` (anything with `Symbol.iterator`)
+ - `Promise` (or any thenable)
+
+Furthermore, any method on the platform that wishes to accept an Observable as a
+Web IDL argument, or return one from a callback whose return type is
+`Observable` can do so with any of the above objects as well, that get
+automatically converted to an Observable. We can accomplish this in one of two
+ways that we'll finalize in the Observable specification:
+
+ 1. By making the `Observable` type a special Web IDL type that performs this
+    ECMAScript Object ➡️ Web IDL conversion automatically, like Web IDL does for
+    other types.
+ 2. Require methods and callbacks that work with Observables to specify the type
+    `any`, and have the corresponding spec prose immediately invoke a conversion
+    algorithm that the Observable specification will supply. This is similar to
+    what the Streams Standard [does with async iterables
+    today](https://streams.spec.whatwg.org/#rs-from).
+
+The conversation in https://github.com/domfarolino/observable/pull/60 leans
+towards option (1).
 
 #### Lazy, synchronous delivery
 
@@ -452,7 +490,10 @@ methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
  - `some()`
  - `every()`
  - `find()`
- - maybe: `from()`
+
+And the following method statically on the `Iterator` constructor:
+
+ - `from()`
 
 We expect userland libraries to provide more niche operators that integrate with
 the `Observable` API central to this proposal, potentially shipping natively if
