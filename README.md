@@ -379,9 +379,6 @@ observable.subscribe({
 });
 ```
 
-**Issue**: See https://github.com/domfarolino/observable/issues/3 about having
-the Observable constructor being able to register teardown upon unsubscription.
-
 While custom Observables can be useful on their own, the primary use case they
 unlock is with event handling. Observables returned by the new
 `EventTarget#on()` method are created natively with an internal callback that
