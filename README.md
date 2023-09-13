@@ -470,17 +470,6 @@ If the subscriber has already been aborted (i.e., `subscriber.signal.aborted` is
  - From `complete()`, after the subscriber's complete handler (if any) is
    invoked
  - From `error()`, after the subscriber's error handler (if any) is invoked
- - Unsubscription
-
-Note that `addTeardown(cleanup)` is just syntactic sugar over the following:
-
-```js
-if (subscriber.signal.aborted) {
-  cleanup();
-} else {
-  subscriber.signal.onabort = cleanup;
-}
-```
 
 
 ### Operators
