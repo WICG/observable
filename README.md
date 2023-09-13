@@ -470,6 +470,7 @@ If the subscriber has already been aborted (i.e., `subscriber.signal.aborted` is
  - From `complete()`, after the subscriber's complete handler (if any) is
    invoked
  - From `error()`, after the subscriber's error handler (if any) is invoked
+ - The signal passed to the subscription is aborted by the user.
 
 
 ### Operators
