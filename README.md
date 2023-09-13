@@ -351,7 +351,6 @@ interface Observable {
   constructor(SubscribeCallback callback);
   undefined subscribe(optional Observer observer = {}, optional SubscribeOptions = {});
 
-  Observable finally(VoidFunction callback);
 
   // Constructs a native Observable from `value` if it's any of the following:
   //   - Observable
@@ -369,6 +368,7 @@ interface Observable {
   Observable take(unsigned long long);
   Observable drop(unsigned long long);
   Observable flatMap(Mapper mapper);
+  Observable finally(VoidFunction callback);
   Promise<sequence<any>> toArray(optional PromiseOptions options);
   Promise<undefined> forEach(Visitor callback, optional PromiseOptions options);
 
