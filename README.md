@@ -307,6 +307,7 @@ interface Subscriber {
   undefined next(any result);
   undefined complete();
   undefined error(any error);
+  undefined addTeardown(VoidFunction teardown);
 
   readonly attribute AbortSignal signal;
 };
@@ -377,9 +378,6 @@ observable.subscribe({
   next: console.log
 });
 ```
-
-**Issue**: See https://github.com/domfarolino/observable/issues/3 about having
-the Observable constructor being able to register teardown upon unsubscription.
 
 While custom Observables can be useful on their own, the primary use case they
 unlock is with event handling. Observables returned by the new
@@ -456,6 +454,23 @@ observable.subscribe({next: data => {
     controller.abort();
 }, signal: controller.signal});
 ```
+
+#### Teardown
+
+It is critical for an Observable subscriber to be able to register an arbitrary
+teardown callback to clean up any resources relevant to the subscription. The
+teardown can be registered from within the subscription callback passed into the
+`Observable` constructor. When run (upon subscribing), the subscription callback
+can register a teardown function via `subscriber.addTeardown()`.
+
+If the subscriber has already been aborted (i.e., `subscriber.signal.aborted` is
+`true`), then the given teardown callback is invoked immediately from within
+`addTeardown()`. Otherwise, it is invoked synchronously:
+
+ - From `complete()`, after the subscriber's complete handler (if any) is
+   invoked
+ - From `error()`, after the subscriber's error handler (if any) is invoked
+ - The signal passed to the subscription is aborted by the user.
 
 
 ### Operators
