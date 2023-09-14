@@ -54,7 +54,7 @@ const controller = new AbortController();
 element.addEventListener('mousemove', e => {
   element.addEventListener('mouseup', e => controller.abort());
   console.log(e);
-}, {signal});
+}, {signal: controller.signal});
 ```
 </details>
 
