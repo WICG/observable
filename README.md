@@ -281,8 +281,13 @@ the platform, since it's an easy drop-in wherever you're handling events today.
 The proposed API shape is as follows:
 
 ```js
+dictionary ObservableEventListenerOptions {
+  boolean capture = false;
+  boolean passive;
+};
+
 partial interface EventTarget {
-  Observable on(DOMString type, optional AddEventListenerOptions options);
+  Observable on(DOMString type, optional ObservableEventListenerOptions options);
 };
 
 // `SubscribeCallback` is where the Observable "creator's" code lives. It's
