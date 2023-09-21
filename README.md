@@ -351,10 +351,10 @@ interface Observable {
   Promise<undefined> forEach(Visitor callback, optional PromiseOptions options);
 
   // Promise-returning. See "Concerns" section below.
-  Promise<any> every(Predicate predicate, optional PromiseOptions options);
+  Promise<boolean> every(Predicate predicate, optional PromiseOptions options);
   // Maybe? Promise<any> first(optional PromiseOptions options);
   Promise<any> find(Predicate predicate, optional PromiseOptions options);
-  Promise<any> some(Predicate predicate, optional PromiseOptions options);
+  Promise<boolean> some(Predicate predicate, optional PromiseOptions options);
   Promise<any> reduce(Reducer reducer, optional any initialValue, optional PromiseOptions options);
 };
 ```
