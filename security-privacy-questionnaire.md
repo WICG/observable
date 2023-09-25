@@ -10,7 +10,7 @@ native event handling mechanism, just in a more ergonomic way.
 
 **Do features in your specification expose the minimum amount of information necessary to implement the intended functionality?**
 
-No.
+Yes.
 
 **Do the features in your specification expose personal information, personally-identifiable information (PII), or information derived from either?**
 
