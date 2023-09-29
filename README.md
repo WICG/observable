@@ -327,7 +327,7 @@ callback Visitor = undefined (any element, unsigned long long index)
 [Exposed=*]
 interface Observable {
   constructor(SubscribeCallback callback);
-  undefined subscribe(Observer observer);
+  undefined subscribe(optional Observer observer = {});
 
   undefined finally(VoidFunction callback);
 
