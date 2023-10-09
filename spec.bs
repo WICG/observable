@@ -22,8 +22,6 @@ WPT Display: open
 
 <pre class="link-defaults">
 </pre>
-<pre class="biblio">
-</pre>
 <pre class="anchors">
 </pre>
 
