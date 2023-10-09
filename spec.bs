@@ -1,0 +1,137 @@
+<pre class="metadata">
+Title: Observable
+Shortname: observable
+Repository: WICG/observable
+Inline Github Issues: true
+Group: WICG
+Status: CG-DRAFT
+Level: 1
+URL: https://wicg.github.io/observable/
+Boilerplate: omit conformance, omit feedback-header
+Editor: Dominic Farolino, Google https://www.google.com/, domfarolino@gmail.com, https://domfarolino.com
+Abstract: The Observable API provides a composable, ergonomic way of handling an asynchronous stream of events
+!Participate: <a href="https://github.com/WICG/observable">GitHub WICG/observable</a> (<a href="https://github.com/WICG/observable/issues/new">new issue</a>, <a href="https://github.com/WICG/observable/issues?state=open">open issues</a>)
+!Commits: <a href="https://github.com/WICG/observable/commits/master/spec.bs">GitHub spec.bs commits</a>
+Complain About: accidental-2119 yes, missing-example-ids yes
+Indent: 2
+Default Biblio Status: current
+Markup Shorthands: markdown yes
+Assume Explicit For: yes
+WPT Display: open
+</pre>
+
+<pre class="link-defaults">
+</pre>
+<pre class="anchors">
+</pre>
+
+<style>
+/* Put nice boxes around each algorithm. */
+[data-algorithm]:not(.heading) {
+  padding: .5em;
+  border: thin solid #ddd; border-radius: .5em;
+  margin: .5em calc(-0.5em - 1px);
+}
+[data-algorithm]:not(.heading) > :first-child {
+  margin-top: 0;
+}
+[data-algorithm]:not(.heading) > :last-child {
+  margin-bottom: 0;
+}
+[data-algorithm] [data-algorithm] {
+  margin: 1em 0;
+}
+
+.selected-text-file-an-issue {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: smaller;
+  padding: 4px 10px;
+  z-index: 4;
+}
+
+dfn var {
+  font-style: italic;
+}
+
+table {
+  margin: 1em 0;
+}
+
+/* WHATWG-style <hr>s, instead of WICG-style. Specific selector is necessary to override WICG styles. */
+:not(.head) > :not(.head) + hr {
+  display: block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 3em 0;
+  height: auto;
+}
+:not(.head) > :not(.head) + hr::before {
+  content: none;
+}
+
+/* WHATWG-style element definition class */
+.element {
+  background: #EEFFEE;
+}
+dt {
+  margin-top: 12px;
+  color: black;
+}
+dl, dd {
+  padding-left: .5em;
+}
+
+/* domintro from https://resources.whatwg.org/standard.css */
+.domintro {
+  position: relative;
+  color: green;
+  background: #DDFFDD;
+  margin: 2.5em 0 2em 0;
+  padding: 1.5em 1em 0.5em 2em;
+}
+
+.domintro dt, .domintro dt * {
+  color: black;
+  font-size: inherit;
+}
+.domintro dd {
+  margin: 0.5em 0 1em 2em; padding: 0;
+}
+.domintro dd p {
+  margin: 0.5em 0;
+}
+.domintro::before {
+  content: 'For web developers (non-normative)';
+  background: green;
+  color: white;
+  padding: 0.15em 0.25em;
+  font-style: normal;
+  position: absolute;
+  top: -0.8em;
+  left: -0.8em;
+}
+
+/* .XXX from https://resources.whatwg.org/standard.css */
+.XXX {
+  color: #D50606;
+  background: white;
+  border: solid #D50606;
+}
+</style>
+
+<script src="https://resources.whatwg.org/file-issue.js" async></script>
+
+<h2 id=introduction>Introduction</h2>
+
+*This section is non-normative.*
+
+<h2 id=security-and-privacy>Security & Privacy Considerations</h2>
+
+This material is being upstreamed from our explainer into this specification, and in the meantime
+you can consult the following resources:
+
+ * [TAG Security/Privacy Questionnaire](https://github.com/WICG/observable/blob/master/security-privacy-questionnaire.md)
