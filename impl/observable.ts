@@ -620,6 +620,97 @@ export class Observable<T> {
       );
     });
   }
+
+  [Symbol.asyncIterator](): AsyncGenerator<T> {
+    let ac: AbortController | undefined;
+    let deferred: [(value: IteratorResult<T>) => void, (error: any) => void][] =
+      [];
+    let buffer: T[] = [];
+    let hasError = false;
+    let error: any = undefined;
+    let isComplete = false;
+
+    return {
+      next: () => {
+        return new Promise((resolve, reject) => {
+          if (buffer.length > 0) {
+            resolve({ value: buffer.shift()!, done: false });
+            return;
+          }
+
+          if (hasError) {
+            reject(error);
+            return;
+          }
+
+          if (isComplete) {
+            resolve({ value: undefined, done: true });
+            return;
+          }
+
+          if (!ac) {
+            ac = new AbortController();
+            this.subscribe(
+              {
+                next(value) {
+                  if (deferred.length > 0) {
+                    const [resolve] = deferred.shift()!;
+                    resolve({ value, done: false });
+                  } else {
+                    buffer.push(value);
+                  }
+                },
+                error(err) {
+                  if (buffer.length > 0) {
+                    hasError = true;
+                    error = err;
+                  } else {
+                    while (deferred.length > 0) {
+                      const [, reject] = deferred.shift()!;
+                      reject(err);
+                    }
+                  }
+                },
+                complete() {},
+              },
+              {
+                signal: ac.signal,
+              }
+            );
+          }
+
+          deferred.push([resolve, reject]);
+        });
+      },
+
+      throw: (err) => {
+        return new Promise((_resolve, reject) => {
+          ac?.abort();
+          hasError = true;
+          error = err;
+          for (const [, reject] of deferred) {
+            reject(error);
+          }
+          reject(error);
+        });
+      },
+
+      return: () => {
+        return new Promise((resolve, reject) => {
+          ac?.abort();
+          isComplete = true;
+          for (const [resolve] of deferred) {
+            resolve({ value: undefined, done: true });
+          }
+          resolve({ value: undefined, done: true });
+        });
+      },
+
+      [Symbol.asyncIterator]() {
+        return this;
+      },
+    };
+  }
 }
 
 class Subscriber<T> implements Observer<T> {
