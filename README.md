@@ -314,6 +314,11 @@ interface Subscriber {
   undefined error(any error);
   undefined addTeardown(VoidFunction teardown);
 
+  // True after the Subscriber is created, up until either
+  // `complete()`/`error()` are invoked, or the subscriber unsubscribes. Inside
+  // `complete()`/`error()`, this attribute is true.
+  readonly attribute boolean active;
+
   readonly attribute AbortSignal signal;
 };
 
