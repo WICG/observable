@@ -19,15 +19,15 @@ that's easier to understand and
 than today's imperative version, which often requires nested calls to `addEventListener()` and
 hard-to-follow callback chains.
 
-
 #### Example 1
 
 ```js
 // Filtering and mapping:
-element.on('click')
-  .filter(e => e.target.matches('.foo'))
-  .map(e => ({x: e.clientX, y: e.clientY }))
-  .subscribe({next: handleClickAtPoint});
+element
+	.on('click')
+	.filter((e) => e.target.matches('.foo'))
+	.map((e) => ({ x: e.clientX, y: e.clientY }))
+	.subscribe({ next: handleClickAtPoint });
 ```
 
 #### Example 2
@@ -51,11 +51,16 @@ await element.on('mousemove')
 ```js
 // Imperative
 const controller = new AbortController();
-element.addEventListener('mousemove', e => {
-  element.addEventListener('mouseup', e => controller.abort());
-  console.log(e);
-}, {signal: controller.signal});
+element.addEventListener(
+	'mousemove',
+	(e) => {
+		element.addEventListener('mouseup', (e) => controller.abort());
+		console.log(e);
+	},
+	{ signal: controller.signal },
+);
 ```
+
 </details>
 
 #### Example 3
@@ -64,9 +69,14 @@ Tracking all link clicks within a container
 ([example](https://github.com/whatwg/dom/issues/544#issuecomment-351705380)):
 
 ```js
-container.on('click').filter(e => e.target.closest('a')).subscribe({next: e => {
-  // …
-}});
+container
+	.on('click')
+	.filter((e) => e.target.closest('a'))
+	.subscribe({
+		next: (e) => {
+			// …
+		},
+	});
 ```
 
 #### Example 4
@@ -75,10 +85,11 @@ Find the maximum Y coordinate while the mouse is held down
 ([example](https://github.com/whatwg/dom/issues/544#issuecomment-351762493)):
 
 ```js
-const maxY = await element.on('mousemove')
-                          .takeUntil(element.on('mouseup'))
-                          .map(e => e.clientY)
-                          .reduce((soFar, y) => Math.max(soFar, y), 0);
+const maxY = await element
+	.on('mousemove')
+	.takeUntil(element.on('mouseup'))
+	.map((e) => e.clientY)
+	.reduce((soFar, y) => Math.max(soFar, y), 0);
 ```
 
 #### Example 5
@@ -135,51 +146,51 @@ googController.abort();
 ```js
 // Imperative
 function multiplex({ startMsg, stopMsg, match }) {
-  const start = (callback) => {
-    const teardowns = [];
+	const start = (callback) => {
+		const teardowns = [];
 
-    if (socket.readyState !== WebSocket.OPEN) {
-      const openHandler = () => start({ startMsg, stopMsg, match })(callback);
-      socket.addEventListener('open', openHandler);
-      teardowns.push(() => {
-        socket.removeEventListener('open', openHandler);
-      });
-    } else {
-      socket.send(JSON.stringify(startMsg));
-      const messageHandler = (e) => {
-        const data = JSON.parse(e.data);
-        if (match(data)) {
-          callback(data);
-        }
-      };
-      socket.addEventListener('message', messageHandler);
-      teardowns.push(() => {
-        socket.send(JSON.stringify(stopMsg));
-        socket.removeEventListener('message', messageHandler);
-      });
-    }
+		if (socket.readyState !== WebSocket.OPEN) {
+			const openHandler = () => start({ startMsg, stopMsg, match })(callback);
+			socket.addEventListener('open', openHandler);
+			teardowns.push(() => {
+				socket.removeEventListener('open', openHandler);
+			});
+		} else {
+			socket.send(JSON.stringify(startMsg));
+			const messageHandler = (e) => {
+				const data = JSON.parse(e.data);
+				if (match(data)) {
+					callback(data);
+				}
+			};
+			socket.addEventListener('message', messageHandler);
+			teardowns.push(() => {
+				socket.send(JSON.stringify(stopMsg));
+				socket.removeEventListener('message', messageHandler);
+			});
+		}
 
-    const finalize = () => {
-      teardowns.forEach((t) => t());
-    };
+		const finalize = () => {
+			teardowns.forEach((t) => t());
+		};
 
-    socket.addEventListener('close', finalize);
-    teardowns.push(() => socket.removeEventListener('close', finalize));
-    socket.addEventListener('error', finalize);
-    teardowns.push(() => socket.removeEventListener('error', finalize));
+		socket.addEventListener('close', finalize);
+		teardowns.push(() => socket.removeEventListener('close', finalize));
+		socket.addEventListener('error', finalize);
+		teardowns.push(() => socket.removeEventListener('error', finalize));
 
-    return finalize;
-  };
+		return finalize;
+	};
 
-  return start;
+	return start;
 }
 
 function streamStock(ticker) {
-  return multiplex({
-    startMsg: { ticker, type: 'sub' },
-    stopMsg: { ticker, type: 'unsub' },
-    match: (data) => data.ticker === ticker,
-  });
+	return multiplex({
+		startMsg: { ticker, type: 'sub' },
+		stopMsg: { ticker, type: 'unsub' },
+		match: (data) => data.ticker === ticker,
+	});
 }
 
 const googTrades = streamStock('GOOG');
@@ -193,6 +204,7 @@ const unsubNflxTrades = nflxTrades(updateView);
 // to the server.
 unsubGoogTrades();
 ```
+
 </details>
 
 #### Example 6
@@ -202,34 +214,36 @@ keys the user might hit while using an app:
 
 ```js
 const pattern = [
-  'ArrowUp',
-  'ArrowUp',
-  'ArrowDown',
-  'ArrowDown',
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowLeft',
-  'ArrowRight',
-  'b',
-  'a',
-  'b',
-  'a',
-  'Enter',
+	'ArrowUp',
+	'ArrowUp',
+	'ArrowDown',
+	'ArrowDown',
+	'ArrowLeft',
+	'ArrowRight',
+	'ArrowLeft',
+	'ArrowRight',
+	'b',
+	'a',
+	'b',
+	'a',
+	'Enter',
 ];
 
 const keys = document.on('keydown').map((e) => e.key);
 keys
-  .flatMap((firstKey) => {
-    if (firstKey === pattern[0]) {
-      return keys
-        .take(pattern.length - 1)
-        .every((k, i) => k === pattern[i + 1]);
-    }
-  })
-  .filter(matched => matched)
-  .subscribe({next: _ => {
-    console.log('Secret code matched!');
-  }});
+	.flatMap((firstKey) => {
+		if (firstKey === pattern[0]) {
+			return keys
+				.take(pattern.length - 1)
+				.every((k, i) => k === pattern[i + 1]);
+		}
+	})
+	.filter((matched) => matched)
+	.subscribe({
+		next: (_) => {
+			console.log('Secret code matched!');
+		},
+	});
 ```
 
 <details>
@@ -256,8 +270,8 @@ document.addEventListener('keydown', e => {
   }
 })
 ```
-</details>
 
+</details>
 
 ### The `Observable` API
 
@@ -266,10 +280,10 @@ They're like Promises but for multiple events, and specifically with
 [`EventTarget` integration](#eventtarget-integration), they are to events what
 Promises are to callbacks. They can be:
 
- * Created by script or by platform APIs, and passed to anyone interested in
-   consuming events via `subscribe()`
- * Fed to [operators](#operators) like `Observable.map()`, to be composed &
-   transformed without a web of nested callbacks
+- Created by script or by platform APIs, and passed to anyone interested in
+  consuming events via `subscribe()`
+- Fed to [operators](#operators) like `Observable.map()`, to be composed &
+  transformed without a web of nested callbacks
 
 Better yet, the transition from event handlers ➡️ Observables is simpler than
 that of callbacks ➡️ Promises, since Observables integrate nicely on top of
@@ -366,26 +380,24 @@ interface Observable {
 
 The creator of an Observable passes in a callback that gets invoked
 synchronously whenever `subscribe()` is called. The `subscribe()` method can be
-called *any number of times*, and the callback it invokes sets up a new
+called _any number of times_, and the callback it invokes sets up a new
 "subscription" by registering the caller of `subscribe()` as a Observer. With
 this in place, the Observable can signal any number of events to the Observer
 via the `next()` callback, optionally followed by a single call to either
 `complete()` or `error()`, signaling that the stream of data is finished.
 
 ```js
-const observable = new Observable(subscriber => {
-  let i = 0;
-  setInterval(() => {
-    if (i >= 10)
-      subscriber.complete();
-    else
-      subscriber.next(i++);
-  }, 2000);
+const observable = new Observable((subscriber) => {
+	let i = 0;
+	setInterval(() => {
+		if (i >= 10) subscriber.complete();
+		else subscriber.next(i++);
+	}, 2000);
 });
 
 observable.subscribe({
-  // Print each value the Observable produces.
-  next: console.log
+	// Print each value the Observable produces.
+	next: console.log,
 });
 ```
 
@@ -405,10 +417,10 @@ Observables can be created by their native constructor, as demonstrated above,
 or by the `Observable.from()` static method. This method constructs a native
 Observable from objects that are any of the following, _in this order_:
 
- - `Observable` (in which case it just returns the given object)
- - `AsyncIterable` (anything with `Symbol.asyncIterator`)
- - `Iterable` (anything with `Symbol.iterator`)
- - `Promise` (or any thenable)
+- `Observable` (in which case it just returns the given object)
+- `AsyncIterable` (anything with `Symbol.asyncIterator`)
+- `Iterable` (anything with `Symbol.iterator`)
+- `Promise` (or any thenable)
 
 Furthermore, any method on the platform that wishes to accept an Observable as a
 Web IDL argument, or return one from a callback whose return type is
@@ -416,10 +428,10 @@ Web IDL argument, or return one from a callback whose return type is
 automatically converted to an Observable. We can accomplish this in one of two
 ways that we'll finalize in the Observable specification:
 
- 1. By making the `Observable` type a special Web IDL type that performs this
+1.  By making the `Observable` type a special Web IDL type that performs this
     ECMAScript Object ➡️ Web IDL conversion automatically, like Web IDL does for
     other types.
- 2. Require methods and callbacks that work with Observables to specify the type
+2.  Require methods and callbacks that work with Observables to specify the type
     `any`, and have the corresponding spec prose immediately invoke a conversion
     algorithm that the Observable specification will supply. This is similar to
     what the Streams Standard [does with async iterables
@@ -431,7 +443,7 @@ towards option (1).
 #### Lazy, synchronous delivery
 
 Crucially, Observables are "lazy" in that they do not start emitting data until
-they are subscribed to, nor do they queue any data *before* subscription. They
+they are subscribed to, nor do they queue any data _before_ subscription. They
 can also start emitting data synchronously during subscription, unlike Promises
 which always queue microtasks when invoking `.then()` handlers. Consider this
 [example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
@@ -451,18 +463,20 @@ synchronously emits data _during_ subscription:
 
 ```js
 // An observable that synchronously emits unlimited data during subscription.
-let observable = new Observable(subscriber => {
-  let i = 0;
-  while (true) {
-    subscriber.next(i++);
-  }
+let observable = new Observable((subscriber) => {
+	let i = 0;
+	while (true) {
+		subscriber.next(i++);
+	}
 });
 
 let controller = new AbortController();
-observable.subscribe({next: data => {
-  if (data > 100)
-    controller.abort();
-}, signal: controller.signal});
+observable.subscribe({
+	next: (data) => {
+		if (data > 100) controller.abort();
+	},
+	signal: controller.signal,
+});
 ```
 
 #### Teardown
@@ -477,22 +491,21 @@ If the subscriber has already been aborted (i.e., `subscriber.signal.aborted` is
 `true`), then the given teardown callback is invoked immediately from within
 `addTeardown()`. Otherwise, it is invoked synchronously:
 
- - From `complete()`, after the subscriber's complete handler (if any) is
-   invoked
- - From `error()`, after the subscriber's error handler (if any) is invoked
- - The signal passed to the subscription is aborted by the user.
-
+- From `complete()`, after the subscriber's complete handler (if any) is
+  invoked
+- From `error()`, after the subscriber's error handler (if any) is invoked
+- The signal passed to the subscription is aborted by the user.
 
 ### Operators
 
 We propose the following operators in addition to the `Observable` interface:
 
- - `takeUntil(Observable)`
-   - Returns an observable that mirrors the one that this method is called on,
-     until the input observable emits its first value
- - `finally()`
-    - Like `Promise.finally()`, it takes a callback which gets fired after the
-      observable completes in any way (`complete()`/`error()`)
+- `takeUntil(Observable)`
+  - Returns an observable that mirrors the one that this method is called on,
+    until the input observable emits its first value
+- `finally()`
+  - Like `Promise.finally()`, it takes a callback which gets fired after the
+    observable completes in any way (`complete()`/`error()`)
 
 Versions of the above are often present in userland implementations of
 observables as they are useful for observable-specific reasons, but in addition
@@ -504,21 +517,21 @@ proposal](https://github.com/tc39/proposal-iterator-helpers) which adds the
 methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
 `Iterator.prototype`:
 
- - `map()`
- - `filter()`
- - `take()`
- - `drop()`
- - `flatMap()`
- - `reduce()`
- - `toArray()`
- - `forEach()`
- - `some()`
- - `every()`
- - `find()`
+- `map()`
+- `filter()`
+- `take()`
+- `drop()`
+- `flatMap()`
+- `reduce()`
+- `toArray()`
+- `forEach()`
+- `some()`
+- `every()`
+- `find()`
 
 And the following method statically on the `Iterator` constructor:
 
- - `from()`
+- `from()`
 
 We expect userland libraries to provide more niche operators that integrate with
 the `Observable` API central to this proposal, potentially shipping natively if
@@ -539,7 +552,6 @@ Note that the operators `every()`, `find()`, `some()`, and `reduce()` return
 Promises whose scheduling differs from that of Observables, which sometimes
 means event handlers that call `e.preventDefault()` will run too late. See the
 [Concerns](#concerns) section which goes into more detail.
-
 
 ## Background & landscape
 
@@ -588,7 +600,7 @@ in May of 2015. The proposal failed to gain traction, in part due to some opposi
 the API was suitable to be a language-level primitive. In an attempt to renew the proposal
 at a higher level of abstraction, a WHATWG [DOM issue](https://github.com/whatwg/dom/issues/544) was
 filed in December of 2017. Despite ample [developer demand](https://foolip.github.io/spec-reactions/),
-*lots* of discussion, and no strong objectors, the DOM Observables proposal sat mostly still for several
+_lots_ of discussion, and no strong objectors, the DOM Observables proposal sat mostly still for several
 years (with some flux in the API design) due to a lack of implementer prioritization.
 
 Later in 2019, [an attempt](https://github.com/tc39/proposal-observable/issues/201) at reviving the
@@ -602,35 +614,35 @@ of shipping a version of it to the Web Platform.
 
 In [prior discussion](https://github.com/whatwg/dom/issues/544#issuecomment-1433955626),
 [Ben Lesh](https://github.com/benlesh) has listed several custom userland implementations of
-observable primitives, of which RxJS is the most popular with "47,000,000+ downloads *per week*."
+observable primitives, of which RxJS is the most popular with "47,000,000+ downloads _per week_."
 
- - [RxJS](https://github.com/ReactiveX/rxjs/blob/9ddc27dd60ac23e95b2503716ae8013e64275915/src/internal/Observable.ts#L10): Started as a reference implementation of the TC39 proposal, is nearly identical to this proposal's observable.
- - [Relay](https://github.com/facebook/relay/blob/af8a619d7f61ea6e2e26dd4ac4ab1973d68e6ff9/packages/relay-runtime/network/RelayObservable.js): A mostly identical contract with the addition of `start` and `unsubscribe` events for observation and acquiring the `Subscription` prior to the return.
- - [tRPC](https://github.com/trpc/trpc/blob/21bcb5e6723023d3acb0b836b63627922407c682/packages/server/src/observable/observable.ts): A nearly identical implemention of observable to this proposal.
- - [XState](https://github.com/statelyai/xstate/blob/754afa022047518ef4813f7aa85398218b39f960/packages/core/src/types.ts#L1711C19-L1737): uses an observable interface in several places in their library, in particular for their `Actor` type, to allow [subscriptions to changes in state, as shown in their `useActor` hook](https://github.com/statelyai/xstate/blob/754afa022047518ef4813f7aa85398218b39f960/packages/xstate-solid/src/useActor.ts#L47-L51). Using an identical observable is also a [documented part](https://github.com/statelyai/xstate/blob/754afa022047518ef4813f7aa85398218b39f960/packages/xstate-solid/README.md?plain=1#L355-L368) of access state machine changes when using XState with SolidJS.
- - [SolidJS](https://github.com/solidjs/solid/blob/46e5e78710cdd9f170a7afd0ddc5311676d3532a/packages/solid/src/reactive/observable.ts#L46): An identical interface to this proposal is exposed for users to use.
- - [Apollo GraphQL](https://github.com/apollographql/apollo-client/blob/a1dac639839ffc5c2de332db2ee4b29bb0723815/src/utilities/observables/Observable.ts): Actually re-exporting from [zen-observable](https://github.com/zenparsing/es-observable) as [their own thing](https://github.com/apollographql/apollo-client/blob/a1dac639839ffc5c2de332db2ee4b29bb0723815/src/core/index.ts#L76), giving some freedom to reimplement on their own or pivot to something like RxJS observable at some point.
- - [zen-observable](https://github.com/zenparsing/zen-observable/tree/8406a7e3a3a3faa080ec228b9a743f48021fba8b): A reference implementation of the TC39 observable proposal. Nearly identical to this proposal.
- - [React Router](https://github.com/remix-run/react-router/tree/610ce6edf0993384300ff3172fc6db00ead50d33): Uses a `{ subscribe(callback: (value: T) => void): () => void }` pattern in their [Router](https://github.com/remix-run/react-router/blob/610ce6edf0993384300ff3172fc6db00ead50d33/packages/router/router.ts#L931) and [DeferredData](https://github.com/remix-run/react-router/blob/610ce6edf0993384300ff3172fc6db00ead50d33/packages/router/utils.ts#L1338) code. This was pointed out by maintainers as being inspired by Observable.
- - [Preact](https://github.com/preactjs/preact/blob/ac1f145877a74e49f4c341e6acbf888a96e60afe/src/jsx.d.ts#LL69C1-L73C3) Uses a `{ subscribe(callback: (value: T) => void): () => void }` interface for their signals.
- - [TanStack](https://github.com/TanStack/query/blob/878d85e44c984822e2e868af94003ec260ddf80f/packages/query-core/src/subscribable.ts): Uses a subscribable interface that matches `{ subscribe(callback: (value: T) => void): () => void }` in [several places](https://github.com/search?q=repo%3ATanStack/query%20Subscribable&type=code)
- - [Redux](https://github.com/reduxjs/redux/blob/c2b9785fa78ad234c4116cf189877dbab38e7bac/src/createStore.ts#LL344C12-L344C22): Implements an observable that is nearly identical to this proposal's observable as a means of subscribing to changes to a store.
- - [Svelte](https://github.com/sveltejs/svelte): Supports [subscribing](https://github.com/sveltejs/svelte/blob/3bc791bcba97f0810165c7a2e215563993a0989b/src/runtime/internal/utils.ts#L69) to observables that fit this exact contract, and also exports and uses a [subscribable contract for stores](https://github.com/sveltejs/svelte/blob/3bc791bcba97f0810165c7a2e215563993a0989b/src/runtime/store/index.ts) like `{ subscribe(callback: (value: T) => void): () => void }`.
- - [Dexie.js](https://github.com/dexie/Dexie.js): Has an [observable implementation](https://github.com/solidjs/solid/blob/46e5e78710cdd9f170a7afd0ddc5311676d3532a/packages/solid/src/reactive/observable.ts#L46) that is used for creating [live queries](https://github.com/dexie/Dexie.js/blob/bf9004b26228e43de74f7c1fa7dd60bc9d785e8d/src/live-query/live-query.ts#L36) to IndexedDB.
- - [MobX](https://github.com/mobxjs/mobx): Uses [similar interface](https://github.com/mobxjs/mobx/blob/7cdc7ecd6947a6da10f10d2e4a1305297b816007/packages/mobx/src/types/observableobject.ts#L583) to Observable internally for observation: `{ observe_(callback: (value: T)): () => void }`.
+- [RxJS](https://github.com/ReactiveX/rxjs/blob/9ddc27dd60ac23e95b2503716ae8013e64275915/src/internal/Observable.ts#L10): Started as a reference implementation of the TC39 proposal, is nearly identical to this proposal's observable.
+- [Relay](https://github.com/facebook/relay/blob/af8a619d7f61ea6e2e26dd4ac4ab1973d68e6ff9/packages/relay-runtime/network/RelayObservable.js): A mostly identical contract with the addition of `start` and `unsubscribe` events for observation and acquiring the `Subscription` prior to the return.
+- [tRPC](https://github.com/trpc/trpc/blob/21bcb5e6723023d3acb0b836b63627922407c682/packages/server/src/observable/observable.ts): A nearly identical implemention of observable to this proposal.
+- [XState](https://github.com/statelyai/xstate/blob/754afa022047518ef4813f7aa85398218b39f960/packages/core/src/types.ts#L1711C19-L1737): uses an observable interface in several places in their library, in particular for their `Actor` type, to allow [subscriptions to changes in state, as shown in their `useActor` hook](https://github.com/statelyai/xstate/blob/754afa022047518ef4813f7aa85398218b39f960/packages/xstate-solid/src/useActor.ts#L47-L51). Using an identical observable is also a [documented part](https://github.com/statelyai/xstate/blob/754afa022047518ef4813f7aa85398218b39f960/packages/xstate-solid/README.md?plain=1#L355-L368) of access state machine changes when using XState with SolidJS.
+- [SolidJS](https://github.com/solidjs/solid/blob/46e5e78710cdd9f170a7afd0ddc5311676d3532a/packages/solid/src/reactive/observable.ts#L46): An identical interface to this proposal is exposed for users to use.
+- [Apollo GraphQL](https://github.com/apollographql/apollo-client/blob/a1dac639839ffc5c2de332db2ee4b29bb0723815/src/utilities/observables/Observable.ts): Actually re-exporting from [zen-observable](https://github.com/zenparsing/es-observable) as [their own thing](https://github.com/apollographql/apollo-client/blob/a1dac639839ffc5c2de332db2ee4b29bb0723815/src/core/index.ts#L76), giving some freedom to reimplement on their own or pivot to something like RxJS observable at some point.
+- [zen-observable](https://github.com/zenparsing/zen-observable/tree/8406a7e3a3a3faa080ec228b9a743f48021fba8b): A reference implementation of the TC39 observable proposal. Nearly identical to this proposal.
+- [React Router](https://github.com/remix-run/react-router/tree/610ce6edf0993384300ff3172fc6db00ead50d33): Uses a `{ subscribe(callback: (value: T) => void): () => void }` pattern in their [Router](https://github.com/remix-run/react-router/blob/610ce6edf0993384300ff3172fc6db00ead50d33/packages/router/router.ts#L931) and [DeferredData](https://github.com/remix-run/react-router/blob/610ce6edf0993384300ff3172fc6db00ead50d33/packages/router/utils.ts#L1338) code. This was pointed out by maintainers as being inspired by Observable.
+- [Preact](https://github.com/preactjs/preact/blob/ac1f145877a74e49f4c341e6acbf888a96e60afe/src/jsx.d.ts#LL69C1-L73C3) Uses a `{ subscribe(callback: (value: T) => void): () => void }` interface for their signals.
+- [TanStack](https://github.com/TanStack/query/blob/878d85e44c984822e2e868af94003ec260ddf80f/packages/query-core/src/subscribable.ts): Uses a subscribable interface that matches `{ subscribe(callback: (value: T) => void): () => void }` in [several places](https://github.com/search?q=repo%3ATanStack/query%20Subscribable&type=code)
+- [Redux](https://github.com/reduxjs/redux/blob/c2b9785fa78ad234c4116cf189877dbab38e7bac/src/createStore.ts#LL344C12-L344C22): Implements an observable that is nearly identical to this proposal's observable as a means of subscribing to changes to a store.
+- [Svelte](https://github.com/sveltejs/svelte): Supports [subscribing](https://github.com/sveltejs/svelte/blob/3bc791bcba97f0810165c7a2e215563993a0989b/src/runtime/internal/utils.ts#L69) to observables that fit this exact contract, and also exports and uses a [subscribable contract for stores](https://github.com/sveltejs/svelte/blob/3bc791bcba97f0810165c7a2e215563993a0989b/src/runtime/store/index.ts) like `{ subscribe(callback: (value: T) => void): () => void }`.
+- [Dexie.js](https://github.com/dexie/Dexie.js): Has an [observable implementation](https://github.com/solidjs/solid/blob/46e5e78710cdd9f170a7afd0ddc5311676d3532a/packages/solid/src/reactive/observable.ts#L46) that is used for creating [live queries](https://github.com/dexie/Dexie.js/blob/bf9004b26228e43de74f7c1fa7dd60bc9d785e8d/src/live-query/live-query.ts#L36) to IndexedDB.
+- [MobX](https://github.com/mobxjs/mobx): Uses [similar interface](https://github.com/mobxjs/mobx/blob/7cdc7ecd6947a6da10f10d2e4a1305297b816007/packages/mobx/src/types/observableobject.ts#L583) to Observable internally for observation: `{ observe_(callback: (value: T)): () => void }`.
 
 ### UI Frameworks Supporting Observables
 
- - [Svelte](https://github.com/sveltejs/svelte): Directly supports implicit subscription and unsubscription to observables simply by binding to them in templates.
- - [Angular](https://github.com/angular/angular): Directly supports implicit subscription and unsubscription to observables using their `| async` "async pipe" functionality in templates.
- - [Vue](https://github.com/vuejs/vuejs): maintains a [dedicated library](https://github.com/vuejs/vue-rx) specifically for using Vue with RxJS observables.
- - [Cycle.js](https://github.com/cyclejs/cyclejs): A UI framework built entirely around observables
+- [Svelte](https://github.com/sveltejs/svelte): Directly supports implicit subscription and unsubscription to observables simply by binding to them in templates.
+- [Angular](https://github.com/angular/angular): Directly supports implicit subscription and unsubscription to observables using their `| async` "async pipe" functionality in templates.
+- [Vue](https://github.com/vuejs/vuejs): maintains a [dedicated library](https://github.com/vuejs/vue-rx) specifically for using Vue with RxJS observables.
+- [Cycle.js](https://github.com/cyclejs/cyclejs): A UI framework built entirely around observables
 
 Given the extensive prior art in this area, there exists a public
 "[Observable Contract](https://reactivex.io/documentation/contract.html)".
 
 Additionally many JavaScript APIs been trying to adhere to the contract defined by the [TC39 proposal from 2015](https://github.com/tc39/proposal-observable).
-To that end, there is a library, [symbol-observable](https://www.npmjs.com/package/symbol-observable?activeTab=dependents), 
+To that end, there is a library, [symbol-observable](https://www.npmjs.com/package/symbol-observable?activeTab=dependents),
 that ponyfills (polyfills) `Symbol.observable` to help with interoperability between observable types that adheres to exactly
 the interface defined here. `symbol-observable` has 479 dependent packages on npm, and is downloaded more than 13,000,000 times
 per week. This means that there are a minimum of 479 packages on npm that are using the observable contract in some way.
@@ -638,73 +650,85 @@ per week. This means that there are a minimum of 479 packages on npm that are us
 This is similar to how [Promises/A+](https://promisesaplus.com/) specification that was developed before `Promise`s were
 adopted into ES2015 as a first-class language primitive.
 
-
 ## Concerns
 
 One of the main [concerns](https://github.com/whatwg/dom/issues/544#issuecomment-351443624)
 expressed in the original WHATWG DOM thread has to do with Promise-ifying APIs on Observable,
 such as the proposed `first()`. The potential footgun here with microtask scheduling and event
-integration. Specifically, the following innocent-looking code would not *always* work:
+integration. Specifically, the following innocent-looking code would not _always_ work:
 
 ```js
-element.on('click').first().then(e => {
-  e.preventDefault();
-  // Do something custom...
-});
+element
+	.on('click')
+	.first()
+	.then((e) => {
+		e.preventDefault();
+		// Do something custom...
+	});
 ```
 
 If `Observable#first()` returns a Promise that resolves when the first event is fired on an
 `EventTarget`, then the user-supplied Promise `.then()` handler will run:
- - ✅ Synchronously after event firing, for events triggered by the user
- - ❌ Asynchronously after event firing, for all events triggered by script (i.e., `element.click()`)
-    - This means `e.preventDefault()` will have happened too late and effectively been ignored
+
+- ✅ Synchronously after event firing, for events triggered by the user
+- ❌ Asynchronously after event firing, for all events triggered by script (i.e., `element.click()`)
+  - This means `e.preventDefault()` will have happened too late and effectively been ignored
 
 <details>
 To understand why this is the case, you must understand how and when the microtask queue is flushed
 (and thus how microtasks, including Promise resolution handlers, are invoked).
 
 In WebIDL after a callback is invoked, the HTML algorithm
-*[clean up after running script](https://html.spec.whatwg.org/C#clean-up-after-running-script)*
+_[clean up after running script](https://html.spec.whatwg.org/C#clean-up-after-running-script)_
 [is called](https://webidl.spec.whatwg.org/#ref-for-clean-up-after-running-script%E2%91%A0), and
-this algorithm calls *[perform a microtask checkpoint](https://html.spec.whatwg.org/C#perform-a-microtask-checkpoint)*
+this algorithm calls _[perform a microtask checkpoint](https://html.spec.whatwg.org/C#perform-a-microtask-checkpoint)_
 if and only if the JavaScript stack is empty.
 
 Concretely, that means for `element.click()` in the above example, the following steps occur:
-  1. To run `element.click()`, a JavaScript execution context is first pushed onto the stack
-  1. To run the internal `click` event listener callback (the one created natively by the
-     `Observable#from()` implementation), *another* JavaScript execution context is pushed onto
-     the stack, as WebIDL prepares to run the internal callback
-  1. The internal callback runs, which immediately resolves the Promise returned by `Observable#first()`;
-     now the microtask queue contains the Promise's user-supplied `then()` handler which will cancel
-     the event once it runs
-  1. The top-most execution context is removed from the stack, and the microtask queue **cannot be
-     flushed**, because there is still JavaScript on the stack.
-  1. After the internal `click` event callback is executed, the rest of the event path continues since
-     event was not canceled during or immediately after the callback. The event does whatever it would
-     normally do (submit the form, `alert()` the user, etc.)
-  1. Finally, the JavaScript containing `element.click()` is finished, and the final execution context
-     is popped from the stack and the microtask queue is flushed. The user-supplied `.then()` handler
-     is run, which attempts to cancel the event too late
+
+1. To run `element.click()`, a JavaScript execution context is first pushed onto the stack
+1. To run the internal `click` event listener callback (the one created natively by the
+   `Observable#from()` implementation), _another_ JavaScript execution context is pushed onto
+   the stack, as WebIDL prepares to run the internal callback
+1. The internal callback runs, which immediately resolves the Promise returned by `Observable#first()`;
+   now the microtask queue contains the Promise's user-supplied `then()` handler which will cancel
+   the event once it runs
+1. The top-most execution context is removed from the stack, and the microtask queue **cannot be
+   flushed**, because there is still JavaScript on the stack.
+1. After the internal `click` event callback is executed, the rest of the event path continues since
+   event was not canceled during or immediately after the callback. The event does whatever it would
+   normally do (submit the form, `alert()` the user, etc.)
+1. Finally, the JavaScript containing `element.click()` is finished, and the final execution context
+is popped from the stack and the microtask queue is flushed. The user-supplied `.then()` handler
+is run, which attempts to cancel the event too late
 </details>
 
-Two things mitigate this concern. First, there is a very simple workaround to *always* avoid the
+Two things mitigate this concern. First, there is a very simple workaround to _always_ avoid the
 case where your `e.preventDefault()` might run too late:
 
 ```js
-element.on('click').map(e => (e.preventDefault(), e)).first()
+element
+	.on('click')
+	.map((e) => (e.preventDefault(), e))
+	.first();
 ```
 
 ...or if Observable had a `.do()` method (see https://github.com/whatwg/dom/issues/544#issuecomment-351457179):
 
 ```js
-element.on('click').do(e => e.preventDefault()).first()
+element
+	.on('click')
+	.do((e) => e.preventDefault())
+	.first();
 ```
 
 ...or by [modifying](https://github.com/whatwg/dom/issues/544#issuecomment-351779661) the semantics of
 `first()` to take a callback that produces a value that the returned Promise resolves to:
 
 ```js
-el.on("submit").first(e => e.preventDefault()).then(doMoreStuff)
+el.on('submit')
+	.first((e) => e.preventDefault())
+	.then(doMoreStuff);
 ```
 
 Second, this "quirk" already exists in today's thriving Observable ecosystem, and there are no serious
@@ -716,7 +740,7 @@ some confidence that baking this behavior into the web platform will not be dang
 There's been much discussion about which standards venue should ultimately host an Observables
 proposal. The venue is not inconsequential, as it effectively decides whether Observables becomes a
 language-level primitive like `Promise`s, that ship in all JavaScript browser engines, or a web platform
-primitive with likely (but technically *optional*) consideration in other environments like Node.js
+primitive with likely (but technically _optional_) consideration in other environments like Node.js
 (see [`AbortController`](https://nodejs.org/api/globals.html#class-abortcontroller) for example).
 
 Observables purposefully integrate frictionlessly with the main event-emitting interface
@@ -737,11 +761,11 @@ are motivated to make progress in WHATWG.
 In attempt to avoid relitigating this discussion, we'd urge the reader to see the following
 discussion comments:
 
- - https://github.com/whatwg/dom/issues/544#issuecomment-351520728
- - https://github.com/whatwg/dom/issues/544#issuecomment-351561091
- - https://github.com/whatwg/dom/issues/544#issuecomment-351582862
- - https://github.com/whatwg/dom/issues/544#issuecomment-351607779
- - https://github.com/whatwg/dom/issues/544#issuecomment-351718686
+- https://github.com/whatwg/dom/issues/544#issuecomment-351520728
+- https://github.com/whatwg/dom/issues/544#issuecomment-351561091
+- https://github.com/whatwg/dom/issues/544#issuecomment-351582862
+- https://github.com/whatwg/dom/issues/544#issuecomment-351607779
+- https://github.com/whatwg/dom/issues/544#issuecomment-351718686
 
 ## User needs
 
@@ -764,6 +788,5 @@ sound user experiences on the Web.
 
 ## Authors:
 
- - [Dominic Farolino](https://github.com/domfarolino)
- - [Ben Lesh](https://github.com/benlesh)
-
+- [Dominic Farolino](https://github.com/domfarolino)
+- [Ben Lesh](https://github.com/benlesh)
