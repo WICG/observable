@@ -131,7 +131,7 @@ const googTrades = streamStock('GOOG');
 const nflxTrades = streamStock('NFLX');
 
 const googController = new AbortController();
-const googSubscription = googTrades.subscribe({next: updateView, signal: googController.signal});
+const googSubscription = googTrades.subscribe({next: updateView}, {signal: googController.signal});
 const nflxSubscription = nflxTrades.subscribe({next: updateView, ...});
 
 // And the stream can disconnect later, which
@@ -313,9 +313,11 @@ dictionary Observer {
   ObserverCallback next;
   VoidFunction complete;
   ObserverCallback error;
-
-  AbortSignal signal;
 };
+
+dictionary ObserverOptions {
+  AbortSignal signal;
+}
 
 dictionary PromiseOptions {
   AbortSignal signal;
@@ -346,7 +348,7 @@ callback Visitor = undefined (any element, unsigned long long index)
 [Exposed=*]
 interface Observable {
   constructor(SubscribeCallback callback);
-  undefined subscribe(optional Observer observer = {});
+  undefined subscribe(optional Observer observer = {}, optional ObserverOptions = {});
 
   undefined finally(VoidFunction callback);
 
@@ -474,8 +476,7 @@ let controller = new AbortController();
 observable.subscribe({
 	next: (data) => {
 		if (data > 100) controller.abort();
-	},
-	signal: controller.signal,
+	}}, {signal: controller.signal},
 });
 ```
 
