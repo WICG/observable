@@ -317,7 +317,7 @@ dictionary Observer {
 
 dictionary SubscribeOptions {
   AbortSignal signal;
-}
+};
 
 dictionary PromiseOptions {
   AbortSignal signal;
