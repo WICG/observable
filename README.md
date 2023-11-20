@@ -315,7 +315,7 @@ dictionary Observer {
   ObserverCallback error;
 };
 
-dictionary ObserverOptions {
+dictionary SubscribeOptions {
   AbortSignal signal;
 }
 
@@ -348,7 +348,7 @@ callback Visitor = undefined (any element, unsigned long long index)
 [Exposed=*]
 interface Observable {
   constructor(SubscribeCallback callback);
-  undefined subscribe(optional Observer observer = {}, optional ObserverOptions = {});
+  undefined subscribe(optional Observer observer = {}, optional SubscribeOptions = {});
 
   undefined finally(VoidFunction callback);
 
