@@ -507,7 +507,10 @@ We propose the following operators in addition to the `Observable` interface:
     until the input observable emits its first value
 - `finally()`
   - Like `Promise.finally()`, it takes a callback which gets fired after the
-    observable completes in any way (`complete()`/`error()`)
+    observable completes in any way (`complete()`/`error()`).
+  - Returns an `Observable`, because observable is lazy, finalization
+    is setup ahead of subscription. This allows for specific finalization to
+    happen after each step in a reactive chain.
 
 Versions of the above are often present in userland implementations of
 observables as they are useful for observable-specific reasons, but in addition
