@@ -512,46 +512,6 @@ We propose the following operators in addition to the `Observable` interface:
   - Similar to `Iterator.prototype.flatMap`, however, because the types are different,
     there are some semantics to note.
 
-    Given the following example:
-
-```ts
-const result = source.flatMap((value) => getNextInnerObservable(value));
-```
-
-- When you subscribe to `result`, it subscribes to `source` immediately.
-- Let there be a `queue` of values that is empty.
-- Let there be an `innerSignal` that is either `undefined` or an `AbortSignal`
-- Let there be an `isSourceComplete` that is `false`.
-- When the `source` emits a value:
-  - If `innerSignal` is `undefined`
-    - Call the mapping function with the the value.
-    - Then pass the return value of the mapping function to `Observable.from()` to convert it to
-      "inner observable" if it's not already.
-    - Then create an `AbortSignal` that follows the subscriber's and set `innerSignal`.
-    - pass the `innerSignal` to the subscribe for the inner observable.
-    - Forward all values emitted by the inner observable to the `result` observer.
-    - If the inner observable completes
-      - If there are values in the `queue`
-        - take the first one from the `queue` and return the the mapping step.
-      - If the `queue` is empty
-        - If `isSourceComplete` is `true`
-          - Complete `result`.
-        - If `isSourceComplete` is `false`
-          - Wait
-    - If the inner observable errors
-      - Forward the error to `result`.
-  - If `innerSignal` is `AbortSignal`
-    - Add the value to the `queue` and wait.
-- If the `source` completes:
-  - If `innerSignal` is `undefined`
-    - Complete `result`.
-  - If `innerSignal` is `AbortSignal`
-    - set `isSourceComplete` to `true`.
-- If the `source` errors:
-  - Forward the error to `result`.
-- If the user aborts the signal passed to the subscription of `result`
-  - Abort any `innerSignal` that exists, and terminate subscription.
-
 Versions of the above are often present in userland implementations of
 observables as they are useful for observable-specific reasons, but in addition
 to these we offer a set of common operators that follow existing platform
@@ -597,6 +557,55 @@ Note that the operators `every()`, `find()`, `some()`, and `reduce()` return
 Promises whose scheduling differs from that of Observables, which sometimes
 means event handlers that call `e.preventDefault()` will run too late. See the
 [Concerns](#concerns) section which goes into more detail.
+
+### flatMap semantics
+
+`flatMap` generally behaves like `Iterator.prototype.flatMap`, however, since it's push-based,
+there can be a temporal element. Given that, it behaves much like RxJS's `concatMap`, which is
+one of the most useful operators from the library.
+
+At a high-level, it subscribes to the source, and then maps to, and emits values from "inner
+observables", one at a time, ensuring they're subscribed to in sequence.
+
+Given the following example:
+
+```ts
+const result = source.flatMap((value) => getNextInnerObservable(value));
+```
+
+- When you subscribe to `result`, it subscribes to `source` immediately.
+- Let there be a `queue` of values that is empty.
+- Let there be an `innerSignal` that is either `undefined` or an `AbortSignal`
+- Let there be an `isSourceComplete` that is `false`.
+- When the `source` emits a value:
+  - If `innerSignal` is `undefined`
+    - Call the mapping function with the the value.
+    - Then pass the return value of the mapping function to `Observable.from()` to convert it to
+      "inner observable" if it's not already.
+    - Then create an `AbortSignal` that follows the subscriber's and set `innerSignal`.
+    - pass the `innerSignal` to the subscribe for the inner observable.
+    - Forward all values emitted by the inner observable to the `result` observer.
+    - If the inner observable completes
+      - If there are values in the `queue`
+        - take the first one from the `queue` and return the the mapping step.
+      - If the `queue` is empty
+        - If `isSourceComplete` is `true`
+          - Complete `result`.
+        - If `isSourceComplete` is `false`
+          - Wait
+    - If the inner observable errors
+      - Forward the error to `result`.
+  - If `innerSignal` is `AbortSignal`
+    - Add the value to the `queue` and wait.
+- If the `source` completes:
+  - If `innerSignal` is `undefined`
+    - Complete `result`.
+  - If `innerSignal` is `AbortSignal`
+    - set `isSourceComplete` to `true`.
+- If the `source` errors:
+  - Forward the error to `result`.
+- If the user aborts the signal passed to the subscription of `result`
+  - Abort any `innerSignal` that exists, and terminate subscription.
 
 ## Background & landscape
 
