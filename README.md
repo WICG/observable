@@ -507,6 +507,50 @@ We propose the following operators in addition to the `Observable` interface:
 - `finally()`
   - Like `Promise.finally()`, it takes a callback which gets fired after the
     observable completes in any way (`complete()`/`error()`)
+- `flatMap()`
+
+  - Similar to `Iterator.prototype.flatMap`, however, because the types are different,
+    there are some semantics to note.
+
+    Given the following example:
+
+```ts
+const result = source.flatMap((value) => getNextInnerObservable(value));
+```
+
+1. When you subscribe to `result`, it subscribes to `source` immediately.
+2. Let there be a queue of values that is empty.
+3. Let there be an `innerSignal` that is either `undefined` or an `AbortSignal`
+4. Let there be an `isSourceComplete` that is `false`.
+5. When the `source` emits a value:
+   a. If `innerSignal` is `undefined`
+   1. Call the mapping function with the the value.
+   2. Then pass the return value of the mapping function to `Observable.from()` to convert it to
+      an "inner observable" if it's not already.
+   3. Then create an `AbortSignal` that follows the subscriber's
+      signal, and set `innerSignal`.
+   4. pass the `innerSignal` to the subscribe for the inner observable.
+      emit all values from the inner observable to the `result` observer.
+   5. If the inner observable completes, check to see if there are any queued values.
+      a. If there is, take the first one from the queue, and move to 5.a.1.
+      b. If there's not
+      1. If `isSourceComplete` is `true`
+         a. Complete `result`.
+      2. If `isSourceComplete` is `false`
+         a. Move to 5 and wait.
+   6. If the inner observable errors:
+      a. Forward the error to `result`.
+      b. If `innerSignal` is `AbortSignal`
+   7. Add the value to the queue and wait.
+6. If the `source` completes:
+   a. If `innerSignal` is `undefined`
+   1. Complete `result`.
+      a. If `innerSignal` is `AbortSignal`
+   1. set `isSourceComplete` to `true`.
+7. If the `source` errors:
+   a. Forward the error to `result`.
+8. If the user aborts the signal passed to the subscription of `result`
+   a. Abort any `innerSignal` that exists, and terminate subscription.
 
 Versions of the above are often present in userland implementations of
 observables as they are useful for observable-specific reasons, but in addition
