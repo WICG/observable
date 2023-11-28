@@ -231,7 +231,7 @@ dictionary ObservableEventListenerOptions {
 };
 
 partial interface EventTarget {
-  Observable on(DOMString type, optional ObservableEventListenerOptions options);
+  Observable on(DOMString type, optional ObservableEventListenerOptions options = {});
 };
 </pre>
 
