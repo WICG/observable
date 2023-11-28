@@ -129,6 +129,113 @@ dl, dd {
 
 *This section is non-normative.*
 
+<h2 id=core-infrastructure>Core infrastructure</h2>
+
+<h3 id=subscriber-api>The {{Subscriber}} interface</h3>
+
+<xmp class=idl>
+[Exposed=*]
+interface Subscriber {
+  undefined next(any result);
+  undefined complete();
+  undefined error(any error);
+  undefined addTeardown(VoidFunction teardown);
+
+  // True after the Subscriber is created, up until either
+  // complete()/error() are invoked, or the subscriber unsubscribes. Inside
+  // complete()/error(), this attribute is true.
+  readonly attribute boolean active;
+
+  readonly attribute AbortSignal signal;
+};
+</xmp>
+
+<div>
+</div>
+
+<h3 id=observable-api>The {{Observable}} interface</h3>
+
+<xmp class=idl>
+// SubscribeCallback is where the Observable "creator's" code lives. It's
+// called when subscribe() is called, to set up a new subscription.
+callback SubscribeCallback = undefined (Subscriber subscriber);
+callback ObserverCallback = undefined (any value);
+
+dictionary Observer {
+  ObserverCallback next;
+  VoidFunction complete;
+  ObserverCallback error;
+};
+
+dictionary SubscribeOptions {
+  AbortSignal signal;
+};
+
+dictionary PromiseOptions {
+  AbortSignal signal;
+};
+
+callback Predicate = boolean (any value);
+callback Reducer = any (any accumulator, any currentValue);
+callback Mapper = any (any element, unsigned long long index);
+// Differs from Mapper only in return type, since this callback is exclusively
+// used to visit each element in a sequence, not transform it.
+callback Visitor = undefined (any element, unsigned long long index);
+
+[Exposed=*]
+interface Observable {
+  constructor(SubscribeCallback callback);
+  undefined subscribe(optional Observer observer = {}, optional SubscribeOptions options = {});
+
+  undefined finally(VoidFunction callback);
+
+  // Constructs a native Observable from value if it's any of the following:
+  //   - Observable
+  //   - AsyncIterable
+  //   - Iterable
+  //   - Promise
+  static Observable from(any value);
+
+  // Observable-returning operators. See "Operators" section in the spec.
+  //
+  // takeUntil() can consume promises, iterables, async iterables, and other
+  // observables.
+  Observable takeUntil(any notifier);
+  Observable map(Mapper mapper);
+  Observable filter(Predicate predicate);
+  Observable take(unsigned long long amount);
+  Observable drop(unsigned long long amount);
+  Observable flatMap(Mapper mapper);
+
+  // Promise-returning operators.
+  Promise<sequence<any>> toArray(optional PromiseOptions options);
+  Promise<undefined> forEach(Visitor callback, optional PromiseOptions options);
+  Promise<boolean> every(Predicate predicate, optional PromiseOptions options);
+  // Maybe? Promise<any> first(optional PromiseOptions options);
+  Promise<any> find(Predicate predicate, optional PromiseOptions options);
+  Promise<boolean> some(Predicate predicate, optional PromiseOptions options);
+  Promise<any> reduce(Reducer reducer, optional any initialValue, optional PromiseOptions options);
+};
+</xmp>
+
+<h3 id=operators>Operators</h3>
+
+For now, see [https://github.com/wicg/observable#operators](https://github.com/wicg/observable#operators).
+
+<h2 id=event-target-integration>{{EventTarget}} integration</h2>
+
+<pre class=idl>
+dictionary ObservableEventListenerOptions {
+  boolean capture = false;
+  boolean passive;
+};
+
+partial interface EventTarget {
+  Observable on(DOMString type, optional ObservableEventListenerOptions options);
+};
+</pre>
+
+
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
 
 This material is being upstreamed from our explainer into this specification, and in the meantime
