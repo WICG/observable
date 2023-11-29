@@ -507,10 +507,6 @@ We propose the following operators in addition to the `Observable` interface:
 - `finally()`
   - Like `Promise.finally()`, it takes a callback which gets fired after the
     observable completes in any way (`complete()`/`error()`)
-- `flatMap()`
-
-  - Similar to `Iterator.prototype.flatMap`, however, because the types are different,
-    there are some semantics to note.
 
 Versions of the above are often present in userland implementations of
 observables as they are useful for observable-specific reasons, but in addition
@@ -526,7 +522,7 @@ methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
 - `filter()`
 - `take()`
 - `drop()`
-- `flatMap()`
+- `flatMap()` (Because the types are different, there are [some semantics to note](#flatmap-semantics).)
 - `reduce()`
 - `toArray()`
 - `forEach()`
