@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="54008be05e8bd019c31e0587ee5ce8ee17616aba" name="document-revision">
+  <meta content="e153f01dff47ebf8a52e9f45d3867ae5f694ad58" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -425,6 +425,112 @@ figcaption:not(.no-marker)::before {
     content: "Figure " counter(figure) " ";
 }
 </style>
+<style>/* Boilerplate: style-dfn-panel */
+:root {
+    --dfnpanel-bg: #ddd;
+    --dfnpanel-text: var(--text);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dfnpanel-bg: #222;
+        --dfnpanel-text: var(--text);
+    }
+}
+.dfn-panel {
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.75em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--dfnpanel-bg);
+    color: var(--dfnpanel-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+.dfn-panel:not(.on) { display: none; }
+.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+.dfn-panel > b { display: block; }
+.dfn-panel a { color: var(--dfnpanel-text); }
+.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel > b + b { margin-top: 0.25em; }
+.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
+.dfn-panel li a {
+    white-space: pre;
+    display: inline-block;
+    max-width: calc(300px - 1.5em - 1em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dfn-panel.activated {
+    display: inline-block;
+    position: fixed;
+    left: .5em;
+    bottom: 2em;
+    margin: 0 auto;
+    max-width: calc(100vw - 1.5em - .4em - .5em);
+    max-height: 30vh;
+}
+
+.dfn-paneled[role="button"] { cursor: pointer; }
+</style>
+<style>/* Boilerplate: style-dfn-panel */
+:root {
+    --dfnpanel-bg: #ddd;
+    --dfnpanel-text: var(--text);
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dfnpanel-bg: #222;
+        --dfnpanel-text: var(--text);
+    }
+}
+.dfn-panel {
+    position: absolute;
+    z-index: 35;
+    width: 20em;
+    width: 300px;
+    height: auto;
+    max-height: 500px;
+    overflow: auto;
+    padding: 0.5em 0.75em;
+    font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
+    background: var(--dfnpanel-bg);
+    color: var(--dfnpanel-text);
+    border: outset 0.2em;
+    white-space: normal; /* in case it's moved into a pre */
+}
+.dfn-panel:not(.on) { display: none; }
+.dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
+.dfn-panel > b { display: block; }
+.dfn-panel a { color: var(--dfnpanel-text); }
+.dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
+.dfn-panel > b + b { margin-top: 0.25em; }
+.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
+.dfn-panel li a {
+    white-space: pre;
+    display: inline-block;
+    max-width: calc(300px - 1.5em - 1em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dfn-panel.activated {
+    display: inline-block;
+    position: fixed;
+    left: .5em;
+    bottom: 2em;
+    margin: 0 auto;
+    max-width: calc(100vw - 1.5em - .4em - .5em);
+    max-height: 30vh;
+}
+
+.dfn-paneled[role="button"] { cursor: pointer; }
+</style>
 <style>/* Boilerplate: style-issues */
 a[href].issue-return {
     float: right;
@@ -503,6 +609,136 @@ dfn > a.self-link:hover {
 a.self-link::before            { content: "¶"; }
 .heading > a.self-link::before { content: "§"; }
 dfn > a.self-link::before      { content: "#"; }
+</style>
+<style>/* Boilerplate: style-syntax-highlighting */
+
+            pre.idl.highlight {
+                background: var(--borderedblock-bg, var(--def-bg));
+            }
+            
+</style>
+<style>/* Boilerplate: style-syntax-highlighting */
+
+code.highlight { padding: .1em; border-radius: .3em; }
+pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
+
+.highlight:not(.idl) { background: rgba(0, 0, 0, .03); }
+c-[a] { color: #990055 } /* Keyword.Declaration */
+c-[b] { color: #990055 } /* Keyword.Type */
+c-[c] { color: #708090 } /* Comment */
+c-[d] { color: #708090 } /* Comment.Multiline */
+c-[e] { color: #0077aa } /* Name.Attribute */
+c-[f] { color: #669900 } /* Name.Tag */
+c-[g] { color: #222222 } /* Name.Variable */
+c-[k] { color: #990055 } /* Keyword */
+c-[l] { color: #000000 } /* Literal */
+c-[m] { color: #000000 } /* Literal.Number */
+c-[n] { color: #0077aa } /* Name */
+c-[o] { color: #999999 } /* Operator */
+c-[p] { color: #999999 } /* Punctuation */
+c-[s] { color: #a67f59 } /* Literal.String */
+c-[t] { color: #a67f59 } /* Literal.String.Single */
+c-[u] { color: #a67f59 } /* Literal.String.Double */
+c-[cp] { color: #708090 } /* Comment.Preproc */
+c-[c1] { color: #708090 } /* Comment.Single */
+c-[cs] { color: #708090 } /* Comment.Special */
+c-[kc] { color: #990055 } /* Keyword.Constant */
+c-[kn] { color: #990055 } /* Keyword.Namespace */
+c-[kp] { color: #990055 } /* Keyword.Pseudo */
+c-[kr] { color: #990055 } /* Keyword.Reserved */
+c-[ld] { color: #000000 } /* Literal.Date */
+c-[nc] { color: #0077aa } /* Name.Class */
+c-[no] { color: #0077aa } /* Name.Constant */
+c-[nd] { color: #0077aa } /* Name.Decorator */
+c-[ni] { color: #0077aa } /* Name.Entity */
+c-[ne] { color: #0077aa } /* Name.Exception */
+c-[nf] { color: #0077aa } /* Name.Function */
+c-[nl] { color: #0077aa } /* Name.Label */
+c-[nn] { color: #0077aa } /* Name.Namespace */
+c-[py] { color: #0077aa } /* Name.Property */
+c-[ow] { color: #999999 } /* Operator.Word */
+c-[mb] { color: #000000 } /* Literal.Number.Bin */
+c-[mf] { color: #000000 } /* Literal.Number.Float */
+c-[mh] { color: #000000 } /* Literal.Number.Hex */
+c-[mi] { color: #000000 } /* Literal.Number.Integer */
+c-[mo] { color: #000000 } /* Literal.Number.Oct */
+c-[sb] { color: #a67f59 } /* Literal.String.Backtick */
+c-[sc] { color: #a67f59 } /* Literal.String.Char */
+c-[sd] { color: #a67f59 } /* Literal.String.Doc */
+c-[se] { color: #a67f59 } /* Literal.String.Escape */
+c-[sh] { color: #a67f59 } /* Literal.String.Heredoc */
+c-[si] { color: #a67f59 } /* Literal.String.Interpol */
+c-[sx] { color: #a67f59 } /* Literal.String.Other */
+c-[sr] { color: #a67f59 } /* Literal.String.Regex */
+c-[ss] { color: #a67f59 } /* Literal.String.Symbol */
+c-[vc] { color: #0077aa } /* Name.Variable.Class */
+c-[vg] { color: #0077aa } /* Name.Variable.Global */
+c-[vi] { color: #0077aa } /* Name.Variable.Instance */
+c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
+
+
+@media (prefers-color-scheme: dark) {
+    .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
+
+    c-[a] { color: #d33682 } /* Keyword.Declaration */
+    c-[b] { color: #d33682 } /* Keyword.Type */
+    c-[c] { color: #2aa198 } /* Comment */
+    c-[d] { color: #2aa198 } /* Comment.Multiline */
+    c-[e] { color: #268bd2 } /* Name.Attribute */
+    c-[f] { color: #b58900 } /* Name.Tag */
+    c-[g] { color: #cb4b16 } /* Name.Variable */
+    c-[k] { color: #d33682 } /* Keyword */
+    c-[l] { color: #657b83 } /* Literal */
+    c-[m] { color: #657b83 } /* Literal.Number */
+    c-[n] { color: #268bd2 } /* Name */
+    c-[o] { color: #657b83 } /* Operator */
+    c-[p] { color: #657b83 } /* Punctuation */
+    c-[s] { color: #6c71c4 } /* Literal.String */
+    c-[t] { color: #6c71c4 } /* Literal.String.Single */
+    c-[u] { color: #6c71c4 } /* Literal.String.Double */
+    c-[ch] { color: #2aa198 } /* Comment.Hashbang */
+    c-[cp] { color: #2aa198 } /* Comment.Preproc */
+    c-[cpf] { color: #2aa198 } /* Comment.PreprocFile */
+    c-[c1] { color: #2aa198 } /* Comment.Single */
+    c-[cs] { color: #2aa198 } /* Comment.Special */
+    c-[kc] { color: #d33682 } /* Keyword.Constant */
+    c-[kn] { color: #d33682 } /* Keyword.Namespace */
+    c-[kp] { color: #d33682 } /* Keyword.Pseudo */
+    c-[kr] { color: #d33682 } /* Keyword.Reserved */
+    c-[ld] { color: #657b83 } /* Literal.Date */
+    c-[nc] { color: #268bd2 } /* Name.Class */
+    c-[no] { color: #268bd2 } /* Name.Constant */
+    c-[nd] { color: #268bd2 } /* Name.Decorator */
+    c-[ni] { color: #268bd2 } /* Name.Entity */
+    c-[ne] { color: #268bd2 } /* Name.Exception */
+    c-[nf] { color: #268bd2 } /* Name.Function */
+    c-[nl] { color: #268bd2 } /* Name.Label */
+    c-[nn] { color: #268bd2 } /* Name.Namespace */
+    c-[py] { color: #268bd2 } /* Name.Property */
+    c-[ow] { color: #657b83 } /* Operator.Word */
+    c-[mb] { color: #657b83 } /* Literal.Number.Bin */
+    c-[mf] { color: #657b83 } /* Literal.Number.Float */
+    c-[mh] { color: #657b83 } /* Literal.Number.Hex */
+    c-[mi] { color: #657b83 } /* Literal.Number.Integer */
+    c-[mo] { color: #657b83 } /* Literal.Number.Oct */
+    c-[sa] { color: #6c71c4 } /* Literal.String.Affix */
+    c-[sb] { color: #6c71c4 } /* Literal.String.Backtick */
+    c-[sc] { color: #6c71c4 } /* Literal.String.Char */
+    c-[dl] { color: #6c71c4 } /* Literal.String.Delimiter */
+    c-[sd] { color: #6c71c4 } /* Literal.String.Doc */
+    c-[se] { color: #6c71c4 } /* Literal.String.Escape */
+    c-[sh] { color: #6c71c4 } /* Literal.String.Heredoc */
+    c-[si] { color: #6c71c4 } /* Literal.String.Interpol */
+    c-[sx] { color: #6c71c4 } /* Literal.String.Other */
+    c-[sr] { color: #6c71c4 } /* Literal.String.Regex */
+    c-[ss] { color: #6c71c4 } /* Literal.String.Symbol */
+    c-[fm] { color: #268bd2 } /* Name.Function.Magic */
+    c-[vc] { color: #cb4b16 } /* Name.Variable.Class */
+    c-[vg] { color: #cb4b16 } /* Name.Variable.Global */
+    c-[vi] { color: #cb4b16 } /* Name.Variable.Instance */
+    c-[vm] { color: #cb4b16 } /* Name.Variable.Magic */
+    c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
+}
 </style>
 <style>/* Boilerplate: style-wpt */
 :root {
@@ -645,7 +881,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-11-20">20 November 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-11-29">29 November 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -683,19 +919,841 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
    <ol class="toc" role="directory">
     <li><a href="#introduction"><span class="secno">1</span> <span class="content">Introduction</span></a>
-    <li><a href="#security-and-privacy"><span class="secno">2</span> <span class="content">Security &amp; Privacy Considerations</span></a>
+    <li>
+     <a href="#core-infrastructure"><span class="secno">2</span> <span class="content">Core infrastructure</span></a>
+     <ol class="toc">
+      <li><a href="#subscriber-api"><span class="secno">2.1</span> <span class="content">The <code class="idl"><span>Subscriber</span></code> interface</span></a>
+      <li><a href="#observable-api"><span class="secno">2.2</span> <span class="content">The <code class="idl"><span>Observable</span></code> interface</span></a>
+      <li><a href="#operators"><span class="secno">2.3</span> <span class="content">Operators</span></a>
+     </ol>
+    <li><a href="#event-target-integration"><span class="secno">3</span> <span class="content"><code class="idl"><span>EventTarget</span></code> integration</span></a>
+    <li><a href="#security-and-privacy"><span class="secno">4</span> <span class="content">Security &amp; Privacy Considerations</span></a>
+    <li><a href="#acks"><span class="secno">5</span> <span class="content">Acknowledgements</span></a>
+    <li>
+     <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
+     <ol class="toc">
+      <li><a href="#index-defined-here"><span class="secno"></span> <span class="content">Terms defined by this specification</span></a>
+      <li><a href="#index-defined-elsewhere"><span class="secno"></span> <span class="content">Terms defined by reference</span></a>
+     </ol>
+    <li>
+     <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
+     <ol class="toc">
+      <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+     </ol>
+    <li><a href="#idl-index"><span class="secno"></span> <span class="content">IDL Index</span></a>
    </ol>
   </nav>
   <main>
 <script async src="https://resources.whatwg.org/file-issue.js"></script>
    <h2 class="heading settled" data-level="1" id="introduction"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#introduction"></a></h2>
    <p><em>This section is non-normative.</em></p>
-   <h2 class="heading settled" data-level="2" id="security-and-privacy"><span class="secno">2. </span><span class="content">Security &amp; Privacy Considerations</span><a class="self-link" href="#security-and-privacy"></a></h2>
+   <h2 class="heading settled" data-level="2" id="core-infrastructure"><span class="secno">2. </span><span class="content">Core infrastructure</span><a class="self-link" href="#core-infrastructure"></a></h2>
+   <h3 class="heading settled" data-level="2.1" id="subscriber-api"><span class="secno">2.1. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber">Subscriber</a></code> interface</span><a class="self-link" href="#subscriber-api"></a></h3>
+<pre class="idl highlight def">[Exposed=*]
+<c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="subscriber"><code><c- g>Subscriber</c-></code></dfn> {
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> <dfn class="idl-code" data-dfn-for="Subscriber" data-dfn-type="method" data-export data-lt="next(result)" id="dom-subscriber-next"><code><c- g>next</c-></code><a class="self-link" href="#dom-subscriber-next"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Subscriber/next(result)" data-dfn-type="argument" data-export id="dom-subscriber-next-result-result"><code><c- g>result</c-></code><a class="self-link" href="#dom-subscriber-next-result-result"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined①"><c- b>undefined</c-></a> <dfn class="idl-code" data-dfn-for="Subscriber" data-dfn-type="method" data-export data-lt="error(error)" id="dom-subscriber-error"><code><c- g>error</c-></code><a class="self-link" href="#dom-subscriber-error"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Subscriber/error(error)" data-dfn-type="argument" data-export id="dom-subscriber-error-error-error"><code><c- g>error</c-></code><a class="self-link" href="#dom-subscriber-error-error-error"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined②"><c- b>undefined</c-></a> <dfn class="idl-code" data-dfn-for="Subscriber" data-dfn-type="method" data-export data-lt="complete()" id="dom-subscriber-complete"><code><c- g>complete</c-></code><a class="self-link" href="#dom-subscriber-complete"></a></dfn>();
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined③"><c- b>undefined</c-></a> <dfn class="idl-code" data-dfn-for="Subscriber" data-dfn-type="method" data-export data-lt="addTeardown(teardown)" id="dom-subscriber-addteardown"><code><c- g>addTeardown</c-></code><a class="self-link" href="#dom-subscriber-addteardown"></a></dfn>(<a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction" id="ref-for-VoidFunction"><c- n>VoidFunction</c-></a> <dfn class="idl-code" data-dfn-for="Subscriber/addTeardown(teardown)" data-dfn-type="argument" data-export id="dom-subscriber-addteardown-teardown-teardown"><code><c- g>teardown</c-></code><a class="self-link" href="#dom-subscriber-addteardown-teardown-teardown"></a></dfn>);
+
+  // True after the Subscriber is created, up until either
+  // complete()/error() are invoked, or the subscriber unsubscribes. Inside
+  // complete()/error(), this attribute is true.
+  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean"><c- b>boolean</c-></a> <dfn class="idl-code" data-dfn-for="Subscriber" data-dfn-type="attribute" data-export data-readonly data-type="boolean" id="dom-subscriber-active"><code><c- g>active</c-></code><a class="self-link" href="#dom-subscriber-active"></a></dfn>;
+
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal"><c- n>AbortSignal</c-></a> <dfn class="idl-code" data-dfn-for="Subscriber" data-dfn-type="attribute" data-export data-readonly data-type="AbortSignal" id="dom-subscriber-signal"><code><c- g>signal</c-></code><a class="self-link" href="#dom-subscriber-signal"></a></dfn>;
+};
+</pre>
+   <div></div>
+   <h3 class="heading settled" data-level="2.2" id="observable-api"><span class="secno">2.2. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable">Observable</a></code> interface</span><a class="self-link" href="#observable-api"></a></h3>
+<pre class="idl highlight def">// SubscribeCallback is where the Observable "creator’s" code lives. It’s
+// called when subscribe() is called, to set up a new subscription.
+<c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-subscribecallback"><code><c- g>SubscribeCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined④"><c- b>undefined</c-></a> (<a data-link-type="idl-name" href="#subscriber" id="ref-for-subscriber①"><c- n>Subscriber</c-></a> <dfn class="idl-code" data-dfn-for="SubscribeCallback" data-dfn-type="argument" data-export id="dom-subscribecallback-subscriber"><code><c- g>subscriber</c-></code><a class="self-link" href="#dom-subscribecallback-subscriber"></a></dfn>);
+<c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-observercallback"><code><c- g>ObserverCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑤"><c- b>undefined</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="ObserverCallback" data-dfn-type="argument" data-export id="dom-observercallback-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-observercallback-value"></a></dfn>);
+
+<c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-observer"><code><c- g>Observer</c-></code></dfn> {
+  <a data-link-type="idl-name" href="#callbackdef-observercallback" id="ref-for-callbackdef-observercallback"><c- n>ObserverCallback</c-></a> <dfn class="idl-code" data-dfn-for="Observer" data-dfn-type="dict-member" data-export data-type="ObserverCallback " id="dom-observer-next"><code><c- g>next</c-></code><a class="self-link" href="#dom-observer-next"></a></dfn>;
+  <a data-link-type="idl-name" href="#callbackdef-observercallback" id="ref-for-callbackdef-observercallback①"><c- n>ObserverCallback</c-></a> <dfn class="idl-code" data-dfn-for="Observer" data-dfn-type="dict-member" data-export data-type="ObserverCallback " id="dom-observer-error"><code><c- g>error</c-></code><a class="self-link" href="#dom-observer-error"></a></dfn>;
+  <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction" id="ref-for-VoidFunction①"><c- n>VoidFunction</c-></a> <dfn class="idl-code" data-dfn-for="Observer" data-dfn-type="dict-member" data-export data-type="VoidFunction " id="dom-observer-complete"><code><c- g>complete</c-></code><a class="self-link" href="#dom-observer-complete"></a></dfn>;
+};
+
+<c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-subscribeoptions"><code><c- g>SubscribeOptions</c-></code></dfn> {
+  <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal①"><c- n>AbortSignal</c-></a> <dfn class="idl-code" data-dfn-for="SubscribeOptions" data-dfn-type="dict-member" data-export data-type="AbortSignal " id="dom-subscribeoptions-signal"><code><c- g>signal</c-></code><a class="self-link" href="#dom-subscribeoptions-signal"></a></dfn>;
+};
+
+<c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-promiseoptions"><code><c- g>PromiseOptions</c-></code></dfn> {
+  <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal②"><c- n>AbortSignal</c-></a> <dfn class="idl-code" data-dfn-for="PromiseOptions" data-dfn-type="dict-member" data-export data-type="AbortSignal " id="dom-promiseoptions-signal"><code><c- g>signal</c-></code><a class="self-link" href="#dom-promiseoptions-signal"></a></dfn>;
+};
+
+<c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-predicate"><code><c- g>Predicate</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean①"><c- b>boolean</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any③"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Predicate" data-dfn-type="argument" data-export id="dom-predicate-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-predicate-value"></a></dfn>);
+<c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-reducer"><code><c- g>Reducer</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any④"><c- b>any</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any⑤"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Reducer" data-dfn-type="argument" data-export id="dom-reducer-accumulator"><code><c- g>accumulator</c-></code><a class="self-link" href="#dom-reducer-accumulator"></a></dfn>, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any⑥"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Reducer" data-dfn-type="argument" data-export id="dom-reducer-currentvalue"><code><c- g>currentValue</c-></code><a class="self-link" href="#dom-reducer-currentvalue"></a></dfn>);
+<c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-mapper"><code><c- g>Mapper</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any⑦"><c- b>any</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any⑧"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Mapper" data-dfn-type="argument" data-export id="dom-mapper-element"><code><c- g>element</c-></code><a class="self-link" href="#dom-mapper-element"></a></dfn>, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="Mapper" data-dfn-type="argument" data-export id="dom-mapper-index"><code><c- g>index</c-></code><a class="self-link" href="#dom-mapper-index"></a></dfn>);
+// Differs from Mapper only in return type, since this callback is exclusively
+// used to visit each element in a sequence, not transform it.
+<c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-visitor"><code><c- g>Visitor</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑥"><c- b>undefined</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any⑨"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Visitor" data-dfn-type="argument" data-export id="dom-visitor-element"><code><c- g>element</c-></code><a class="self-link" href="#dom-visitor-element"></a></dfn>, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long①"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="Visitor" data-dfn-type="argument" data-export id="dom-visitor-index"><code><c- g>index</c-></code><a class="self-link" href="#dom-visitor-index"></a></dfn>);
+
+[Exposed=*]
+<c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="observable"><code><c- g>Observable</c-></code></dfn> {
+  <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="constructor" data-export data-lt="Observable(callback)|constructor(callback)" id="dom-observable-observable"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-observable-observable"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-subscribecallback" id="ref-for-callbackdef-subscribecallback"><c- n>SubscribeCallback</c-></a> <dfn class="idl-code" data-dfn-for="Observable/Observable(callback), Observable/constructor(callback)" data-dfn-type="argument" data-export id="dom-observable-observable-callback-callback"><code><c- g>callback</c-></code><a class="self-link" href="#dom-observable-observable-callback-callback"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑦"><c- b>undefined</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="subscribe(observer, options)|subscribe(observer)|subscribe()" id="dom-observable-subscribe"><code><c- g>subscribe</c-></code><a class="self-link" href="#dom-observable-subscribe"></a></dfn>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observer" id="ref-for-dictdef-observer"><c- n>Observer</c-></a> <dfn class="idl-code" data-dfn-for="Observable/subscribe(observer, options), Observable/subscribe(observer), Observable/subscribe()" data-dfn-type="argument" data-export id="dom-observable-subscribe-observer-options-observer"><code><c- g>observer</c-></code><a class="self-link" href="#dom-observable-subscribe-observer-options-observer"></a></dfn> = {}, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions"><c- n>SubscribeOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/subscribe(observer, options), Observable/subscribe(observer), Observable/subscribe()" data-dfn-type="argument" data-export id="dom-observable-subscribe-observer-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-subscribe-observer-options-options"></a></dfn> = {});
+
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑧"><c- b>undefined</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="finally(callback)" id="dom-observable-finally"><code><c- g>finally</c-></code><a class="self-link" href="#dom-observable-finally"></a></dfn>(<a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction" id="ref-for-VoidFunction②"><c- n>VoidFunction</c-></a> <dfn class="idl-code" data-dfn-for="Observable/finally(callback)" data-dfn-type="argument" data-export id="dom-observable-finally-callback-callback"><code><c- g>callback</c-></code><a class="self-link" href="#dom-observable-finally-callback-callback"></a></dfn>);
+
+  // Constructs a native Observable from value if it’s any of the following:
+  //   - Observable
+  //   - AsyncIterable
+  //   - Iterable
+  //   - Promise
+  <c- b>static</c-> <a data-link-type="idl-name" href="#observable" id="ref-for-observable①"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="from(value)" id="dom-observable-from"><code><c- g>from</c-></code><a class="self-link" href="#dom-observable-from"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⓪"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Observable/from(value)" data-dfn-type="argument" data-export id="dom-observable-from-value-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-observable-from-value-value"></a></dfn>);
+
+  // Observable-returning operators. See "Operators" section in the spec.
+  //
+  // takeUntil() can consume promises, iterables, async iterables, and other
+  // observables.
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable②"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="takeUntil(notifier)" id="dom-observable-takeuntil"><code><c- g>takeUntil</c-></code><a class="self-link" href="#dom-observable-takeuntil"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①①"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Observable/takeUntil(notifier)" data-dfn-type="argument" data-export id="dom-observable-takeuntil-notifier-notifier"><code><c- g>notifier</c-></code><a class="self-link" href="#dom-observable-takeuntil-notifier-notifier"></a></dfn>);
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable③"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="map(mapper)" id="dom-observable-map"><code><c- g>map</c-></code><a class="self-link" href="#dom-observable-map"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-mapper" id="ref-for-callbackdef-mapper"><c- n>Mapper</c-></a> <dfn class="idl-code" data-dfn-for="Observable/map(mapper)" data-dfn-type="argument" data-export id="dom-observable-map-mapper-mapper"><code><c- g>mapper</c-></code><a class="self-link" href="#dom-observable-map-mapper-mapper"></a></dfn>);
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable④"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="filter(predicate)" id="dom-observable-filter"><code><c- g>filter</c-></code><a class="self-link" href="#dom-observable-filter"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-predicate" id="ref-for-callbackdef-predicate"><c- n>Predicate</c-></a> <dfn class="idl-code" data-dfn-for="Observable/filter(predicate)" data-dfn-type="argument" data-export id="dom-observable-filter-predicate-predicate"><code><c- g>predicate</c-></code><a class="self-link" href="#dom-observable-filter-predicate-predicate"></a></dfn>);
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable⑤"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="take(amount)" id="dom-observable-take"><code><c- g>take</c-></code><a class="self-link" href="#dom-observable-take"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long②"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="Observable/take(amount)" data-dfn-type="argument" data-export id="dom-observable-take-amount-amount"><code><c- g>amount</c-></code><a class="self-link" href="#dom-observable-take-amount-amount"></a></dfn>);
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable⑥"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="drop(amount)" id="dom-observable-drop"><code><c- g>drop</c-></code><a class="self-link" href="#dom-observable-drop"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long③"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a> <dfn class="idl-code" data-dfn-for="Observable/drop(amount)" data-dfn-type="argument" data-export id="dom-observable-drop-amount-amount"><code><c- g>amount</c-></code><a class="self-link" href="#dom-observable-drop-amount-amount"></a></dfn>);
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable⑦"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="flatMap(mapper)" id="dom-observable-flatmap"><code><c- g>flatMap</c-></code><a class="self-link" href="#dom-observable-flatmap"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-mapper" id="ref-for-callbackdef-mapper①"><c- n>Mapper</c-></a> <dfn class="idl-code" data-dfn-for="Observable/flatMap(mapper)" data-dfn-type="argument" data-export id="dom-observable-flatmap-mapper-mapper"><code><c- g>mapper</c-></code><a class="self-link" href="#dom-observable-flatmap-mapper-mapper"></a></dfn>);
+
+  // Promise-returning operators.
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①②"><c- b>any</c-></a>>> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="toArray(options)|toArray()" id="dom-observable-toarray"><code><c- g>toArray</c-></code><a class="self-link" href="#dom-observable-toarray"></a></dfn>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions" id="ref-for-dictdef-promiseoptions"><c- n>PromiseOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/toArray(options), Observable/toArray()" data-dfn-type="argument" data-export id="dom-observable-toarray-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-toarray-options-options"></a></dfn> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise①"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑨"><c- b>undefined</c-></a>> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="forEach(callback, options)|forEach(callback)" id="dom-observable-foreach"><code><c- g>forEach</c-></code><a class="self-link" href="#dom-observable-foreach"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-visitor" id="ref-for-callbackdef-visitor"><c- n>Visitor</c-></a> <dfn class="idl-code" data-dfn-for="Observable/forEach(callback, options), Observable/forEach(callback)" data-dfn-type="argument" data-export id="dom-observable-foreach-callback-options-callback"><code><c- g>callback</c-></code><a class="self-link" href="#dom-observable-foreach-callback-options-callback"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions" id="ref-for-dictdef-promiseoptions①"><c- n>PromiseOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/forEach(callback, options), Observable/forEach(callback)" data-dfn-type="argument" data-export id="dom-observable-foreach-callback-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-foreach-callback-options-options"></a></dfn> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise②"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean②"><c- b>boolean</c-></a>> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="every(predicate, options)|every(predicate)" id="dom-observable-every"><code><c- g>every</c-></code><a class="self-link" href="#dom-observable-every"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-predicate" id="ref-for-callbackdef-predicate①"><c- n>Predicate</c-></a> <dfn class="idl-code" data-dfn-for="Observable/every(predicate, options), Observable/every(predicate)" data-dfn-type="argument" data-export id="dom-observable-every-predicate-options-predicate"><code><c- g>predicate</c-></code><a class="self-link" href="#dom-observable-every-predicate-options-predicate"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions" id="ref-for-dictdef-promiseoptions②"><c- n>PromiseOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/every(predicate, options), Observable/every(predicate)" data-dfn-type="argument" data-export id="dom-observable-every-predicate-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-every-predicate-options-options"></a></dfn> = {});
+  // Maybe? Promise&lt;any> first(optional PromiseOptions options = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise③"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①③"><c- b>any</c-></a>> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="find(predicate, options)|find(predicate)" id="dom-observable-find"><code><c- g>find</c-></code><a class="self-link" href="#dom-observable-find"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-predicate" id="ref-for-callbackdef-predicate②"><c- n>Predicate</c-></a> <dfn class="idl-code" data-dfn-for="Observable/find(predicate, options), Observable/find(predicate)" data-dfn-type="argument" data-export id="dom-observable-find-predicate-options-predicate"><code><c- g>predicate</c-></code><a class="self-link" href="#dom-observable-find-predicate-options-predicate"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions" id="ref-for-dictdef-promiseoptions③"><c- n>PromiseOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/find(predicate, options), Observable/find(predicate)" data-dfn-type="argument" data-export id="dom-observable-find-predicate-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-find-predicate-options-options"></a></dfn> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise④"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean③"><c- b>boolean</c-></a>> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="some(predicate, options)|some(predicate)" id="dom-observable-some"><code><c- g>some</c-></code><a class="self-link" href="#dom-observable-some"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-predicate" id="ref-for-callbackdef-predicate③"><c- n>Predicate</c-></a> <dfn class="idl-code" data-dfn-for="Observable/some(predicate, options), Observable/some(predicate)" data-dfn-type="argument" data-export id="dom-observable-some-predicate-options-predicate"><code><c- g>predicate</c-></code><a class="self-link" href="#dom-observable-some-predicate-options-predicate"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions" id="ref-for-dictdef-promiseoptions④"><c- n>PromiseOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/some(predicate, options), Observable/some(predicate)" data-dfn-type="argument" data-export id="dom-observable-some-predicate-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-some-predicate-options-options"></a></dfn> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise⑤"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①④"><c- b>any</c-></a>> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="reduce(reducer, initialValue, options)|reduce(reducer, initialValue)|reduce(reducer)" id="dom-observable-reduce"><code><c- g>reduce</c-></code><a class="self-link" href="#dom-observable-reduce"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-reducer" id="ref-for-callbackdef-reducer"><c- n>Reducer</c-></a> <dfn class="idl-code" data-dfn-for="Observable/reduce(reducer, initialValue, options), Observable/reduce(reducer, initialValue), Observable/reduce(reducer)" data-dfn-type="argument" data-export id="dom-observable-reduce-reducer-initialvalue-options-reducer"><code><c- g>reducer</c-></code><a class="self-link" href="#dom-observable-reduce-reducer-initialvalue-options-reducer"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⑤"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Observable/reduce(reducer, initialValue, options), Observable/reduce(reducer, initialValue), Observable/reduce(reducer)" data-dfn-type="argument" data-export id="dom-observable-reduce-reducer-initialvalue-options-initialvalue"><code><c- g>initialValue</c-></code><a class="self-link" href="#dom-observable-reduce-reducer-initialvalue-options-initialvalue"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions" id="ref-for-dictdef-promiseoptions⑤"><c- n>PromiseOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/reduce(reducer, initialValue, options), Observable/reduce(reducer, initialValue), Observable/reduce(reducer)" data-dfn-type="argument" data-export id="dom-observable-reduce-reducer-initialvalue-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-reduce-reducer-initialvalue-options-options"></a></dfn> = {});
+};
+</pre>
+   <h3 class="heading settled" data-level="2.3" id="operators"><span class="secno">2.3. </span><span class="content">Operators</span><a class="self-link" href="#operators"></a></h3>
+   <p>For now, see <a href="https://github.com/wicg/observable#operators">https://github.com/wicg/observable#operators</a>.</p>
+   <h2 class="heading settled" data-level="3" id="event-target-integration"><span class="secno">3. </span><span class="content"><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget">EventTarget</a></code> integration</span><a class="self-link" href="#event-target-integration"></a></h2>
+<pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-observableeventlisteneroptions"><code><c- g>ObservableEventListenerOptions</c-></code></dfn> {
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean④"><c- b>boolean</c-></a> <dfn class="idl-code" data-default="false" data-dfn-for="ObservableEventListenerOptions" data-dfn-type="dict-member" data-export data-type="boolean " id="dom-observableeventlisteneroptions-capture"><code><c- g>capture</c-></code><a class="self-link" href="#dom-observableeventlisteneroptions-capture"></a></dfn> = <c- b>false</c->;
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean⑤"><c- b>boolean</c-></a> <dfn class="idl-code" data-dfn-for="ObservableEventListenerOptions" data-dfn-type="dict-member" data-export data-type="boolean " id="dom-observableeventlisteneroptions-passive"><code><c- g>passive</c-></code><a class="self-link" href="#dom-observableeventlisteneroptions-passive"></a></dfn>;
+};
+
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget①"><c- g>EventTarget</c-></a> {
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable⑧"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget" data-dfn-type="method" data-export data-lt="on(type, options)|on(type)" id="dom-eventtarget-on"><code><c- g>on</c-></code><a class="self-link" href="#dom-eventtarget-on"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/on(type, options), EventTarget/on(type)" data-dfn-type="argument" data-export id="dom-eventtarget-on-type-options-type"><code><c- g>type</c-></code><a class="self-link" href="#dom-eventtarget-on-type-options-type"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions" id="ref-for-dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/on(type, options), EventTarget/on(type)" data-dfn-type="argument" data-export id="dom-eventtarget-on-type-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-eventtarget-on-type-options-options"></a></dfn> = {});
+};
+</pre>
+   <h2 class="heading settled" data-level="4" id="security-and-privacy"><span class="secno">4. </span><span class="content">Security &amp; Privacy Considerations</span><a class="self-link" href="#security-and-privacy"></a></h2>
    <p>This material is being upstreamed from our explainer into this specification, and in the meantime
 you can consult the following resources:</p>
    <ul>
     <li data-md>
      <p><a href="https://github.com/WICG/observable/blob/master/security-privacy-questionnaire.md">TAG Security/Privacy Questionnaire</a></p>
    </ul>
+   <h2 class="heading settled" data-level="5" id="acks"><span class="secno">5. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acks"></a></h2>
+   <p>A special thanks to <a href="https://benlesh.com/">Ben Lesh</a> for much of the design
+input for the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑨">Observable</a></code> API, and his many years of work maintaining
+userland Observable code that made this contribution to the web platform
+possible.</p>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
+  <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
+  <ul class="index">
+   <li><a href="#dom-subscriber-active">active</a><span>, in § 2.1</span>
+   <li><a href="#dom-subscriber-addteardown">addTeardown(teardown)</a><span>, in § 2.1</span>
+   <li><a href="#dom-observableeventlisteneroptions-capture">capture</a><span>, in § 3</span>
+   <li><a href="#dom-observer-complete">complete</a><span>, in § 2.2</span>
+   <li><a href="#dom-subscriber-complete">complete()</a><span>, in § 2.1</span>
+   <li><a href="#dom-observable-observable">constructor(callback)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-drop">drop(amount)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observer-error">error</a><span>, in § 2.2</span>
+   <li><a href="#dom-subscriber-error">error(error)</a><span>, in § 2.1</span>
+   <li><a href="#dom-observable-every">every(predicate)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-every">every(predicate, options)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-filter">filter(predicate)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-finally">finally(callback)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-find">find(predicate)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-find">find(predicate, options)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-flatmap">flatMap(mapper)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-foreach">forEach(callback)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-foreach">forEach(callback, options)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-from">from(value)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-map">map(mapper)</a><span>, in § 2.2</span>
+   <li><a href="#callbackdef-mapper">Mapper</a><span>, in § 2.2</span>
+   <li><a href="#dom-observer-next">next</a><span>, in § 2.2</span>
+   <li><a href="#dom-subscriber-next">next(result)</a><span>, in § 2.1</span>
+   <li><a href="#observable">Observable</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-observable">Observable(callback)</a><span>, in § 2.2</span>
+   <li><a href="#dictdef-observableeventlisteneroptions">ObservableEventListenerOptions</a><span>, in § 3</span>
+   <li><a href="#dictdef-observer">Observer</a><span>, in § 2.2</span>
+   <li><a href="#callbackdef-observercallback">ObserverCallback</a><span>, in § 2.2</span>
+   <li><a href="#dom-eventtarget-on">on(type)</a><span>, in § 3</span>
+   <li><a href="#dom-eventtarget-on">on(type, options)</a><span>, in § 3</span>
+   <li><a href="#dom-observableeventlisteneroptions-passive">passive</a><span>, in § 3</span>
+   <li><a href="#callbackdef-predicate">Predicate</a><span>, in § 2.2</span>
+   <li><a href="#dictdef-promiseoptions">PromiseOptions</a><span>, in § 2.2</span>
+   <li><a href="#callbackdef-reducer">Reducer</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-reduce">reduce(reducer)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-reduce">reduce(reducer, initialValue)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-reduce">reduce(reducer, initialValue, options)</a><span>, in § 2.2</span>
+   <li>
+    signal
+    <ul>
+     <li><a href="#dom-subscriber-signal">attribute for Subscriber</a><span>, in § 2.1</span>
+     <li><a href="#dom-promiseoptions-signal">dict-member for PromiseOptions</a><span>, in § 2.2</span>
+     <li><a href="#dom-subscribeoptions-signal">dict-member for SubscribeOptions</a><span>, in § 2.2</span>
+    </ul>
+   <li><a href="#dom-observable-some">some(predicate)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-some">some(predicate, options)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-subscribe">subscribe()</a><span>, in § 2.2</span>
+   <li><a href="#callbackdef-subscribecallback">SubscribeCallback</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-subscribe">subscribe(observer)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-subscribe">subscribe(observer, options)</a><span>, in § 2.2</span>
+   <li><a href="#dictdef-subscribeoptions">SubscribeOptions</a><span>, in § 2.2</span>
+   <li><a href="#subscriber">Subscriber</a><span>, in § 2.1</span>
+   <li><a href="#dom-observable-take">take(amount)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-takeuntil">takeUntil(notifier)</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-toarray">toArray()</a><span>, in § 2.2</span>
+   <li><a href="#dom-observable-toarray">toArray(options)</a><span>, in § 2.2</span>
+   <li><a href="#callbackdef-visitor">Visitor</a><span>, in § 2.2</span>
+  </ul>
+  <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
+  <ul class="index">
+   <li>
+    <a data-link-type="biblio">[DOM]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="cca3cdb2">AbortSignal</span>
+     <li><span class="dfn-paneled" id="2bc0cdf4">EventTarget</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="8855a9aa">DOMString</span>
+     <li><span class="dfn-paneled" id="bdbd19d1">Promise</span>
+     <li><span class="dfn-paneled" id="7004c2a7">VoidFunction</span>
+     <li><span class="dfn-paneled" id="6c6b1005">any</span>
+     <li><span class="dfn-paneled" id="5372cca8">boolean</span>
+     <li><span class="dfn-paneled" id="9cce47fd">sequence</span>
+     <li><span class="dfn-paneled" id="5f90bbfb">undefined</span>
+     <li><span class="dfn-paneled" id="f14b47b8">unsigned long long</span>
+    </ul>
+  </ul>
+  <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
+  <dl>
+   <dt id="biblio-dom">[DOM]
+   <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
+   <dt id="biblio-webidl">[WEBIDL]
+   <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
+  </dl>
+  <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
+<pre class="idl highlight def">[Exposed=*]
+<c- b>interface</c-> <a href="#subscriber"><code><c- g>Subscriber</c-></code></a> {
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a href="#dom-subscriber-next"><code><c- g>next</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-subscriber-next-result-result"><code><c- g>result</c-></code></a>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a href="#dom-subscriber-error"><code><c- g>error</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-subscriber-error-error-error"><code><c- g>error</c-></code></a>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a href="#dom-subscriber-complete"><code><c- g>complete</c-></code></a>();
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a href="#dom-subscriber-addteardown"><code><c- g>addTeardown</c-></code></a>(<a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction"><c- n>VoidFunction</c-></a> <a href="#dom-subscriber-addteardown-teardown-teardown"><code><c- g>teardown</c-></code></a>);
+
+  // True after the Subscriber is created, up until either
+  // complete()/error() are invoked, or the subscriber unsubscribes. Inside
+  // complete()/error(), this attribute is true.
+  <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a data-readonly data-type="boolean" href="#dom-subscriber-active"><code><c- g>active</c-></code></a>;
+
+  <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#abortsignal"><c- n>AbortSignal</c-></a> <a data-readonly data-type="AbortSignal" href="#dom-subscriber-signal"><code><c- g>signal</c-></code></a>;
+};
+
+// SubscribeCallback is where the Observable "creator’s" code lives. It’s
+// called when subscribe() is called, to set up a new subscription.
+<c- b>callback</c-> <a href="#callbackdef-subscribecallback"><code><c- g>SubscribeCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> (<a data-link-type="idl-name" href="#subscriber"><c- n>Subscriber</c-></a> <a href="#dom-subscribecallback-subscriber"><code><c- g>subscriber</c-></code></a>);
+<c- b>callback</c-> <a href="#callbackdef-observercallback"><code><c- g>ObserverCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-observercallback-value"><code><c- g>value</c-></code></a>);
+
+<c- b>dictionary</c-> <a href="#dictdef-observer"><code><c- g>Observer</c-></code></a> {
+  <a data-link-type="idl-name" href="#callbackdef-observercallback"><c- n>ObserverCallback</c-></a> <a data-type="ObserverCallback " href="#dom-observer-next"><code><c- g>next</c-></code></a>;
+  <a data-link-type="idl-name" href="#callbackdef-observercallback"><c- n>ObserverCallback</c-></a> <a data-type="ObserverCallback " href="#dom-observer-error"><code><c- g>error</c-></code></a>;
+  <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction"><c- n>VoidFunction</c-></a> <a data-type="VoidFunction " href="#dom-observer-complete"><code><c- g>complete</c-></code></a>;
+};
+
+<c- b>dictionary</c-> <a href="#dictdef-subscribeoptions"><code><c- g>SubscribeOptions</c-></code></a> {
+  <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#abortsignal"><c- n>AbortSignal</c-></a> <a data-type="AbortSignal " href="#dom-subscribeoptions-signal"><code><c- g>signal</c-></code></a>;
+};
+
+<c- b>dictionary</c-> <a href="#dictdef-promiseoptions"><code><c- g>PromiseOptions</c-></code></a> {
+  <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#abortsignal"><c- n>AbortSignal</c-></a> <a data-type="AbortSignal " href="#dom-promiseoptions-signal"><code><c- g>signal</c-></code></a>;
+};
+
+<c- b>callback</c-> <a href="#callbackdef-predicate"><code><c- g>Predicate</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-predicate-value"><code><c- g>value</c-></code></a>);
+<c- b>callback</c-> <a href="#callbackdef-reducer"><code><c- g>Reducer</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-reducer-accumulator"><code><c- g>accumulator</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-reducer-currentvalue"><code><c- g>currentValue</c-></code></a>);
+<c- b>callback</c-> <a href="#callbackdef-mapper"><code><c- g>Mapper</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-mapper-element"><code><c- g>element</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a> <a href="#dom-mapper-index"><code><c- g>index</c-></code></a>);
+// Differs from Mapper only in return type, since this callback is exclusively
+// used to visit each element in a sequence, not transform it.
+<c- b>callback</c-> <a href="#callbackdef-visitor"><code><c- g>Visitor</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-visitor-element"><code><c- g>element</c-></code></a>, <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a> <a href="#dom-visitor-index"><code><c- g>index</c-></code></a>);
+
+[Exposed=*]
+<c- b>interface</c-> <a href="#observable"><code><c- g>Observable</c-></code></a> {
+  <a href="#dom-observable-observable"><code><c- g>constructor</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-subscribecallback"><c- n>SubscribeCallback</c-></a> <a href="#dom-observable-observable-callback-callback"><code><c- g>callback</c-></code></a>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a href="#dom-observable-subscribe"><code><c- g>subscribe</c-></code></a>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observer"><c- n>Observer</c-></a> <a href="#dom-observable-subscribe-observer-options-observer"><code><c- g>observer</c-></code></a> = {}, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-subscribeoptions"><c- n>SubscribeOptions</c-></a> <a href="#dom-observable-subscribe-observer-options-options"><code><c- g>options</c-></code></a> = {});
+
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a href="#dom-observable-finally"><code><c- g>finally</c-></code></a>(<a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction"><c- n>VoidFunction</c-></a> <a href="#dom-observable-finally-callback-callback"><code><c- g>callback</c-></code></a>);
+
+  // Constructs a native Observable from value if it’s any of the following:
+  //   - Observable
+  //   - AsyncIterable
+  //   - Iterable
+  //   - Promise
+  <c- b>static</c-> <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a href="#dom-observable-from"><code><c- g>from</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-observable-from-value-value"><code><c- g>value</c-></code></a>);
+
+  // Observable-returning operators. See "Operators" section in the spec.
+  //
+  // takeUntil() can consume promises, iterables, async iterables, and other
+  // observables.
+  <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a href="#dom-observable-takeuntil"><code><c- g>takeUntil</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-observable-takeuntil-notifier-notifier"><code><c- g>notifier</c-></code></a>);
+  <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a href="#dom-observable-map"><code><c- g>map</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-mapper"><c- n>Mapper</c-></a> <a href="#dom-observable-map-mapper-mapper"><code><c- g>mapper</c-></code></a>);
+  <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a href="#dom-observable-filter"><code><c- g>filter</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-predicate"><c- n>Predicate</c-></a> <a href="#dom-observable-filter-predicate-predicate"><code><c- g>predicate</c-></code></a>);
+  <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a href="#dom-observable-take"><code><c- g>take</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a> <a href="#dom-observable-take-amount-amount"><code><c- g>amount</c-></code></a>);
+  <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a href="#dom-observable-drop"><code><c- g>drop</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a> <a href="#dom-observable-drop-amount-amount"><code><c- g>amount</c-></code></a>);
+  <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a href="#dom-observable-flatmap"><code><c- g>flatMap</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-mapper"><c- n>Mapper</c-></a> <a href="#dom-observable-flatmap-mapper-mapper"><code><c- g>mapper</c-></code></a>);
+
+  // Promise-returning operators.
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a>>> <a href="#dom-observable-toarray"><code><c- g>toArray</c-></code></a>(<c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions"><c- n>PromiseOptions</c-></a> <a href="#dom-observable-toarray-options-options"><code><c- g>options</c-></code></a> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a>> <a href="#dom-observable-foreach"><code><c- g>forEach</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-visitor"><c- n>Visitor</c-></a> <a href="#dom-observable-foreach-callback-options-callback"><code><c- g>callback</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions"><c- n>PromiseOptions</c-></a> <a href="#dom-observable-foreach-callback-options-options"><code><c- g>options</c-></code></a> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a>> <a href="#dom-observable-every"><code><c- g>every</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-predicate"><c- n>Predicate</c-></a> <a href="#dom-observable-every-predicate-options-predicate"><code><c- g>predicate</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions"><c- n>PromiseOptions</c-></a> <a href="#dom-observable-every-predicate-options-options"><code><c- g>options</c-></code></a> = {});
+  // Maybe? Promise&lt;any> first(optional PromiseOptions options = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a>> <a href="#dom-observable-find"><code><c- g>find</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-predicate"><c- n>Predicate</c-></a> <a href="#dom-observable-find-predicate-options-predicate"><code><c- g>predicate</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions"><c- n>PromiseOptions</c-></a> <a href="#dom-observable-find-predicate-options-options"><code><c- g>options</c-></code></a> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a>> <a href="#dom-observable-some"><code><c- g>some</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-predicate"><c- n>Predicate</c-></a> <a href="#dom-observable-some-predicate-options-predicate"><code><c- g>predicate</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions"><c- n>PromiseOptions</c-></a> <a href="#dom-observable-some-predicate-options-options"><code><c- g>options</c-></code></a> = {});
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a>> <a href="#dom-observable-reduce"><code><c- g>reduce</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-reducer"><c- n>Reducer</c-></a> <a href="#dom-observable-reduce-reducer-initialvalue-options-reducer"><code><c- g>reducer</c-></code></a>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-observable-reduce-reducer-initialvalue-options-initialvalue"><code><c- g>initialValue</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions"><c- n>PromiseOptions</c-></a> <a href="#dom-observable-reduce-reducer-initialvalue-options-options"><code><c- g>options</c-></code></a> = {});
+};
+
+<c- b>dictionary</c-> <a href="#dictdef-observableeventlisteneroptions"><code><c- g>ObservableEventListenerOptions</c-></code></a> {
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a data-default="false" data-type="boolean " href="#dom-observableeventlisteneroptions-capture"><code><c- g>capture</c-></code></a> = <c- b>false</c->;
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a data-type="boolean " href="#dom-observableeventlisteneroptions-passive"><code><c- g>passive</c-></code></a>;
+};
+
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#eventtarget"><c- g>EventTarget</c-></a> {
+  <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a href="#dom-eventtarget-on"><code><c- g>on</c-></code></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-eventtarget-on-type-options-type"><code><c- g>type</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <a href="#dom-eventtarget-on-type-options-options"><code><c- g>options</c-></code></a> = {});
+};
+
+</pre>
+<script>/* Boilerplate: script-dfn-panel */
+"use strict";
+{
+    const dfnsJson = window.dfnsJson || {};
+
+    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
+        return mk.aside({
+            class: "dfn-panel",
+            id: `infopanel-for-${dfnID}`,
+            "data-for": dfnID,
+            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+            },
+            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+                `Info about the '${dfnText}' ${external?"external":""} reference.`),
+            mk.a({href:url}, url),
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({
+                                    href: `#${ref.id}`
+                                    },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+
+    function genAllDfnPanels() {
+        for(const panelData of Object.values(window.dfnpanelData)) {
+            const dfnID = panelData.dfnID;
+            const dfn = document.getElementById(dfnID);
+            if(!dfn) {
+                console.log(`Can't find dfn#${dfnID}.`, panelData);
+            } else {
+                const panel = genDfnPanel(panelData);
+                append(document.body, panel);
+                insertDfnPopupAction(dfn, panel)
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+        genAllDfnPanels();
+
+        // Add popup behavior to all dfns to show the corresponding dfn-panel.
+        var dfns = queryAll('.dfn-paneled');
+        for(let dfn of dfns) { ; }
+
+        document.body.addEventListener("click", (e) => {
+            // If not handled already, just hide all dfn panels.
+            hideAllDfnPanels();
+        });
+    })
+
+
+    function hideAllDfnPanels() {
+        // Turn off any currently "on" or "activated" panels.
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
+    }
+
+    function showDfnPanel(dfnPanel, dfn) {
+        hideAllDfnPanels(); // Only display one at this time.
+        dfn.setAttribute("aria-expanded", "true");
+        dfnPanel.classList.add("on");
+        dfnPanel.style.left = "5px";
+        dfnPanel.style.top = "0px";
+        const panelRect = dfnPanel.getBoundingClientRect();
+        const panelWidth = panelRect.right - panelRect.left;
+        if (panelRect.right > document.body.scrollWidth) {
+            // Panel's overflowing the screen.
+            // Just drop it below the dfn and flip it rightward instead.
+            // This still wont' fix things if the screen is *really* wide,
+            // but fixing that's a lot harder without 'anchor()'.
+            dfnPanel.style.top = "1.5em";
+            dfnPanel.style.left = "auto";
+            dfnPanel.style.right = "0px";
+        }
+    }
+
+    function pinDfnPanel(dfnPanel) {
+        // Switch it to "activated" state, which pins it.
+        dfnPanel.classList.add("activated");
+        dfnPanel.style.left = null;
+        dfnPanel.style.top = null;
+    }
+
+    function hideDfnPanel(dfnPanel, dfn) {
+        if(!dfn) {
+            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
+        }
+        dfn.setAttribute("aria-expanded", "false")
+        dfnPanel.classList.remove("on");
+        dfnPanel.classList.remove("activated");
+    }
+
+    function toggleDfnPanel(dfnPanel, dfn) {
+        if(dfnPanel.classList.contains("on")) {
+            hideDfnPanel(dfnPanel, dfn);
+        } else {
+            showDfnPanel(dfnPanel, dfn);
+        }
+    }
+
+    function insertDfnPopupAction(dfn, dfnPanel) {
+        // Find dfn panel
+        const panelWrapper = document.createElement('span');
+        panelWrapper.appendChild(dfnPanel);
+        panelWrapper.style.position = "relative";
+        panelWrapper.style.height = "0px";
+        dfn.insertAdjacentElement("afterend", panelWrapper);
+        dfn.setAttribute('role', 'button');
+        dfn.setAttribute('aria-expanded', 'false')
+        dfn.tabIndex = 0;
+        dfn.classList.add('has-dfn-panel');
+        dfn.addEventListener('click', (event) => {
+            showDfnPanel(dfnPanel, dfn);
+            event.stopPropagation();
+        });
+        dfn.addEventListener('keypress', (event) => {
+            const kc = event.keyCode;
+            // 32->Space, 13->Enter
+            if(kc == 32 || kc == 13) {
+                toggleDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        });
+
+        dfnPanel.addEventListener('click', (event) => {
+            if (event.target.nodeName == 'A') {
+                pinDfnPanel(dfnPanel);
+            }
+            event.stopPropagation();
+        });
+
+        dfnPanel.addEventListener('keydown', (event) => {
+            if(event.keyCode == 27) { // Escape key
+                hideDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        })
+    }
+}
+</script>
+<script>/* Boilerplate: script-dfn-panel */
+"use strict";
+{
+    const dfnsJson = window.dfnsJson || {};
+
+    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
+        return mk.aside({
+            class: "dfn-panel",
+            id: `infopanel-for-${dfnID}`,
+            "data-for": dfnID,
+            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+            },
+            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+                `Info about the '${dfnText}' ${external?"external":""} reference.`),
+            mk.a({href:url}, url),
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({
+                                    href: `#${ref.id}`
+                                    },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+
+    function genAllDfnPanels() {
+        for(const panelData of Object.values(window.dfnpanelData)) {
+            const dfnID = panelData.dfnID;
+            const dfn = document.getElementById(dfnID);
+            if(!dfn) {
+                console.log(`Can't find dfn#${dfnID}.`, panelData);
+            } else {
+                const panel = genDfnPanel(panelData);
+                append(document.body, panel);
+                insertDfnPopupAction(dfn, panel)
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+        genAllDfnPanels();
+
+        // Add popup behavior to all dfns to show the corresponding dfn-panel.
+        var dfns = queryAll('.dfn-paneled');
+        for(let dfn of dfns) { ; }
+
+        document.body.addEventListener("click", (e) => {
+            // If not handled already, just hide all dfn panels.
+            hideAllDfnPanels();
+        });
+    })
+
+
+    function hideAllDfnPanels() {
+        // Turn off any currently "on" or "activated" panels.
+        queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>hideDfnPanel(el));
+    }
+
+    function showDfnPanel(dfnPanel, dfn) {
+        hideAllDfnPanels(); // Only display one at this time.
+        dfn.setAttribute("aria-expanded", "true");
+        dfnPanel.classList.add("on");
+        dfnPanel.style.left = "5px";
+        dfnPanel.style.top = "0px";
+        const panelRect = dfnPanel.getBoundingClientRect();
+        const panelWidth = panelRect.right - panelRect.left;
+        if (panelRect.right > document.body.scrollWidth) {
+            // Panel's overflowing the screen.
+            // Just drop it below the dfn and flip it rightward instead.
+            // This still wont' fix things if the screen is *really* wide,
+            // but fixing that's a lot harder without 'anchor()'.
+            dfnPanel.style.top = "1.5em";
+            dfnPanel.style.left = "auto";
+            dfnPanel.style.right = "0px";
+        }
+    }
+
+    function pinDfnPanel(dfnPanel) {
+        // Switch it to "activated" state, which pins it.
+        dfnPanel.classList.add("activated");
+        dfnPanel.style.left = null;
+        dfnPanel.style.top = null;
+    }
+
+    function hideDfnPanel(dfnPanel, dfn) {
+        if(!dfn) {
+            dfn = document.getElementById(dfnPanel.getAttribute("data-for"));
+        }
+        dfn.setAttribute("aria-expanded", "false")
+        dfnPanel.classList.remove("on");
+        dfnPanel.classList.remove("activated");
+    }
+
+    function toggleDfnPanel(dfnPanel, dfn) {
+        if(dfnPanel.classList.contains("on")) {
+            hideDfnPanel(dfnPanel, dfn);
+        } else {
+            showDfnPanel(dfnPanel, dfn);
+        }
+    }
+
+    function insertDfnPopupAction(dfn, dfnPanel) {
+        // Find dfn panel
+        const panelWrapper = document.createElement('span');
+        panelWrapper.appendChild(dfnPanel);
+        panelWrapper.style.position = "relative";
+        panelWrapper.style.height = "0px";
+        dfn.insertAdjacentElement("afterend", panelWrapper);
+        dfn.setAttribute('role', 'button');
+        dfn.setAttribute('aria-expanded', 'false')
+        dfn.tabIndex = 0;
+        dfn.classList.add('has-dfn-panel');
+        dfn.addEventListener('click', (event) => {
+            showDfnPanel(dfnPanel, dfn);
+            event.stopPropagation();
+        });
+        dfn.addEventListener('keypress', (event) => {
+            const kc = event.keyCode;
+            // 32->Space, 13->Enter
+            if(kc == 32 || kc == 13) {
+                toggleDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        });
+
+        dfnPanel.addEventListener('click', (event) => {
+            if (event.target.nodeName == 'A') {
+                pinDfnPanel(dfnPanel);
+            }
+            event.stopPropagation();
+        });
+
+        dfnPanel.addEventListener('keydown', (event) => {
+            if(event.keyCode == 27) { // Escape key
+                hideDfnPanel(dfnPanel, dfn);
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        })
+    }
+}
+</script>
+<script>/* Boilerplate: script-dfn-panel-json */
+window.dfnpanelData = {};
+window.dfnpanelData['cca3cdb2'] = {"dfnID": "cca3cdb2", "url": "https://dom.spec.whatwg.org/#abortsignal", "dfnText": "AbortSignal", "refSections": [{"refs": [{"id": "ref-for-abortsignal"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-abortsignal\u2460"}, {"id": "ref-for-abortsignal\u2461"}], "title": "2.2. The Observable interface"}], "external": true};
+window.dfnpanelData['2bc0cdf4'] = {"dfnID": "2bc0cdf4", "url": "https://dom.spec.whatwg.org/#eventtarget", "dfnText": "EventTarget", "refSections": [{"refs": [{"id": "ref-for-eventtarget"}, {"id": "ref-for-eventtarget\u2460"}], "title": "3. EventTarget integration"}], "external": true};
+window.dfnpanelData['8855a9aa'] = {"dfnID": "8855a9aa", "url": "https://webidl.spec.whatwg.org/#idl-DOMString", "dfnText": "DOMString", "refSections": [{"refs": [{"id": "ref-for-idl-DOMString"}], "title": "3. EventTarget integration"}], "external": true};
+window.dfnpanelData['bdbd19d1'] = {"dfnID": "bdbd19d1", "url": "https://webidl.spec.whatwg.org/#idl-promise", "dfnText": "Promise", "refSections": [{"refs": [{"id": "ref-for-idl-promise"}, {"id": "ref-for-idl-promise\u2460"}, {"id": "ref-for-idl-promise\u2461"}, {"id": "ref-for-idl-promise\u2462"}, {"id": "ref-for-idl-promise\u2463"}, {"id": "ref-for-idl-promise\u2464"}], "title": "2.2. The Observable interface"}], "external": true};
+window.dfnpanelData['7004c2a7'] = {"dfnID": "7004c2a7", "url": "https://webidl.spec.whatwg.org/#VoidFunction", "dfnText": "VoidFunction", "refSections": [{"refs": [{"id": "ref-for-VoidFunction"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-VoidFunction\u2460"}, {"id": "ref-for-VoidFunction\u2461"}], "title": "2.2. The Observable interface"}], "external": true};
+window.dfnpanelData['6c6b1005'] = {"dfnID": "6c6b1005", "url": "https://webidl.spec.whatwg.org/#idl-any", "dfnText": "any", "refSections": [{"refs": [{"id": "ref-for-idl-any"}, {"id": "ref-for-idl-any\u2460"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-any\u2461"}, {"id": "ref-for-idl-any\u2462"}, {"id": "ref-for-idl-any\u2463"}, {"id": "ref-for-idl-any\u2464"}, {"id": "ref-for-idl-any\u2465"}, {"id": "ref-for-idl-any\u2466"}, {"id": "ref-for-idl-any\u2467"}, {"id": "ref-for-idl-any\u2468"}, {"id": "ref-for-idl-any\u2460\u24ea"}, {"id": "ref-for-idl-any\u2460\u2460"}, {"id": "ref-for-idl-any\u2460\u2461"}, {"id": "ref-for-idl-any\u2460\u2462"}, {"id": "ref-for-idl-any\u2460\u2463"}, {"id": "ref-for-idl-any\u2460\u2464"}], "title": "2.2. The Observable interface"}], "external": true};
+window.dfnpanelData['5372cca8'] = {"dfnID": "5372cca8", "url": "https://webidl.spec.whatwg.org/#idl-boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-idl-boolean"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-boolean\u2460"}, {"id": "ref-for-idl-boolean\u2461"}, {"id": "ref-for-idl-boolean\u2462"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-idl-boolean\u2463"}, {"id": "ref-for-idl-boolean\u2464"}], "title": "3. EventTarget integration"}], "external": true};
+window.dfnpanelData['9cce47fd'] = {"dfnID": "9cce47fd", "url": "https://webidl.spec.whatwg.org/#idl-sequence", "dfnText": "sequence", "refSections": [{"refs": [{"id": "ref-for-idl-sequence"}], "title": "2.2. The Observable interface"}], "external": true};
+window.dfnpanelData['5f90bbfb'] = {"dfnID": "5f90bbfb", "url": "https://webidl.spec.whatwg.org/#idl-undefined", "dfnText": "undefined", "refSections": [{"refs": [{"id": "ref-for-idl-undefined"}, {"id": "ref-for-idl-undefined\u2460"}, {"id": "ref-for-idl-undefined\u2461"}, {"id": "ref-for-idl-undefined\u2462"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-undefined\u2463"}, {"id": "ref-for-idl-undefined\u2464"}, {"id": "ref-for-idl-undefined\u2465"}, {"id": "ref-for-idl-undefined\u2466"}, {"id": "ref-for-idl-undefined\u2467"}, {"id": "ref-for-idl-undefined\u2468"}], "title": "2.2. The Observable interface"}], "external": true};
+window.dfnpanelData['f14b47b8'] = {"dfnID": "f14b47b8", "url": "https://webidl.spec.whatwg.org/#idl-unsigned-long-long", "dfnText": "unsigned long long", "refSections": [{"refs": [{"id": "ref-for-idl-unsigned-long-long"}, {"id": "ref-for-idl-unsigned-long-long\u2460"}, {"id": "ref-for-idl-unsigned-long-long\u2461"}, {"id": "ref-for-idl-unsigned-long-long\u2462"}], "title": "2.2. The Observable interface"}], "external": true};
+window.dfnpanelData['subscriber'] = {"dfnID": "subscriber", "url": "#subscriber", "dfnText": "Subscriber", "refSections": [{"refs": [{"id": "ref-for-subscriber"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-subscriber\u2460"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['callbackdef-subscribecallback'] = {"dfnID": "callbackdef-subscribecallback", "url": "#callbackdef-subscribecallback", "dfnText": "SubscribeCallback", "refSections": [{"refs": [{"id": "ref-for-callbackdef-subscribecallback"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['callbackdef-observercallback'] = {"dfnID": "callbackdef-observercallback", "url": "#callbackdef-observercallback", "dfnText": "ObserverCallback", "refSections": [{"refs": [{"id": "ref-for-callbackdef-observercallback"}, {"id": "ref-for-callbackdef-observercallback\u2460"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['dictdef-observer'] = {"dfnID": "dictdef-observer", "url": "#dictdef-observer", "dfnText": "Observer", "refSections": [{"refs": [{"id": "ref-for-dictdef-observer"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['dictdef-subscribeoptions'] = {"dfnID": "dictdef-subscribeoptions", "url": "#dictdef-subscribeoptions", "dfnText": "SubscribeOptions", "refSections": [{"refs": [{"id": "ref-for-dictdef-subscribeoptions"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['dictdef-promiseoptions'] = {"dfnID": "dictdef-promiseoptions", "url": "#dictdef-promiseoptions", "dfnText": "PromiseOptions", "refSections": [{"refs": [{"id": "ref-for-dictdef-promiseoptions"}, {"id": "ref-for-dictdef-promiseoptions\u2460"}, {"id": "ref-for-dictdef-promiseoptions\u2461"}, {"id": "ref-for-dictdef-promiseoptions\u2462"}, {"id": "ref-for-dictdef-promiseoptions\u2463"}, {"id": "ref-for-dictdef-promiseoptions\u2464"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['callbackdef-predicate'] = {"dfnID": "callbackdef-predicate", "url": "#callbackdef-predicate", "dfnText": "Predicate", "refSections": [{"refs": [{"id": "ref-for-callbackdef-predicate"}, {"id": "ref-for-callbackdef-predicate\u2460"}, {"id": "ref-for-callbackdef-predicate\u2461"}, {"id": "ref-for-callbackdef-predicate\u2462"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['callbackdef-reducer'] = {"dfnID": "callbackdef-reducer", "url": "#callbackdef-reducer", "dfnText": "Reducer", "refSections": [{"refs": [{"id": "ref-for-callbackdef-reducer"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['callbackdef-mapper'] = {"dfnID": "callbackdef-mapper", "url": "#callbackdef-mapper", "dfnText": "Mapper", "refSections": [{"refs": [{"id": "ref-for-callbackdef-mapper"}, {"id": "ref-for-callbackdef-mapper\u2460"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['callbackdef-visitor'] = {"dfnID": "callbackdef-visitor", "url": "#callbackdef-visitor", "dfnText": "Visitor", "refSections": [{"refs": [{"id": "ref-for-callbackdef-visitor"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['observable'] = {"dfnID": "observable", "url": "#observable", "dfnText": "Observable", "refSections": [{"refs": [{"id": "ref-for-observable"}, {"id": "ref-for-observable\u2460"}, {"id": "ref-for-observable\u2461"}, {"id": "ref-for-observable\u2462"}, {"id": "ref-for-observable\u2463"}, {"id": "ref-for-observable\u2464"}, {"id": "ref-for-observable\u2465"}, {"id": "ref-for-observable\u2466"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-observable\u2467"}], "title": "3. EventTarget integration"}, {"refs": [{"id": "ref-for-observable\u2468"}], "title": "5. Acknowledgements"}], "external": false};
+window.dfnpanelData['dictdef-observableeventlisteneroptions'] = {"dfnID": "dictdef-observableeventlisteneroptions", "url": "#dictdef-observableeventlisteneroptions", "dfnText": "ObservableEventListenerOptions", "refSections": [{"refs": [{"id": "ref-for-dictdef-observableeventlisteneroptions"}], "title": "3. EventTarget integration"}], "external": false};
+</script>
+<script>/* Boilerplate: script-dom-helper */
+function query(sel) { return document.querySelector(sel); }
+
+function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
+
+function iter(obj) {
+	if(!obj) return [];
+	var it = obj[Symbol.iterator];
+	if(it) return it;
+	return Object.entries(obj);
+}
+
+function mk(tagname, attrs, ...children) {
+	const el = document.createElement(tagname);
+	for(const [k,v] of iter(attrs)) {
+		if(k.slice(0,3) == "_on") {
+			const eventName = k.slice(3);
+			el.addEventListener(eventName, v);
+		} else if(k[0] == "_") {
+			// property, not attribute
+			el[k.slice(1)] = v;
+		} else {
+			if(v === false || v == null) {
+        continue;
+      } else if(v === true) {
+        el.setAttribute(k, "");
+        continue;
+      } else {
+  			el.setAttribute(k, v);
+      }
+		}
+	}
+	append(el, children);
+	return el;
+}
+
+/* Create shortcuts for every known HTML element */
+[
+  "a",
+  "abbr",
+  "acronym",
+  "address",
+  "applet",
+  "area",
+  "article",
+  "aside",
+  "audio",
+  "b",
+  "base",
+  "basefont",
+  "bdo",
+  "big",
+  "blockquote",
+  "body",
+  "br",
+  "button",
+  "canvas",
+  "caption",
+  "center",
+  "cite",
+  "code",
+  "col",
+  "colgroup",
+  "datalist",
+  "dd",
+  "del",
+  "details",
+  "dfn",
+  "dialog",
+  "div",
+  "dl",
+  "dt",
+  "em",
+  "embed",
+  "fieldset",
+  "figcaption",
+  "figure",
+  "font",
+  "footer",
+  "form",
+  "frame",
+  "frameset",
+  "head",
+  "header",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+  "html",
+  "i",
+  "iframe",
+  "img",
+  "input",
+  "ins",
+  "kbd",
+  "label",
+  "legend",
+  "li",
+  "link",
+  "main",
+  "map",
+  "mark",
+  "meta",
+  "meter",
+  "nav",
+  "nobr",
+  "noscript",
+  "object",
+  "ol",
+  "optgroup",
+  "option",
+  "output",
+  "p",
+  "param",
+  "pre",
+  "progress",
+  "q",
+  "s",
+  "samp",
+  "script",
+  "section",
+  "select",
+  "small",
+  "source",
+  "span",
+  "strike",
+  "strong",
+  "style",
+  "sub",
+  "summary",
+  "sup",
+  "table",
+  "tbody",
+  "td",
+  "template",
+  "textarea",
+  "tfoot",
+  "th",
+  "thead",
+  "time",
+  "title",
+  "tr",
+  "u",
+  "ul",
+  "var",
+  "video",
+  "wbr",
+  "xmp",
+].forEach(tagname=>{
+	mk[tagname] = (...args) => mk(tagname, ...args);
+});
+
+function* nodesFromChildList(children) {
+	for(const child of children.flat(Infinity)) {
+		if(child instanceof Node) {
+			yield child;
+		} else {
+			yield new Text(child);
+		}
+	}
+}
+function append(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		if(el instanceof Node) el.appendChild(child);
+		else el.push(child);
+	}
+	return el;
+}
+
+function insertAfter(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		el.parentNode.insertBefore(child, el.nextSibling);
+	}
+	return el;
+}
+
+function clearContents(el) {
+	el.innerHTML = "";
+	return el;
+}
+
+function parseHTML(markup) {
+	if(markup.toLowerCase().trim().indexOf('<!doctype') === 0) {
+		const doc = document.implementation.createHTMLDocument("");
+		doc.documentElement.innerHTML = markup;
+		return doc;
+	} else {
+		const el = mk.template({});
+		el.innerHTML = markup;
+		return el.content;
+	}
+}
+</script>
