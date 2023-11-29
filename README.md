@@ -508,9 +508,10 @@ We propose the following operators in addition to the `Observable` interface:
 - `finally()`
   - Like `Promise.finally()`, it takes a callback which gets fired after the
     observable completes in any way (`complete()`/`error()`).
-  - Returns an `Observable`, because observable is lazy, finalization
-    is setup ahead of subscription. This allows for specific finalization to
-    happen after each step in a reactive chain.
+  - Returns an `Observable` that mirrors the source observable exactly. The callback
+    passed to `finally` is fired when a subscription to the resulting observable is terminated
+    for _any reason_. Either immediately after the source completes or errors, or when the consumer
+    unsubscribes by aborting the subscription.
 
 Versions of the above are often present in userland implementations of
 observables as they are useful for observable-specific reasons, but in addition
