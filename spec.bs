@@ -167,6 +167,8 @@ dictionary Observer {
   VoidFunction complete;
 };
 
+typedef (ObserverCallback or Observer) ObserverUnion;
+
 dictionary SubscribeOptions {
   AbortSignal signal;
 };
@@ -185,7 +187,7 @@ callback Visitor = undefined (any element, unsigned long long index);
 [Exposed=*]
 interface Observable {
   constructor(SubscribeCallback callback);
-  undefined subscribe(optional Observer observer = {}, optional SubscribeOptions options = {});
+  undefined subscribe(optional ObserverUnion observer = {}, optional SubscribeOptions options = {});
 
   undefined finally(VoidFunction callback);
 
