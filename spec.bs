@@ -137,8 +137,8 @@ dl, dd {
 [Exposed=*]
 interface Subscriber {
   undefined next(any result);
-  undefined complete();
   undefined error(any error);
+  undefined complete();
   undefined addTeardown(VoidFunction teardown);
 
   // True after the Subscriber is created, up until either
@@ -163,8 +163,8 @@ callback ObserverCallback = undefined (any value);
 
 dictionary Observer {
   ObserverCallback next;
-  VoidFunction complete;
   ObserverCallback error;
+  VoidFunction complete;
 };
 
 dictionary SubscribeOptions {
