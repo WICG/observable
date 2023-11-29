@@ -620,6 +620,7 @@ class Subscriber {
 	#active = true;
 	#abortController = new AbortController();
 	#signal;
+	#teardowns;
 	get signal() {
 		return this.#signal;
 	}
@@ -650,17 +651,56 @@ class Subscriber {
 			this.#abortController.abort();
 		}
 	}
+	#teardownHandler = () => {
+		const teardowns = Array.from(this.#teardowns);
+		this.#teardowns = undefined;
+		let errors;
+		for (let i = teardowns.length - 1; i >= 0; i--) {
+			try {
+				teardowns[i]();
+			} catch (error) {
+				errors ??= [];
+				errors.push(error);
+			}
+		}
+		if (errors) {
+			// TODO: We need to figure out how to report multiple errors.
+			throw new Error(
+				`${errors.length} teardowns failed.\n ${errors.join('\n')}}`,
+			);
+		}
+	};
 	addTeardown(teardown) {
 		if (this.isActive) {
-			this.#abortController.signal.addEventListener('abort', teardown, {
-				once: true,
-			});
+			if (!this.#teardowns) {
+				this.#teardowns = [];
+				this.#abortController.signal.addEventListener(
+					'abort',
+					this.#teardownHandler,
+					{
+						once: true,
+					},
+				);
+			}
+			this.#teardowns.push(teardown);
 		} else {
 			teardown();
 		}
 	}
 	removeTeardown(teardown) {
-		this.#abortController.signal.removeEventListener('abort', teardown);
+		if (this.#teardowns) {
+			const index = this.#teardowns.indexOf(teardown);
+			if (index >= 0) {
+				this.#teardowns.splice(index, 1);
+				if (this.#teardowns.length === 0) {
+					this.#teardowns = undefined;
+					this.#abortController.signal.removeEventListener(
+						'abort',
+						this.#teardownHandler,
+					);
+				}
+			}
+		}
 	}
 }
 function noop() {}
