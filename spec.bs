@@ -242,3 +242,10 @@ This material is being upstreamed from our explainer into this specification, an
 you can consult the following resources:
 
  * [TAG Security/Privacy Questionnaire](https://github.com/WICG/observable/blob/master/security-privacy-questionnaire.md)
+
+<h2 id=acks>Acknowledgements</h2>
+
+A special thanks to [Ben Lesh](https://benlesh.com/) for much of the design
+input for the {{Observable}} API, and his many years of work maintaining
+userland Observable code that made this contribution to the web platform
+possible.
