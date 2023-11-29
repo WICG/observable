@@ -23,41 +23,54 @@ hard-to-follow callback chains.
 
 ```js
 // Filtering and mapping:
-element
-	.on('click')
-	.filter((e) => e.target.matches('.foo'))
-	.map((e) => ({ x: e.clientX, y: e.clientY }))
-	.subscribe({ next: handleClickAtPoint });
-```
-
-#### Example 2
-
-```js
-// Automatic, declarative unsubscription via the takeUntil method:
-element.on('mousemove')
-  .takeUntil(document.on('mouseup'))
-  .subscribe({next: e => … });
-
-// Since reduce and some other terminators return promises, they also play
-// well with async functions:
-await element.on('mousemove')
-  .takeUntil(element.on('mouseup'))
-  .reduce((soFar, e) => …);
+element.on('click')
+  .filter(e => e.target.matches('.foo'))
+  .map(e => ({x: e.clientX, y: e.clientY }))
+  .subscribe(({ x, y }) => {
+    console.log(`Clicked foo at ${x}, ${y}`)
+  }));
 ```
 
 <details>
 <summary>Imperative version</summary>
 
 ```js
-// Imperative
-const controller = new AbortController();
+element.addEventListener('click', (e) => {
+	if (e.target.matches('.foo')) {
+		const { clientX: x, clientY: y } = e;
+		console.log(`Clicked foo at ${x}, ${y}`);
+	}
+});
+```
+
+</details>
+
+#### Example 2
+
+Automatic, declarative unsubscription via the takeUntil method
+
+```js
+const ac = new AbortController();
+element
+	.on('mousemove')
+	.takeUntil(element.on('mouseup'))
+	.subscribe(console.log, { signal: ac.signal });
+```
+
+<details>
+<summary>Imperative version</summary>
+
+```js
+const ac = new AbortController();
 element.addEventListener(
 	'mousemove',
 	(e) => {
-		element.addEventListener('mouseup', (e) => controller.abort());
+		element.addEventListener('mouseup', (e) => ac.abort(), {
+			signal: controller.signal,
+		});
 		console.log(e);
 	},
-	{ signal: controller.signal },
+	{ signal: ac.signal },
 );
 ```
 
@@ -65,19 +78,32 @@ element.addEventListener(
 
 #### Example 3
 
-Tracking all link clicks within a container
 ([example](https://github.com/whatwg/dom/issues/544#issuecomment-351705380)):
 
 ```js
+let linkClicks = 0;
 container
 	.on('click')
 	.filter((e) => e.target.closest('a'))
-	.subscribe({
-		next: (e) => {
-			// …
-		},
+	.subscribe(() => {
+		linkClicks++;
 	});
 ```
+
+<details>
+<summary>Imperative version</summary>
+
+```js
+let linkClicks = 0;
+container.addEventListener('click', (e) => {
+	const found = e.target.closest('a');
+	if (found?.href) {
+		linkClicks++;
+	}
+});
+```
+
+</details>
 
 #### Example 4
 
@@ -91,6 +117,31 @@ const maxY = await element
 	.map((e) => e.clientY)
 	.reduce((soFar, y) => Math.max(soFar, y), 0);
 ```
+
+<details>
+<summary>Imperative version</summary>
+
+```js
+const maxY = await new Promise((resolve) => {
+	let max = 0;
+	const mouseMoveHandler = (e) => {
+		max = Math.max(max, e.clientX);
+	};
+
+	element.addEventListener('mousemove', mouseMoveHandler);
+
+	element.addEventListener(
+		'mouseup',
+		() => {
+			element.removeEventListener('mousemove', mouseMoveHandler);
+			resolve(max);
+		},
+		{ once: true },
+	);
+});
+```
+
+</details>
 
 #### Example 5
 
@@ -239,10 +290,8 @@ keys
 		}
 	})
 	.filter((matched) => matched)
-	.subscribe({
-		next: (_) => {
-			console.log('Secret code matched!');
-		},
+	.subscribe(() => {
+		console.log('Secret code matched!');
 	});
 ```
 
@@ -269,6 +318,120 @@ document.addEventListener('keydown', e => {
     document.addEventListener('keydown', handler)
   }
 })
+```
+
+</details>
+
+#### Example 7
+
+When you mousedown on the document, it will start measuring how far your mouse moves, rendering a
+line and some text for how far you've measured, and when you mouse up, will log the final
+distance before removing the line.
+
+```js
+const measurements = document.on('mousedown').flatMap((e) => {
+	const { clientX: startX, clientY: startY } = e;
+
+	const svg = document.createElement('svg');
+	svg.width = document.body.width;
+	svg.height = document.body.height;
+	svg.innerHTML = `
+    <line x1="${startX}" y1="${startY}" x2="0" y2="0" style="stroke:black;"/>
+    <text x="0" y="0" fill="black"/>0</text>
+  `;
+	const line = svg.querySelector('line');
+	const text = svg.querySelector('text');
+	document.body.appendChild(svg);
+	let dist = 0;
+
+	return document
+		.on('mousemove')
+		.map((e) => {
+			const { clientX: endX, clientY: endY } = e;
+			const diffX = endX - startX;
+			const diffY = endY - startY;
+			const dist = Math.sqrt(diffX ** 2 + diffY ** 2);
+			return { endX, endY, dist };
+		})
+		.takeUntil(document.on('mouseup'))
+		.do(({ endX, endY, dist }) => {
+			line.x2 = endX;
+			line.y2 = endY;
+			text.textContent = dist;
+		})
+		.reduce((_, { dist }) => dist, 0)
+		.finally(() => {
+			svg.remove();
+		});
+});
+
+const ac = new AbortController();
+measurements.subscribe(
+	(dist) => {
+		console.log(`Measured distance: ${dist}`);
+	},
+	{ signal: ac.signal },
+);
+
+// Tearing everything down later
+ac.abort();
+```
+
+<details>
+<summary>Imperative version</summary>
+
+```js
+const ac = new AbortController();
+document.addEventListener(
+	'mousedown',
+	(e) => {
+		const { clientX: startX, clientY: startY } = e;
+
+		const svg = document.createElement('svg');
+		svg.width = document.body.width;
+		svg.height = document.body.height;
+		svg.innerHTML = `
+      <line x1="${startX}" y1="${startY}" x2="0" y2="0" style="stroke:black;"/>
+      <text x="0" y="0" fill="black"/>0</text>
+    `;
+		const line = svg.querySelector('line');
+		const text = svg.querySelector('text');
+		document.body.appendChild(svg);
+		let dist = 0;
+
+		const mouseMoveHandler = (e) => {
+			const { clientX: endX, clientY: endY } = e;
+			const diffX = endX - startX;
+			const diffY = endY - startY;
+			dist = Math.sqrt(diffX ** 2 + diffY ** 2);
+			line.x2 = endX;
+			line.y2 = endY;
+			text.textContent = dist;
+		};
+
+		document.addEventListener('mousemove', mouseMoveHandler, {
+			signal: ac.signal,
+		});
+
+		document.addEventListener(
+			'mouseup',
+			() => {
+				document.removeEventListener('mousemove', mouseMoveHandler);
+				console.log(`Measured distance: ${dist}`);
+				svg.remove();
+			},
+			{ once: true, signal: ac.signal },
+		);
+
+		ac.signal.addEventListener('abort', () => {
+			svg.remove();
+		});
+	},
+	{ signal: ac.signal },
+);
+
+// Tearing everything down later
+ac.abort();
 ```
 
 </details>
@@ -465,19 +628,20 @@ synchronously emits data _during_ subscription:
 
 ```js
 // An observable that synchronously emits unlimited data during subscription.
-let observable = new Observable((subscriber) => {
+const observable = new Observable((subscriber) => {
 	let i = 0;
 	while (true) {
 		subscriber.next(i++);
 	}
 });
 
-let controller = new AbortController();
-observable.subscribe({
-	next: (data) => {
+const controller = new AbortController();
+observable.subscribe(
+	(data) => {
 		if (data > 100) controller.abort();
-	}}, {signal: controller.signal},
-});
+	},
+	{ signal: controller.signal },
+);
 ```
 
 #### Teardown
