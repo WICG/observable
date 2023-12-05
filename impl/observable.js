@@ -18,25 +18,39 @@ export class Observable {
 		}
 		if (Symbol.asyncIterator in value) {
 			return new Observable(async (subscriber) => {
+				const iterator = value[Symbol.asyncIterator]();
 				try {
-					for await (const v of value) {
-						subscriber.next(v);
+					while (subscriber.isActive) {
+						const { value, done } = await iterator.next();
+						if (done) {
+							subscriber.complete();
+							return;
+						}
+						subscriber.next(value);
 					}
-					subscriber.complete();
 				} catch (error) {
 					subscriber.error(error);
+				} finally {
+					iterator.return?.();
 				}
 			});
 		}
 		if (Symbol.iterator in value) {
 			return new Observable((subscriber) => {
+				const iterator = value[Symbol.iterator]();
 				try {
-					for (const v of value) {
-						if (subscriber.isActive) subscriber.next(v);
+					while (subscriber.isActive) {
+						const { value, done } = iterator.next();
+						if (done) {
+							subscriber.complete();
+							return;
+						}
+						subscriber.next(value);
 					}
-					subscriber.complete();
 				} catch (error) {
 					subscriber.error(error);
+				} finally {
+					iterator.return?.();
 				}
 			});
 		}
