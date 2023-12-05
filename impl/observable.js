@@ -77,7 +77,7 @@ export class Observable {
 		return new Promise((resolve, reject) => {
 			const ac = new AbortController();
 			const signal = options?.signal
-				? useSignalAll([ac.signal, options.signal])
+				? abortSignalAny([ac.signal, options.signal])
 				: ac.signal;
 			this.subscribe(
 				{
@@ -215,7 +215,7 @@ export class Observable {
 			let outerComplete = false;
 			const startInner = (value) => {
 				innerAC = new AbortController();
-				const signal = useSignalAll([innerAC.signal, destination.signal]);
+				const signal = abortSignalAny([innerAC.signal, destination.signal]);
 				let innerObservable;
 				try {
 					innerObservable = Observable.from(project(value, index++));
@@ -292,7 +292,7 @@ export class Observable {
 		return new Promise((resolve, reject) => {
 			const ac = new AbortController();
 			const signal = options?.signal
-				? useSignalAll([ac.signal, options.signal])
+				? abortSignalAny([ac.signal, options.signal])
 				: ac.signal;
 			let index = 0;
 			this.subscribe(
@@ -326,7 +326,7 @@ export class Observable {
 		return new Promise((resolve, reject) => {
 			const ac = new AbortController();
 			const signal = options?.signal
-				? useSignalAll([ac.signal, options.signal])
+				? abortSignalAny([ac.signal, options.signal])
 				: ac.signal;
 			let index = 0;
 			this.subscribe(
@@ -360,7 +360,7 @@ export class Observable {
 		return new Promise((resolve, reject) => {
 			const ac = new AbortController();
 			const signal = options?.signal
-				? useSignalAll([ac.signal, options.signal])
+				? abortSignalAny([ac.signal, options.signal])
 				: ac.signal;
 			let index = 0;
 			this.subscribe(
@@ -395,7 +395,7 @@ export class Observable {
 		return new Promise((resolve, reject) => {
 			const ac = new AbortController();
 			const signal = options?.signal
-				? useSignalAll([ac.signal, options.signal])
+				? abortSignalAny([ac.signal, options.signal])
 				: ac.signal;
 			let hasState = arguments.length >= 2;
 			let state = initialValue;
@@ -477,7 +477,7 @@ export class Observable {
 					next: (value) => {
 						innerAC?.abort();
 						innerAC = new AbortController();
-						const signal = useSignalAll([innerAC.signal, destination.signal]);
+						const signal = abortSignalAny([innerAC.signal, destination.signal]);
 						let innerObservable;
 						try {
 							innerObservable = Observable.from(project(value, index++));
@@ -644,7 +644,7 @@ class Subscriber {
 	constructor(signal, _observer) {
 		this._observer = _observer;
 		const ownSignal = this.#abortController.signal;
-		this.#signal = signal ? useSignalAll([signal, ownSignal]) : ownSignal;
+		this.#signal = signal ? abortSignalAny([signal, ownSignal]) : ownSignal;
 	}
 	next(value) {
 		if (this.isActive) {
@@ -719,9 +719,9 @@ class Subscriber {
 }
 function noop() {}
 
-function useSignalAll(signals) {
-	if (typeof AbortSignal.all === 'function') {
-		return AbortSignal.all(signals);
+function abortSignalAny(signals) {
+	if (typeof AbortSignal.any === 'function') {
+		return AbortSignal.any(signals);
 	} else {
 		const ac = new AbortController();
 		const handleAbort = () => {
