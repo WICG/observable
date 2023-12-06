@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="cfffd491ad7fc9db182f746f424c7b57a1463251" name="document-revision">
+  <meta content="0b30c4c7b4c5b81d8f94a05b3c4ae4a43e9fab3b" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -740,6 +740,27 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
     c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
 }
 </style>
+<style>/* Boilerplate: style-var-click-highlighting */
+/*
+Colors were chosen in Lab using https://nixsensor.com/free-color-converter/
+D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
+0 = lab(85,0,85)
+1 = lab(85,80,30)
+2 = lab(85,-40,40)
+3 = lab(85,-50,0)
+4 = lab(85,5,15)
+5 = lab(85,-10,-50)
+6 = lab(85,35,-15)
+*/
+var { cursor: pointer; }
+var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+</style>
 <style>/* Boilerplate: style-wpt */
 :root {
     --wpt-border: hsl(0, 0%, 60%);
@@ -881,7 +902,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-11-29">29 November 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-12-06">6 December 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -941,6 +962,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
      </ol>
     <li><a href="#idl-index"><span class="secno"></span> <span class="content">IDL Index</span></a>
+    <li><a href="#issues-index"><span class="secno"></span> <span class="content">Issues Index</span></a>
    </ol>
   </nav>
   <main>
@@ -996,8 +1018,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 
 [Exposed=*]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="observable"><code><c- g>Observable</c-></code></dfn> {
-  <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="constructor" data-export data-lt="Observable(callback)|constructor(callback)" id="dom-observable-observable"><code><c- g>constructor</c-></code><a class="self-link" href="#dom-observable-observable"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-subscribecallback" id="ref-for-callbackdef-subscribecallback"><c- n>SubscribeCallback</c-></a> <dfn class="idl-code" data-dfn-for="Observable/Observable(callback), Observable/constructor(callback)" data-dfn-type="argument" data-export id="dom-observable-observable-callback-callback"><code><c- g>callback</c-></code><a class="self-link" href="#dom-observable-observable-callback-callback"></a></dfn>);
-  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑦"><c- b>undefined</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="subscribe(observer, options)|subscribe(observer)|subscribe()" id="dom-observable-subscribe"><code><c- g>subscribe</c-></code><a class="self-link" href="#dom-observable-subscribe"></a></dfn>(<c- b>optional</c-> <a data-link-type="idl-name" href="#typedefdef-observerunion" id="ref-for-typedefdef-observerunion"><c- n>ObserverUnion</c-></a> <dfn class="idl-code" data-dfn-for="Observable/subscribe(observer, options), Observable/subscribe(observer), Observable/subscribe()" data-dfn-type="argument" data-export id="dom-observable-subscribe-observer-options-observer"><code><c- g>observer</c-></code><a class="self-link" href="#dom-observable-subscribe-observer-options-observer"></a></dfn> = {}, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions"><c- n>SubscribeOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/subscribe(observer, options), Observable/subscribe(observer), Observable/subscribe()" data-dfn-type="argument" data-export id="dom-observable-subscribe-observer-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-subscribe-observer-options-options"></a></dfn> = {});
+  <a class="idl-code" data-link-type="constructor" href="#dom-observable-observable" id="ref-for-dom-observable-observable"><c- g>constructor</c-></a>(<a data-link-type="idl-name" href="#callbackdef-subscribecallback" id="ref-for-callbackdef-subscribecallback"><c- n>SubscribeCallback</c-></a> <dfn class="idl-code" data-dfn-for="Observable/Observable(callback), Observable/constructor(callback)" data-dfn-type="argument" data-export id="dom-observable-observable-callback-callback"><code><c- g>callback</c-></code><a class="self-link" href="#dom-observable-observable-callback-callback"></a></dfn>);
+  <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑦"><c- b>undefined</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="subscribe(observer, options)|subscribe(observer)|subscribe()" id="dom-observable-subscribe"><code><c- g>subscribe</c-></code></dfn>(<c- b>optional</c-> <a data-link-type="idl-name" href="#typedefdef-observerunion" id="ref-for-typedefdef-observerunion"><c- n>ObserverUnion</c-></a> <dfn class="idl-code" data-dfn-for="Observable/subscribe(observer, options), Observable/subscribe(observer), Observable/subscribe()" data-dfn-type="argument" data-export id="dom-observable-subscribe-observer-options-observer"><code><c- g>observer</c-></code><a class="self-link" href="#dom-observable-subscribe-observer-options-observer"></a></dfn> = {}, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions"><c- n>SubscribeOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/subscribe(observer, options), Observable/subscribe(observer), Observable/subscribe()" data-dfn-type="argument" data-export id="dom-observable-subscribe-observer-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-subscribe-observer-options-options"></a></dfn> = {});
 
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑧"><c- b>undefined</c-></a> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="finally(callback)" id="dom-observable-finally"><code><c- g>finally</c-></code><a class="self-link" href="#dom-observable-finally"></a></dfn>(<a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction" id="ref-for-VoidFunction②"><c- n>VoidFunction</c-></a> <dfn class="idl-code" data-dfn-for="Observable/finally(callback)" data-dfn-type="argument" data-export id="dom-observable-finally-callback-callback"><code><c- g>callback</c-></code><a class="self-link" href="#dom-observable-finally-callback-callback"></a></dfn>);
 
@@ -1029,6 +1051,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise⑤"><c- b>Promise</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①④"><c- b>any</c-></a>> <dfn class="idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="reduce(reducer, initialValue, options)|reduce(reducer, initialValue)|reduce(reducer)" id="dom-observable-reduce"><code><c- g>reduce</c-></code><a class="self-link" href="#dom-observable-reduce"></a></dfn>(<a data-link-type="idl-name" href="#callbackdef-reducer" id="ref-for-callbackdef-reducer"><c- n>Reducer</c-></a> <dfn class="idl-code" data-dfn-for="Observable/reduce(reducer, initialValue, options), Observable/reduce(reducer, initialValue), Observable/reduce(reducer)" data-dfn-type="argument" data-export id="dom-observable-reduce-reducer-initialvalue-options-reducer"><code><c- g>reducer</c-></code><a class="self-link" href="#dom-observable-reduce-reducer-initialvalue-options-reducer"></a></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⑤"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="Observable/reduce(reducer, initialValue, options), Observable/reduce(reducer, initialValue), Observable/reduce(reducer)" data-dfn-type="argument" data-export id="dom-observable-reduce-reducer-initialvalue-options-initialvalue"><code><c- g>initialValue</c-></code><a class="self-link" href="#dom-observable-reduce-reducer-initialvalue-options-initialvalue"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-promiseoptions" id="ref-for-dictdef-promiseoptions⑤"><c- n>PromiseOptions</c-></a> <dfn class="idl-code" data-dfn-for="Observable/reduce(reducer, initialValue, options), Observable/reduce(reducer, initialValue), Observable/reduce(reducer)" data-dfn-type="argument" data-export id="dom-observable-reduce-reducer-initialvalue-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-observable-reduce-reducer-initialvalue-options-options"></a></dfn> = {});
 };
 </pre>
+   <p>Each <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑧">Observable</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Observable" data-dfn-type="dfn" data-noexport id="observable-subscribe-callback">subscribe callback</dfn>, which is a <code class="idl"><a data-link-type="idl" href="#callbackdef-subscribecallback" id="ref-for-callbackdef-subscribecallback①">SubscribeCallback</a></code>.</p>
+   <p class="issue" id="issue-47d22aad"><a class="self-link" href="#issue-47d22aad"></a> Make <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback">subscribe callback</a> either a <code class="idl"><a data-link-type="idl" href="#callbackdef-subscribecallback" id="ref-for-callbackdef-subscribecallback②">SubscribeCallback</a></code> or a set of steps that
+can be passed in by natively-constructed <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑨">Observable</a></code>s.</p>
+   <div class="algorithm" data-algorithm="Observable(callback)" data-algorithm-for="Observable">
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="constructor" data-export data-lt="Observable(callback)|constructor(callback)" id="dom-observable-observable"><code>new
+  Observable(<var>callback</var>)</code></dfn> constructor steps are: 
+    <ol>
+     <li data-md>
+      <p>Set <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this">this</a>'s <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①">subscribe callback</a> to <var>callback</var>.</p>
+      <p class="note" role="note"><span class="marker">Note:</span> This callback will get invoked later when <code class="idl"><a data-link-type="idl" href="#dom-observable-subscribe" id="ref-for-dom-observable-subscribe">subscribe()</a></code> is called.</p>
+    </ol>
+   </div>
    <h3 class="heading settled" data-level="2.3" id="operators"><span class="secno">2.3. </span><span class="content">Operators</span><a class="self-link" href="#operators"></a></h3>
    <p>For now, see <a href="https://github.com/wicg/observable#operators">https://github.com/wicg/observable#operators</a>.</p>
    <h2 class="heading settled" data-level="3" id="event-target-integration"><span class="secno">3. </span><span class="content"><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget">EventTarget</a></code> integration</span><a class="self-link" href="#event-target-integration"></a></h2>
@@ -1038,7 +1072,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget①"><c- g>EventTarget</c-></a> {
-  <a data-link-type="idl-name" href="#observable" id="ref-for-observable⑧"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget" data-dfn-type="method" data-export data-lt="on(type, options)|on(type)" id="dom-eventtarget-on"><code><c- g>on</c-></code><a class="self-link" href="#dom-eventtarget-on"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/on(type, options), EventTarget/on(type)" data-dfn-type="argument" data-export id="dom-eventtarget-on-type-options-type"><code><c- g>type</c-></code><a class="self-link" href="#dom-eventtarget-on-type-options-type"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions" id="ref-for-dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/on(type, options), EventTarget/on(type)" data-dfn-type="argument" data-export id="dom-eventtarget-on-type-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-eventtarget-on-type-options-options"></a></dfn> = {});
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable①⓪"><c- n>Observable</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget" data-dfn-type="method" data-export data-lt="on(type, options)|on(type)" id="dom-eventtarget-on"><code><c- g>on</c-></code><a class="self-link" href="#dom-eventtarget-on"></a></dfn>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/on(type, options), EventTarget/on(type)" data-dfn-type="argument" data-export id="dom-eventtarget-on-type-options-type"><code><c- g>type</c-></code><a class="self-link" href="#dom-eventtarget-on-type-options-type"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions" id="ref-for-dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/on(type, options), EventTarget/on(type)" data-dfn-type="argument" data-export id="dom-eventtarget-on-type-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-eventtarget-on-type-options-options"></a></dfn> = {});
 };
 </pre>
    <h2 class="heading settled" data-level="4" id="security-and-privacy"><span class="secno">4. </span><span class="content">Security &amp; Privacy Considerations</span><a class="self-link" href="#security-and-privacy"></a></h2>
@@ -1050,7 +1084,7 @@ you can consult the following resources:</p>
    </ul>
    <h2 class="heading settled" data-level="5" id="acks"><span class="secno">5. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acks"></a></h2>
    <p>A special thanks to <a href="https://benlesh.com/">Ben Lesh</a> for much of the design
-input for the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑨">Observable</a></code> API, and his many years of work maintaining
+input for the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable①①">Observable</a></code> API, and his many years of work maintaining
 userland Observable code that made this contribution to the web platform
 possible.</p>
   </main>
@@ -1106,6 +1140,7 @@ possible.</p>
    <li><a href="#dom-observable-some">some(predicate)</a><span>, in § 2.2</span>
    <li><a href="#dom-observable-some">some(predicate, options)</a><span>, in § 2.2</span>
    <li><a href="#dom-observable-subscribe">subscribe()</a><span>, in § 2.2</span>
+   <li><a href="#observable-subscribe-callback">subscribe callback</a><span>, in § 2.2</span>
    <li><a href="#callbackdef-subscribecallback">SubscribeCallback</a><span>, in § 2.2</span>
    <li><a href="#dom-observable-subscribe">subscribe(observer)</a><span>, in § 2.2</span>
    <li><a href="#dom-observable-subscribe">subscribe(observer, options)</a><span>, in § 2.2</span>
@@ -1134,6 +1169,7 @@ possible.</p>
      <li><span class="dfn-paneled" id="6c6b1005">any</span>
      <li><span class="dfn-paneled" id="5372cca8">boolean</span>
      <li><span class="dfn-paneled" id="9cce47fd">sequence</span>
+     <li><span class="dfn-paneled" id="4013a022">this</span>
      <li><span class="dfn-paneled" id="5f90bbfb">undefined</span>
      <li><span class="dfn-paneled" id="f14b47b8">unsigned long long</span>
     </ul>
@@ -1192,7 +1228,7 @@ possible.</p>
 
 [Exposed=*]
 <c- b>interface</c-> <a href="#observable"><code><c- g>Observable</c-></code></a> {
-  <a href="#dom-observable-observable"><code><c- g>constructor</c-></code></a>(<a data-link-type="idl-name" href="#callbackdef-subscribecallback"><c- n>SubscribeCallback</c-></a> <a href="#dom-observable-observable-callback-callback"><code><c- g>callback</c-></code></a>);
+  <a class="idl-code" data-link-type="constructor" href="#dom-observable-observable"><c- g>constructor</c-></a>(<a data-link-type="idl-name" href="#callbackdef-subscribecallback"><c- n>SubscribeCallback</c-></a> <a href="#dom-observable-observable-callback-callback"><code><c- g>callback</c-></code></a>);
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a href="#dom-observable-subscribe"><code><c- g>subscribe</c-></code></a>(<c- b>optional</c-> <a data-link-type="idl-name" href="#typedefdef-observerunion"><c- n>ObserverUnion</c-></a> <a href="#dom-observable-subscribe-observer-options-observer"><code><c- g>observer</c-></code></a> = {}, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-subscribeoptions"><c- n>SubscribeOptions</c-></a> <a href="#dom-observable-subscribe-observer-options-options"><code><c- g>options</c-></code></a> = {});
 
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a href="#dom-observable-finally"><code><c- g>finally</c-></code></a>(<a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction"><c- n>VoidFunction</c-></a> <a href="#dom-observable-finally-callback-callback"><code><c- g>callback</c-></code></a>);
@@ -1235,6 +1271,11 @@ possible.</p>
 };
 
 </pre>
+  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <div style="counter-reset:issue">
+   <div class="issue"> Make <a data-link-type="dfn" href="#observable-subscribe-callback">subscribe callback</a> either a <code class="idl"><a data-link-type="idl" href="#callbackdef-subscribecallback">SubscribeCallback</a></code> or a set of steps that
+can be passed in by natively-constructed <code class="idl"><a data-link-type="idl" href="#observable">Observable</a></code>s. <a class="issue-return" href="#issue-47d22aad" title="Jump to section">↵</a></div>
+  </div>
 <script>/* Boilerplate: script-dfn-panel */
 "use strict";
 {
@@ -1551,10 +1592,11 @@ window.dfnpanelData['7004c2a7'] = {"dfnID": "7004c2a7", "url": "https://webidl.s
 window.dfnpanelData['6c6b1005'] = {"dfnID": "6c6b1005", "url": "https://webidl.spec.whatwg.org/#idl-any", "dfnText": "any", "refSections": [{"refs": [{"id": "ref-for-idl-any"}, {"id": "ref-for-idl-any\u2460"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-any\u2461"}, {"id": "ref-for-idl-any\u2462"}, {"id": "ref-for-idl-any\u2463"}, {"id": "ref-for-idl-any\u2464"}, {"id": "ref-for-idl-any\u2465"}, {"id": "ref-for-idl-any\u2466"}, {"id": "ref-for-idl-any\u2467"}, {"id": "ref-for-idl-any\u2468"}, {"id": "ref-for-idl-any\u2460\u24ea"}, {"id": "ref-for-idl-any\u2460\u2460"}, {"id": "ref-for-idl-any\u2460\u2461"}, {"id": "ref-for-idl-any\u2460\u2462"}, {"id": "ref-for-idl-any\u2460\u2463"}, {"id": "ref-for-idl-any\u2460\u2464"}], "title": "2.2. The Observable interface"}], "external": true};
 window.dfnpanelData['5372cca8'] = {"dfnID": "5372cca8", "url": "https://webidl.spec.whatwg.org/#idl-boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-idl-boolean"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-boolean\u2460"}, {"id": "ref-for-idl-boolean\u2461"}, {"id": "ref-for-idl-boolean\u2462"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-idl-boolean\u2463"}, {"id": "ref-for-idl-boolean\u2464"}], "title": "3. EventTarget integration"}], "external": true};
 window.dfnpanelData['9cce47fd'] = {"dfnID": "9cce47fd", "url": "https://webidl.spec.whatwg.org/#idl-sequence", "dfnText": "sequence", "refSections": [{"refs": [{"id": "ref-for-idl-sequence"}], "title": "2.2. The Observable interface"}], "external": true};
+window.dfnpanelData['4013a022'] = {"dfnID": "4013a022", "url": "https://webidl.spec.whatwg.org/#this", "dfnText": "this", "refSections": [{"refs": [{"id": "ref-for-this"}], "title": "2.2. The Observable interface"}], "external": true};
 window.dfnpanelData['5f90bbfb'] = {"dfnID": "5f90bbfb", "url": "https://webidl.spec.whatwg.org/#idl-undefined", "dfnText": "undefined", "refSections": [{"refs": [{"id": "ref-for-idl-undefined"}, {"id": "ref-for-idl-undefined\u2460"}, {"id": "ref-for-idl-undefined\u2461"}, {"id": "ref-for-idl-undefined\u2462"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-undefined\u2463"}, {"id": "ref-for-idl-undefined\u2464"}, {"id": "ref-for-idl-undefined\u2465"}, {"id": "ref-for-idl-undefined\u2466"}, {"id": "ref-for-idl-undefined\u2467"}, {"id": "ref-for-idl-undefined\u2468"}], "title": "2.2. The Observable interface"}], "external": true};
 window.dfnpanelData['f14b47b8'] = {"dfnID": "f14b47b8", "url": "https://webidl.spec.whatwg.org/#idl-unsigned-long-long", "dfnText": "unsigned long long", "refSections": [{"refs": [{"id": "ref-for-idl-unsigned-long-long"}, {"id": "ref-for-idl-unsigned-long-long\u2460"}, {"id": "ref-for-idl-unsigned-long-long\u2461"}, {"id": "ref-for-idl-unsigned-long-long\u2462"}], "title": "2.2. The Observable interface"}], "external": true};
 window.dfnpanelData['subscriber'] = {"dfnID": "subscriber", "url": "#subscriber", "dfnText": "Subscriber", "refSections": [{"refs": [{"id": "ref-for-subscriber"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-subscriber\u2460"}], "title": "2.2. The Observable interface"}], "external": false};
-window.dfnpanelData['callbackdef-subscribecallback'] = {"dfnID": "callbackdef-subscribecallback", "url": "#callbackdef-subscribecallback", "dfnText": "SubscribeCallback", "refSections": [{"refs": [{"id": "ref-for-callbackdef-subscribecallback"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['callbackdef-subscribecallback'] = {"dfnID": "callbackdef-subscribecallback", "url": "#callbackdef-subscribecallback", "dfnText": "SubscribeCallback", "refSections": [{"refs": [{"id": "ref-for-callbackdef-subscribecallback"}, {"id": "ref-for-callbackdef-subscribecallback\u2460"}, {"id": "ref-for-callbackdef-subscribecallback\u2461"}], "title": "2.2. The Observable interface"}], "external": false};
 window.dfnpanelData['callbackdef-observercallback'] = {"dfnID": "callbackdef-observercallback", "url": "#callbackdef-observercallback", "dfnText": "ObserverCallback", "refSections": [{"refs": [{"id": "ref-for-callbackdef-observercallback"}, {"id": "ref-for-callbackdef-observercallback\u2460"}, {"id": "ref-for-callbackdef-observercallback\u2461"}], "title": "2.2. The Observable interface"}], "external": false};
 window.dfnpanelData['dictdef-observer'] = {"dfnID": "dictdef-observer", "url": "#dictdef-observer", "dfnText": "Observer", "refSections": [{"refs": [{"id": "ref-for-dictdef-observer"}], "title": "2.2. The Observable interface"}], "external": false};
 window.dfnpanelData['typedefdef-observerunion'] = {"dfnID": "typedefdef-observerunion", "url": "#typedefdef-observerunion", "dfnText": "ObserverUnion", "refSections": [{"refs": [{"id": "ref-for-typedefdef-observerunion"}], "title": "2.2. The Observable interface"}], "external": false};
@@ -1564,7 +1606,10 @@ window.dfnpanelData['callbackdef-predicate'] = {"dfnID": "callbackdef-predicate"
 window.dfnpanelData['callbackdef-reducer'] = {"dfnID": "callbackdef-reducer", "url": "#callbackdef-reducer", "dfnText": "Reducer", "refSections": [{"refs": [{"id": "ref-for-callbackdef-reducer"}], "title": "2.2. The Observable interface"}], "external": false};
 window.dfnpanelData['callbackdef-mapper'] = {"dfnID": "callbackdef-mapper", "url": "#callbackdef-mapper", "dfnText": "Mapper", "refSections": [{"refs": [{"id": "ref-for-callbackdef-mapper"}, {"id": "ref-for-callbackdef-mapper\u2460"}], "title": "2.2. The Observable interface"}], "external": false};
 window.dfnpanelData['callbackdef-visitor'] = {"dfnID": "callbackdef-visitor", "url": "#callbackdef-visitor", "dfnText": "Visitor", "refSections": [{"refs": [{"id": "ref-for-callbackdef-visitor"}], "title": "2.2. The Observable interface"}], "external": false};
-window.dfnpanelData['observable'] = {"dfnID": "observable", "url": "#observable", "dfnText": "Observable", "refSections": [{"refs": [{"id": "ref-for-observable"}, {"id": "ref-for-observable\u2460"}, {"id": "ref-for-observable\u2461"}, {"id": "ref-for-observable\u2462"}, {"id": "ref-for-observable\u2463"}, {"id": "ref-for-observable\u2464"}, {"id": "ref-for-observable\u2465"}, {"id": "ref-for-observable\u2466"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-observable\u2467"}], "title": "3. EventTarget integration"}, {"refs": [{"id": "ref-for-observable\u2468"}], "title": "5. Acknowledgements"}], "external": false};
+window.dfnpanelData['observable'] = {"dfnID": "observable", "url": "#observable", "dfnText": "Observable", "refSections": [{"refs": [{"id": "ref-for-observable"}, {"id": "ref-for-observable\u2460"}, {"id": "ref-for-observable\u2461"}, {"id": "ref-for-observable\u2462"}, {"id": "ref-for-observable\u2463"}, {"id": "ref-for-observable\u2464"}, {"id": "ref-for-observable\u2465"}, {"id": "ref-for-observable\u2466"}, {"id": "ref-for-observable\u2467"}, {"id": "ref-for-observable\u2468"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-observable\u2460\u24ea"}], "title": "3. EventTarget integration"}, {"refs": [{"id": "ref-for-observable\u2460\u2460"}], "title": "5. Acknowledgements"}], "external": false};
+window.dfnpanelData['dom-observable-subscribe'] = {"dfnID": "dom-observable-subscribe", "url": "#dom-observable-subscribe", "dfnText": "subscribe", "refSections": [{"refs": [{"id": "ref-for-dom-observable-subscribe"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['observable-subscribe-callback'] = {"dfnID": "observable-subscribe-callback", "url": "#observable-subscribe-callback", "dfnText": "subscribe callback", "refSections": [{"refs": [{"id": "ref-for-observable-subscribe-callback"}, {"id": "ref-for-observable-subscribe-callback\u2460"}], "title": "2.2. The Observable interface"}], "external": false};
+window.dfnpanelData['dom-observable-observable'] = {"dfnID": "dom-observable-observable", "url": "#dom-observable-observable", "dfnText": "new\n  Observable(callback)", "refSections": [{"refs": [{"id": "ref-for-dom-observable-observable"}], "title": "2.2. The Observable interface"}], "external": false};
 window.dfnpanelData['dictdef-observableeventlisteneroptions'] = {"dfnID": "dictdef-observableeventlisteneroptions", "url": "#dictdef-observableeventlisteneroptions", "dfnText": "ObservableEventListenerOptions", "refSections": [{"refs": [{"id": "ref-for-dictdef-observableeventlisteneroptions"}], "title": "3. EventTarget integration"}], "external": false};
 </script>
 <script>/* Boilerplate: script-dom-helper */
@@ -1761,5 +1806,103 @@ function parseHTML(markup) {
 		el.innerHTML = markup;
 		return el.content;
 	}
+}
+</script>
+<script>/* Boilerplate: script-var-click-highlighting */
+/*
+Color-choosing design:
+
+Colors are ordered by goodness.
+Each color has a usage count (initially zero).
+Each variable has a last-used color.
+
+* If the var has a last-used color, and that color's usage is 0,
+    return that color.
+* Otherwise, return the lowest-indexed color with the lowest usage.
+    Increment the color's usage and set it as the last-used color
+    for that var.
+* On unclicking, decrement usage of the color.
+*/
+"use strict";
+{
+    document.addEventListener("click", e=>{
+        if(e.target.nodeName == "VAR") {
+            highlightSameAlgoVars(e.target);
+        }
+    });
+    const indexCounts = new Map();
+    const indexNames = new Map();
+    function highlightSameAlgoVars(v) {
+        // Find the algorithm container.
+        let algoContainer = null;
+        let searchEl = v;
+        while(algoContainer == null && searchEl != document.body) {
+            searchEl = searchEl.parentNode;
+            if(searchEl.hasAttribute("data-algorithm")) {
+                algoContainer = searchEl;
+            }
+        }
+
+        // Not highlighting document-global vars,
+        // too likely to be unrelated.
+        if(algoContainer == null) return;
+
+        const algoName = algoContainer.getAttribute("data-algorithm");
+        const varName = getVarName(v);
+        const addClass = !v.classList.contains("selected");
+        let highlightClass = null;
+        if(addClass) {
+            const index = chooseHighlightIndex(algoName, varName);
+            indexCounts.get(algoName)[index] += 1;
+            indexNames.set(algoName+"///"+varName, index);
+            highlightClass = nameFromIndex(index);
+        } else {
+            const index = previousHighlightIndex(algoName, varName);
+            indexCounts.get(algoName)[index] -= 1;
+            highlightClass = nameFromIndex(index);
+        }
+
+        // Find all same-name vars, and toggle their class appropriately.
+        for(const el of algoContainer.querySelectorAll("var")) {
+            if(getVarName(el) == varName) {
+                el.classList.toggle("selected", addClass);
+                el.classList.toggle(highlightClass, addClass);
+            }
+        }
+    }
+    function getVarName(el) {
+        return el.textContent.replace(/(\s|\xa0)+/, " ").trim();
+    }
+    function chooseHighlightIndex(algoName, varName) {
+        let indexes = null;
+        if(indexCounts.has(algoName)) {
+            indexes = indexCounts.get(algoName);
+        } else {
+            // 7 classes right now
+            indexes = [0,0,0,0,0,0,0];
+            indexCounts.set(algoName, indexes);
+        }
+
+        // If the element was recently unclicked,
+        // *and* that color is still unclaimed,
+        // give it back the same color.
+        const lastIndex = previousHighlightIndex(algoName, varName);
+        if(indexes[lastIndex] === 0) return lastIndex;
+
+        // Find the earliest index with the lowest count.
+        const minCount = Math.min.apply(null, indexes);
+        let index = null;
+        for(var i = 0; i < indexes.length; i++) {
+            if(indexes[i] == minCount) {
+                return i;
+            }
+        }
+    }
+    function previousHighlightIndex(algoName, varName) {
+        return indexNames.get(algoName+"///"+varName);
+    }
+    function nameFromIndex(index) {
+        return "selected" + index;
+    }
 }
 </script>
