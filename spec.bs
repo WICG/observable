@@ -220,6 +220,21 @@ interface Observable {
 };
 </xmp>
 
+Each {{Observable}} has a <dfn for=Observable>subscribe callback</dfn>, which is a
+{{SubscribeCallback}}.
+
+Issue: Make [=Observable/subscribe callback=] either a {{SubscribeCallback}} or a set of steps that
+can be passed in by natively-constructed {{Observable}}s.
+
+<div algorithm>
+  The <dfn for=Observable constructor lt="Observable(callback)"><code>new
+  Observable(|callback|)</code></dfn> constructor steps are:
+
+    1. Set [=this=]'s [=Observable/subscribe callback=] to |callback|.
+
+      Note: This callback will get invoked later when {{Observable/subscribe()}} is called.
+</div>
+
 <h3 id=operators>Operators</h3>
 
 For now, see [https://github.com/wicg/observable#operators](https://github.com/wicg/observable#operators).
