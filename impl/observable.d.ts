@@ -54,10 +54,6 @@ export declare class Observable<T> {
 		handleError: (error: unknown) => ConvertableToObservable<R>,
 	): Observable<T | R>;
 	finally(onFinalize: () => void): Observable<T>;
-	switchMap<R>(
-		project: (value: T, index: number) => ConvertableToObservable<R>,
-	): Observable<R>;
-	do(fnOrObserver: ((value: T) => void) | Partial<Observer<T>>): Observable<T>;
 	[Symbol.asyncIterator](): AsyncGenerator<T>;
 }
 
@@ -71,7 +67,6 @@ declare class Subscriber<T> implements Observer<T> {
 	error(error: any): void;
 	complete(): void;
 	addTeardown(teardown: () => void): void;
-	removeTeardown(teardown: () => void): void;
 }
 
 export {};

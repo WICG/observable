@@ -467,87 +467,6 @@ export class Observable {
 			});
 		});
 	}
-	switchMap(project) {
-		return new Observable((destination) => {
-			let index = 0;
-			let outerComplete = false;
-			let innerAC;
-			this.subscribe(
-				{
-					next: (value) => {
-						innerAC?.abort();
-						innerAC = new AbortController();
-						const signal = abortSignalAny([innerAC.signal, destination.signal]);
-						let innerObservable;
-						try {
-							innerObservable = Observable.from(project(value, index++));
-						} catch (error) {
-							destination.error(error);
-							return;
-						}
-						innerObservable.subscribe(
-							{
-								next(innerValue) {
-									destination.next(innerValue);
-								},
-								error(error) {
-									destination.error(error);
-								},
-								complete() {
-									innerAC = undefined;
-									if (outerComplete) {
-										destination.complete();
-									}
-								},
-							},
-							{
-								signal,
-							},
-						);
-					},
-					error(error) {
-						destination.error(error);
-					},
-					complete() {
-						outerComplete = true;
-						if (!innerAC) {
-							destination.complete();
-						}
-					},
-				},
-				{
-					signal: destination.signal,
-				},
-			);
-		});
-	}
-	do(fnOrObserver) {
-		return new Observable((destination) => {
-			const doObserver =
-				typeof fnOrObserver === 'function'
-					? { next: fnOrObserver }
-					: fnOrObserver;
-			this.subscribe(
-				{
-					next(value) {
-						doObserver.next?.(value);
-						destination.next(value);
-					},
-					error(error) {
-						doObserver.error?.(error);
-						destination.error(error);
-					},
-					complete() {
-						doObserver.complete?.();
-						destination.complete();
-					},
-				},
-				{
-					signal: destination.signal,
-				},
-			);
-		});
-	}
 	[Symbol.asyncIterator]() {
 		let ac;
 		let deferred = [];
@@ -699,21 +618,6 @@ class Subscriber {
 			this.#teardowns.push(teardown);
 		} else {
 			teardown();
-		}
-	}
-	removeTeardown(teardown) {
-		if (this.#teardowns) {
-			const index = this.#teardowns.indexOf(teardown);
-			if (index >= 0) {
-				this.#teardowns.splice(index, 1);
-				if (this.#teardowns.length === 0) {
-					this.#teardowns = undefined;
-					this.#abortController.signal.removeEventListener(
-						'abort',
-						this.#teardownHandler,
-					);
-				}
-			}
 		}
 	}
 }
