@@ -566,31 +566,41 @@ observables", one at a time, ensuring they're subscribed to in sequence.
 Given the following example:
 
 ```ts
-const result = source.flatMap((value) => getNextInnerObservable(value));
+const result = source.flatMap((value, index) =>
+	getNextInnerObservable(value, index),
+);
 ```
 
+- `flatMap` is a method on `Observable` that is called with a `mapping function`, which takes a
+  value from the source observable, and a zero-based counter (or "index") of that value, and
+  returns a value that can be converted to an observable with `Observable.from`. `flatMap` returns
+  an obeservable we'll call `result`.
 - When you subscribe to `result`, it subscribes to `source` immediately.
 - Let there be a `queue` of values that is empty.
-- Let there be an `innerSignal` that is either `undefined` or an `AbortSignal`
+- Let there be an integer `current index` that is `0`.
+- Let there be an `innerSignal` that is either `undefined` or an `AbortSignal`.
 - Let there be an `isSourceComplete` that is `false`.
-- When the `source` emits a value:
+- When the `source` emits a `value`:
   - If `innerSignal` is `undefined`
-    - Call the mapping function with the the value.
-    - Then pass the return value of the mapping function to `Observable.from()` to convert it to
-      "inner observable" if it's not already.
-    - Then create an `AbortSignal` that is dependent on the subscriber's and set `innerSignal`.
-    - Pass the `innerSignal` to the subscribe for the inner observable.
-    - Forward all values emitted by the inner observable to the `result` observer.
-    - If the inner observable completes
+    - Begin **"mapping step"**:
+      - Copy the `current index` into an `index` variable.
+      - Increment the `current index`.
+      - Call the `mapping function` with the the `value` and the `index`.
+      - Then pass the return value of the mapping function to `Observable.from()` to convert it to
+        "inner observable" if it's not already.
+      - Then create an `AbortSignal` that is dependent on the subscriber's and set `innerSignal`.
+      - Pass the `innerSignal` to the subscribe for the inner observable.
+      - Forward all values emitted by the inner observable to the `result` observer.
+      - If the inner observable completes
       - If there are values in the `queue`
-        - Take the first one from the `queue` and return the the mapping step.
+        - Take the first one from the `queue` and return to the **"mapping step"**.
       - If the `queue` is empty
         - If `isSourceComplete` is `true`
-          - Complete `result`.
+        - Complete `result`.
         - If `isSourceComplete` is `false`
-          - Wait
-    - If the inner observable errors
-      - Forward the error to `result`.
+        - Wait
+      - If the inner observable errors
+        - Forward the error to `result`.
   - Otherwise, if `innerSignal` is `AbortSignal`
     - Add the value to the `queue` and wait.
 - If the `source` completes:
