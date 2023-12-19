@@ -66,7 +66,7 @@ element.addEventListener(
 	'mousemove',
 	(e) => {
 		element.addEventListener('mouseup', (e) => ac.abort(), {
-			signal: controller.signal,
+			signal: ac.signal,
 		});
 		console.log(e);
 	},
@@ -333,8 +333,8 @@ const measurements = document.on('mousedown').flatMap((e) => {
 	const { clientX: startX, clientY: startY } = e;
 
 	const svg = document.createElement('svg');
-	svg.width = document.body.width;
-	svg.height = document.body.height;
+	svg.width = window.innerWidth;
+	svg.height = window.innerHeight;
 	svg.innerHTML = `
     <line x1="${startX}" y1="${startY}" x2="0" y2="0" style="stroke:black;"/>
     <text x="0" y="0" fill="black"/>0</text>
