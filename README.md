@@ -591,7 +591,7 @@ const result = source.flatMap((value) => getNextInnerObservable(value));
           - Wait
     - If the inner observable errors
       - Forward the error to `result`.
-  - If `innerSignal` is `AbortSignal`
+  - Otherwise, if `innerSignal` is `AbortSignal`
     - Add the value to the `queue` and wait.
 - If the `source` completes:
   - If `innerSignal` is `undefined`
