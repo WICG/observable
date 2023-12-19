@@ -47,7 +47,7 @@ element.addEventListener('click', (e) => {
 
 #### Example 2
 
-Automatic, declarative unsubscription via the takeUntil method
+Automatic, declarative unsubscription via the takeUntil method.
 
 ```js
 const ac = new AbortController();
