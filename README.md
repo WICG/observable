@@ -597,7 +597,7 @@ const result = source.flatMap((value) => getNextInnerObservable(value));
   - If `innerSignal` is `undefined`
     - Complete `result`.
   - If `innerSignal` is `AbortSignal`
-    - set `isSourceComplete` to `true`.
+    - Set `isSourceComplete` to `true`.
 - If the `source` errors:
   - Forward the error to `result`.
 - If the user aborts the signal passed to the subscription of `result`
