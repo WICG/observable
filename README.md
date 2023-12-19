@@ -583,7 +583,7 @@ const result = source.flatMap((value) => getNextInnerObservable(value));
     - Forward all values emitted by the inner observable to the `result` observer.
     - If the inner observable completes
       - If there are values in the `queue`
-        - take the first one from the `queue` and return the the mapping step.
+        - Take the first one from the `queue` and return the the mapping step.
       - If the `queue` is empty
         - If `isSourceComplete` is `true`
           - Complete `result`.
