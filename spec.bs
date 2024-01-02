@@ -23,6 +23,9 @@ WPT Display: open
 <pre class="link-defaults">
 </pre>
 <pre class="anchors">
+urlPrefix: https://tc39.es/ecma262/#; spec: ECMASCRIPT
+  type: dfn
+    text: current realm
 </pre>
 
 <style>
@@ -136,7 +139,7 @@ dl, dd {
 <xmp class=idl>
 [Exposed=*]
 interface Subscriber {
-  undefined next(any result);
+  undefined next(any value);
   undefined error(any error);
   undefined complete();
   undefined addTeardown(VoidFunction teardown);
@@ -150,7 +153,123 @@ interface Subscriber {
 };
 </xmp>
 
-<div>
+Each {{Subscriber}} has a <dfn for=Subscriber>next callback</dfn>, which is an
+{{ObserverCallback}}-or-null.
+
+Each {{Subscriber}} has a <dfn for=Subscriber>error callback</dfn>, which is an
+{{ObserverCallback}}-or-null.
+
+Each {{Subscriber}} has a <dfn for=Subscriber>complete callback</dfn>, which is a
+{{VoidFunction}}-or-null.
+
+Each {{Subscriber}} has a <dfn for=Subscriber>complete or error controller</dfn>, which is an
+{{AbortController}}.
+
+Each {{Subscriber}} has a <dfn for=Subscriber>signal</dfn>, which is an {{AbortSignal}}.
+
+Note: This is a [=create a dependent abort signal|dependent signal=], derived from both
+[=Subscriber/complete or error controller=]'s [=AbortController/signal=], and
+{{SubscribeOptions}}'s {{SubscribeOptions/signal}} (if non-null).
+
+Each {{Subscriber}} has a <dfn for=Subscriber>active</dfn> boolean, initially true.
+
+Note: This is a bookkeeping variable to ensure that a {{Subscriber}} never calls any of the
+callbacks it owns after it has been [=close a subscription|closed=].
+
+<div algorithm>
+  The <dfn for=Subscriber method><code>next(|value|)</code></dfn> method steps are:
+
+    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
+       active=], then return.
+
+    1. If [=this=]'s [=Subscriber/next callback=] is non-null, [=invoke=] this's [=Subscriber/next
+       callback=] with |value|.
+
+       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
+       the exception=] |E|.
+</div>
+
+<div algorithm>
+  The <dfn for=Subscriber method><code>error(|error|)</code></dfn> method steps are:
+
+    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
+       active=], then return.
+
+    1. Let |callback| be [=this=]'s [=Subscriber/error callback=].
+
+    1. [=close a subscription|Close=] [=this=].
+
+    1. If |callback| is not null, [=invoke=] |callback| with |error|.
+
+       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
+       the exception=] |E|.
+
+    1. Otherwise, [=report the exception=] |error|.
+
+    1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
+</div>
+
+<div algorithm>
+  The <dfn for=Subscriber method><code>complete()</code></dfn> method steps are:
+
+    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
+       active=], then return.
+
+    1. Let |callback| be [=this=]'s [=Subscriber/complete callback=].
+
+    1. [=close a subscription|Close=] [=this=].
+
+    1. If |callback| is not null, [=invoke=] |callback|.
+
+       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
+       the exception=] |E|.
+
+    1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
+</div>
+
+<div algorithm>
+  To <dfn>close a subscription</dfn> given a {{Subscriber}} |subscriber|, run these steps:
+
+    1. Set |subscriber|'s [=Subscriber/active=] boolean to false.
+
+    1. Set |subscriber|'s [=Subscriber/next callback=], [=Subscriber/error callback=], and
+       [=Subscriber/complete callback=] all to null.
+
+  <div class=note>
+    <p>This algorithm intentionally does not have script-running side-effects; it just updates the
+    internal state of a {{Subscriber}}. It's important that this algorithm sets
+    [=Subscriber/active=] to false and clears all of the callback algorithms *before* running any
+    script, because running script <span class=allow-2119>may</span> reentrantly invoke one of the
+    methods that closed the subscription in the first place. And closing the subscription <span
+    class=allow-2119>must</span> ensure that even if a method gets reentrantly invoked, none of the
+    {{Observer}} callbacks are ever invoked again. Consider this example:</p>
+
+    <div class=example id=reentrant-example>
+      <pre highlight=js>
+let innerSubscriber = null;
+const producedValues = [];
+
+const controller = new AbortController();
+const observable = new Observable(subscriber =&gt; {
+  innerSubscriber = subscriber;
+  subscriber.complete();
+});
+
+observable.subscribe({
+  next: v =&gt; producedValues.push(v),
+  complete: () =&gt; innerSubscriber.next('from complete'),
+
+  }, {signal: controller.signal}
+);
+
+// This invokes the complete() callback, and even though it invokes next() from
+// within, the given next() callback will never run, because the subscription
+// has already been "closed" before the complete() callback actually executes.
+controller.abort();
+console.assert(producedValues.length === 0);
+      </pre>
+    </div>
+  </div>
 </div>
 
 <h3 id=observable-api>The {{Observable}} interface</h3>
@@ -233,6 +352,56 @@ can be passed in by natively-constructed {{Observable}}s.
     1. Set [=this=]'s [=Observable/subscribe callback=] to |callback|.
 
       Note: This callback will get invoked later when {{Observable/subscribe()}} is called.
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>subscribe(|observer|, |options|)</code></dfn> method steps
+  are:
+
+    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
+       active=], then return.
+
+    1. Let |nextCallback|, |errorCallback|, and |completeCallback| all be null.
+
+    1. If |observer| is an {{ObserverCallback}}, then set |nextCallback| to |observer|.
+
+    1. Otherwise:
+
+      1. [=Assert=]: |observer| is an {{Observer}}.
+
+      1. Set |nextCallback| to |observer|'s {{Observer/next}}.
+
+      1. Set |errorCallback| to |observer|'s {{Observer/error}}.
+
+      1. Set |completeCallback| to |observer|'s {{Observer/complete}}.
+
+    1. Let |subscriber| be a [=new=] {{Subscriber}}, initialized as:
+
+      : [=Subscriber/next callback=]
+      :: |nextCallback|
+
+      : [=Subscriber/error callback=]
+      :: |errorCallback|
+
+      : [=Subscriber/complete callback=]
+      :: |completeCallback|
+
+      : [=Subscriber/signal=]
+      :: The result of [=creating a dependent abort signal=] from the list «|subscriber|'s
+         [=Subscriber/complete or error controller=]'s [=AbortController/signal=], |options|'s
+         {{SubscribeOptions/signal}} if it is non-null», using {{AbortSignal}}, and the [=current
+         realm=].
+
+    1. If |subscriber|'s [=Subscriber/signal=] is [=AbortSignal/aborted=], then [=close a
+       subscription|close=] |subscriber|.
+
+       Note: This can happen when {{SubscribeOptions}}'s {{SubscribeOptions/signal}} is already
+       [=AbortSignal/aborted=].
+
+    1. [=Invoke=] [=this=]'s [=Observable/subscribe callback=] with |subscriber|.
+
+       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
+       |subscriber|'s {{Subscriber/error()}} method with |E|.
 </div>
 
 <h3 id=operators>Operators</h3>
