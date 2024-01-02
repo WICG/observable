@@ -26,6 +26,14 @@ WPT Display: open
 urlPrefix: https://tc39.es/ecma262/#; spec: ECMASCRIPT
   type: dfn
     text: current realm
+urlPrefix: https://dom.spec.whatwg.org; spec: DOM
+  type: dfn
+    for: event listener
+      text: type; url: event-listener-type
+      text: capture; url: event-listener-capture
+      text: passive; url: event-listener-passive
+      text: once; url: event-listener-once
+      text: signal; url: event-listener-signal
 </pre>
 
 <style>
@@ -364,10 +372,12 @@ interface Observable {
 </xmp>
 
 Each {{Observable}} has a <dfn for=Observable>subscribe callback</dfn>, which is a
-{{SubscribeCallback}}.
+{{SubscribeCallback}} or a set of steps that take in a {{Subscriber}}.
 
-Issue: Make [=Observable/subscribe callback=] either a {{SubscribeCallback}} or a set of steps that
-can be passed in by natively-constructed {{Observable}}s.
+Note: The "union" of these types is to support both {{Observable}}s created by JavaScript (that are
+always constructed with a {{SubscribeCallback}}), and natively-constructed {{Observable}} objects
+(whose [=Observable/subscribe callback=] could be an arbitrary set of native steps, not a JavaScript
+callback). The return value of {{EventTarget/on()}} is an example of the latter.
 
 <div algorithm>
   The <dfn for=Observable constructor lt="Observable(callback)"><code>new
@@ -441,10 +451,14 @@ can be passed in by natively-constructed {{Observable}}s.
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
              |subscriber|'s {{Subscriber/error()}} method with |E|.
 
-    1. [=Invoke=] [=this=]'s [=Observable/subscribe callback=] with |subscriber|.
+    1. If [=this=]'s [=Observable/subscribe callback=] is a {{SubscribeCallback}}, [=invoke=] it
+       with |subscriber|.
 
        If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
        |subscriber|'s {{Subscriber/error()}} method with |E|.
+
+    1. Otherwise, run the steps given by [=this=]'s [=Observable/subscribe callback=], given
+       |subscriber|.
 </div>
 
 <h3 id=operators>Operators</h3>
@@ -463,6 +477,64 @@ partial interface EventTarget {
   Observable on(DOMString type, optional ObservableEventListenerOptions options = {});
 };
 </pre>
+
+<div algorithm>
+  The <dfn for=EventTarget method><code>on(|type|, |options|)</code></dfn> method steps are:
+
+    1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
+       Document=] is not [=Document/fully active=], then return.
+
+    1. Let |event target| be [=this=].
+
+    1. Let |observable| be a [=new=] {{Observable}}, initialized as follows:
+
+       : [=Observable/subscribe callback=]
+       :: An algorithm that takes a {{Subscriber}} |subscriber| and runs these steps:
+
+            1. If |event target| is null, abort these steps.
+
+               Note: This is meant to capture the fact that |event target| can be garbage collected
+               by the time this algorithm runs upon subscription.
+
+            1. If |subscriber|'s [=Subscriber/signal=] is [=AbortSignal/aborted=], abort these
+               steps.
+
+            1. [=Add an event listener=] with |event target| and an [=event listener=] defined as follows:
+
+               : [=event listener/type=]
+               :: |type|
+
+               : [=event listener/callback=]
+               :: The result of creating a new Web IDL {{EventListener}} instance representing a
+                  reference to a function of one argument of type {{Event}} |event|. This function
+                  executes the [=observable event listener invoke algorithm=] given |subscriber| and
+                  |event|.
+
+               : [=event listener/capture=]
+               :: |options|'s {{ObservableEventListenerOptions/capture}}
+
+               : [=event listener/passive=]
+               :: |options|'s {{ObservableEventListenerOptions/passive}}
+
+               : [=event listener/once=]
+               :: false
+
+               : [=event listener/signal=]
+               :: null
+
+                  Note: The {{AbortSignal}} for event listeners [=add an event listener|added=] by
+                  {{EventTarget/on()}} is managed by the {{Observable}} itself. See
+                  {{Observable/subscribe()}} and {{SubscribeOptions}}.
+
+    1. Return |observable|.
+</div>
+
+<div algorithm>
+  The <dfn>observable event listener invoke algorithm</dfn> takes a {{Subscriber}} |subscriber| and
+  an {{Event}} |event|, and runs these steps:
+
+    1. Run |subscriber|'s {{Subscriber/next()}} method with |event|.
+</div>
 
 
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
