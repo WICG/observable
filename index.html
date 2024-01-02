@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="96abe1e7ea912b186654ac697be0743cb1419a4d" name="document-revision">
+  <meta content="39287fe3f1d01647b865b404a4af0b0a97374c8d" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -1002,8 +1002,8 @@ callbacks it owns after it has been <a data-link-type="dfn" href="#close-a-subsc
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Subscriber" data-dfn-type="method" data-export id="dom-subscriber-next"><code>next(<var>value</var>)</code></dfn> method steps are: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window">associated Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active">fully
- active</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a> is a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window">Window</a></code> object, and its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window">associated
+ Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active">fully active</a>, then return.</p>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>'s <a data-link-type="dfn" href="#subscriber-next-callback" id="ref-for-subscriber-next-callback">next callback</a> is non-null, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function">invoke</a> this’s <a data-link-type="dfn" href="#subscriber-next-callback" id="ref-for-subscriber-next-callback①">next
  callback</a> with <var>value</var>.</p>
@@ -1015,8 +1015,8 @@ callbacks it owns after it has been <a data-link-type="dfn" href="#close-a-subsc
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Subscriber" data-dfn-type="method" data-export id="dom-subscriber-error"><code>error(<var>error</var>)</code></dfn> method steps are: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window①">associated Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active①">fully
- active</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a> is a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window①">Window</a></code> object, and its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window①">associated
+ Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active①">fully active</a>, then return.</p>
      <li data-md>
       <p>Let <var>callback</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a>'s <a data-link-type="dfn" href="#subscriber-error-callback" id="ref-for-subscriber-error-callback">error callback</a>.</p>
      <li data-md>
@@ -1035,8 +1035,8 @@ callbacks it owns after it has been <a data-link-type="dfn" href="#close-a-subsc
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Subscriber" data-dfn-type="method" data-export id="dom-subscriber-complete"><code>complete()</code></dfn> method steps are: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window②">associated Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active②">fully
- active</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a> is a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window②">Window</a></code> object, and its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window②">associated
+ Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active②">fully active</a>, then return.</p>
      <li data-md>
       <p>Let <var>callback</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="#subscriber-complete-callback" id="ref-for-subscriber-complete-callback">complete callback</a>.</p>
      <li data-md>
@@ -1053,8 +1053,8 @@ callbacks it owns after it has been <a data-link-type="dfn" href="#close-a-subsc
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Subscriber" data-dfn-type="method" data-export id="dom-subscriber-addteardown"><code>addTeardown(<var>teardown</var>)</code></dfn> method steps are: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window③">associated Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active③">fully
- active</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a> is a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window③">Window</a></code> object, and its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window③">associated
+ Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active③">fully active</a>, then return.</p>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①③">this</a>'s <a data-link-type="dfn" href="#subscriber-active" id="ref-for-subscriber-active①">active</a> is true, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">append</a> <var>teardown</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①④">this</a>'s <a data-link-type="dfn" href="#subscriber-teardown-callbacks" id="ref-for-subscriber-teardown-callbacks">teardown callbacks</a> list.</p>
      <li data-md>
@@ -1184,8 +1184,8 @@ can be passed in by natively-constructed <code class="idl"><a data-link-type="id
   are: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window④">associated Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active④">fully
- active</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a> is a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window④">Window</a></code> object, and its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window④">associated
+ Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active④">fully active</a>, then return.</p>
      <li data-md>
       <p>Let <var>nextCallback</var>, <var>errorCallback</var>, and <var>completeCallback</var> all be null.</p>
      <li data-md>
@@ -1232,7 +1232,7 @@ can be passed in by natively-constructed <code class="idl"><a data-link-type="id
   reverse insertion order:</p>
         <ol>
          <li data-md>
-          <p>If <var>subscriber</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window⑤">associated Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active⑤">fully active</a>, then abort these steps.</p>
+          <p>If <var>subscriber</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a> is a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window⑤">Window</a></code> object, and its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window⑤">associated Document</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active⑤">fully active</a>, then abort these steps.</p>
           <p class="note" role="note"><span class="marker">Note:</span> This step runs repeatedly because each <var>teardown</var> could result in the above <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> becoming inactive.</p>
          <li data-md>
           <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function④">Invoke</a> <var>teardown</var>.</p>
@@ -1368,6 +1368,7 @@ possible.</p>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="5d7209e9">Window</span>
      <li><span class="dfn-paneled" id="3349d69f">associated document</span>
      <li><span class="dfn-paneled" id="0e3ba9f8">fully active</span>
      <li><span class="dfn-paneled" id="e99bd18e">relevant global object</span>
@@ -1824,6 +1825,7 @@ window.dfnpanelData['c9db6cec'] = {"dfnID": "c9db6cec", "url": "https://dom.spec
 window.dfnpanelData['0fe84b59'] = {"dfnID": "0fe84b59", "url": "https://dom.spec.whatwg.org/#abortcontroller-signal", "dfnText": "signal", "refSections": [{"refs": [{"id": "ref-for-abortcontroller-signal"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-abortcontroller-signal\u2460"}], "title": "2.2. The Observable interface"}], "external": true};
 window.dfnpanelData['2296404c'] = {"dfnID": "2296404c", "url": "https://dom.spec.whatwg.org/#abortcontroller-signal-abort", "dfnText": "signal abort", "refSections": [{"refs": [{"id": "ref-for-abortcontroller-signal-abort"}, {"id": "ref-for-abortcontroller-signal-abort\u2460"}], "title": "2.1. The Subscriber interface"}], "external": true};
 window.dfnpanelData['3aec4bbc'] = {"dfnID": "3aec4bbc", "url": "https://tc39.es/ecma262/#current-realm", "dfnText": "current realm", "refSections": [{"refs": [{"id": "ref-for-current-realm"}], "title": "2.2. The Observable interface"}], "external": true};
+window.dfnpanelData['5d7209e9'] = {"dfnID": "5d7209e9", "url": "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window", "dfnText": "Window", "refSections": [{"refs": [{"id": "ref-for-window"}, {"id": "ref-for-window\u2460"}, {"id": "ref-for-window\u2461"}, {"id": "ref-for-window\u2462"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-window\u2463"}, {"id": "ref-for-window\u2464"}], "title": "2.2. The Observable interface"}], "external": true};
 window.dfnpanelData['3349d69f'] = {"dfnID": "3349d69f", "url": "https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window", "dfnText": "associated document", "refSections": [{"refs": [{"id": "ref-for-concept-document-window"}, {"id": "ref-for-concept-document-window\u2460"}, {"id": "ref-for-concept-document-window\u2461"}, {"id": "ref-for-concept-document-window\u2462"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-concept-document-window\u2463"}, {"id": "ref-for-concept-document-window\u2464"}], "title": "2.2. The Observable interface"}], "external": true};
 window.dfnpanelData['0e3ba9f8'] = {"dfnID": "0e3ba9f8", "url": "https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active", "dfnText": "fully active", "refSections": [{"refs": [{"id": "ref-for-fully-active"}, {"id": "ref-for-fully-active\u2460"}, {"id": "ref-for-fully-active\u2461"}, {"id": "ref-for-fully-active\u2462"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-fully-active\u2463"}, {"id": "ref-for-fully-active\u2464"}], "title": "2.2. The Observable interface"}], "external": true};
 window.dfnpanelData['e99bd18e'] = {"dfnID": "e99bd18e", "url": "https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global", "dfnText": "relevant global object", "refSections": [{"refs": [{"id": "ref-for-concept-relevant-global"}, {"id": "ref-for-concept-relevant-global\u2460"}, {"id": "ref-for-concept-relevant-global\u2461"}, {"id": "ref-for-concept-relevant-global\u2462"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-concept-relevant-global\u2463"}, {"id": "ref-for-concept-relevant-global\u2464"}], "title": "2.2. The Observable interface"}], "external": true};
