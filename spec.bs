@@ -188,8 +188,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 <div algorithm>
   The <dfn for=Subscriber method><code>next(|value|)</code></dfn> method steps are:
 
-    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
-       active=], then return.
+    1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
+       Document=] is not [=Document/fully active=], then return.
 
     1. If [=this=]'s [=Subscriber/next callback=] is non-null, [=invoke=] this's [=Subscriber/next
        callback=] with |value|.
@@ -201,8 +201,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 <div algorithm>
   The <dfn for=Subscriber method><code>error(|error|)</code></dfn> method steps are:
 
-    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
-       active=], then return.
+    1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
+       Document=] is not [=Document/fully active=], then return.
 
     1. Let |callback| be [=this=]'s [=Subscriber/error callback=].
 
@@ -221,8 +221,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 <div algorithm>
   The <dfn for=Subscriber method><code>complete()</code></dfn> method steps are:
 
-    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
-       active=], then return.
+    1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
+       Document=] is not [=Document/fully active=], then return.
 
     1. Let |callback| be [=this=]'s [=Subscriber/complete callback=].
 
@@ -239,8 +239,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 <div algorithm>
   The <dfn for=Subscriber method><code>addTeardown(|teardown|)</code></dfn> method steps are:
 
-    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
-       active=], then return.
+    1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
+       Document=] is not [=Document/fully active=], then return.
 
     1. If [=this=]'s [=Subscriber/active=] is true, then [=list/append=] |teardown| to [=this=]'s
        [=Subscriber/teardown callbacks=] list.
@@ -382,8 +382,8 @@ can be passed in by natively-constructed {{Observable}}s.
   The <dfn for=Observable method><code>subscribe(|observer|, |options|)</code></dfn> method steps
   are:
 
-    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
-       active=], then return.
+    1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
+       Document=] is not [=Document/fully active=], then return.
 
     1. Let |nextCallback|, |errorCallback|, and |completeCallback| all be null.
 
@@ -430,8 +430,8 @@ can be passed in by natively-constructed {{Observable}}s.
        1. [=list/For each=] |teardown| of |subscriber|'s [=Subscriber/teardown callbacks=] sorted in
           reverse insertion order:
 
-          1. If |subscriber|'s [=relevant global object=]'s [=associated Document=] is not
-             [=Document/fully active=], then abort these steps.
+          1. If |subscriber|'s [=relevant global object=] is a {{Window}} object, and its
+             [=associated Document=] is not [=Document/fully active=], then abort these steps.
 
              Note: This step runs repeatedly because each |teardown| could result in the above
              {{Document}} becoming inactive.
