@@ -162,6 +162,9 @@ Each {{Subscriber}} has a <dfn for=Subscriber>error callback</dfn>, which is an
 Each {{Subscriber}} has a <dfn for=Subscriber>complete callback</dfn>, which is a
 {{VoidFunction}}-or-null.
 
+Each {{Subscriber}} has a <dfn for=Subscriber>teardown callbacks</dfn>, which is a [=list=] of
+{{VoidFunction}}s, initially empty.
+
 Each {{Subscriber}} has a <dfn for=Subscriber>complete or error controller</dfn>, which is an
 {{AbortController}}.
 
@@ -175,6 +178,12 @@ Each {{Subscriber}} has a <dfn for=Subscriber>active</dfn> boolean, initially tr
 
 Note: This is a bookkeeping variable to ensure that a {{Subscriber}} never calls any of the
 callbacks it owns after it has been [=close a subscription|closed=].
+
+The <dfn attribute for=Subscriber><code>active</code></dfn> getter steps are to return [=this=]'s
+[=Subscriber/active=] boolean.
+
+The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to return [=this=]'s
+[=Subscriber/signal=].
 
 <div algorithm>
   The <dfn for=Subscriber method><code>next(|value|)</code></dfn> method steps are:
@@ -225,6 +234,21 @@ callbacks it owns after it has been [=close a subscription|closed=].
        the exception=] |E|.
 
     1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
+</div>
+
+<div algorithm>
+  The <dfn for=Subscriber method><code>addTeardown(|teardown|)</code></dfn> method steps are:
+
+    1. If [=this=]'s [=relevant global object=]'s [=associated Document=] is not [=Document/fully
+       active=], then return.
+
+    1. If [=this=]'s [=Subscriber/active=] is true, then [=list/append=] |teardown| to [=this=]'s
+       [=Subscriber/teardown callbacks=] list.
+
+    1. Otherwise, [=invoke=] |teardown|.
+
+       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
+       the exception=] |E|.
 </div>
 
 <div algorithm>
@@ -397,6 +421,25 @@ can be passed in by natively-constructed {{Observable}}s.
 
        Note: This can happen when {{SubscribeOptions}}'s {{SubscribeOptions/signal}} is already
        [=AbortSignal/aborted=].
+
+    1. Otherwise, [=AbortSignal/add=] the following algorithm to |subscriber|'s
+       [=Subscriber/signal=]:
+
+       1. [=close a subscription|Close=] |subscriber|.
+
+       1. [=list/For each=] |teardown| of |subscriber|'s [=Subscriber/teardown callbacks=] sorted in
+          reverse insertion order:
+
+          1. If |subscriber|'s [=relevant global object=]'s [=associated Document=] is not
+             [=Document/fully active=], then abort these steps.
+
+             Note: This step runs repeatedly because each |teardown| could result in the above
+             {{Document}} becoming inactive.
+
+          1. [=Invoke=] |teardown|.
+
+             If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
+             |subscriber|'s {{Subscriber/error()}} method with |E|.
 
     1. [=Invoke=] [=this=]'s [=Observable/subscribe callback=] with |subscriber|.
 
