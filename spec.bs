@@ -465,6 +465,89 @@ callback). The return value of {{EventTarget/on()}} is an example of the latter.
 
 For now, see [https://github.com/wicg/observable#operators](https://github.com/wicg/observable#operators).
 
+<h4 id=observable-from>{{Observable/from()}}</h4>
+
+<p class=XXX>Spec the exact semantics of {{Observable/from()}} conversion.</p>
+
+<h4 id=observable-returning-operators>{{Observable}}-returning operators</h4>
+
+<div algorithm>
+  The <dfn for=Observable method><code>takeUntil(|notifier|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |notifier|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>map(|mapper|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |mapper|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>filter(|predicate|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |predicate|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>take(|amount|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |amount|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>drop(|amount|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |amount|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>flatMap(|mapper|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |mapper|.</span>
+</div>
+
+
+<h4 id=promise-returning-operators>{{Promise}}-returning operators</h4>
+
+<div algorithm>
+  The <dfn for=Observable method><code>toArray(|options|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |options|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>forEach(|callback|, |options|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |callback| and |options|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>every(|predicate|, |options|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |predicate| and |options|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>find(|predicate|, |options|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |predicate| and |options|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>some(|predicate|, |options|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |predicate| and |options|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>reduce(|reducer|, |initialValue|, |options|)</code></dfn>
+  method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |reducer|, |initialValue|, and |options|.</span>
+</div>
+
+
 <h2 id=event-target-integration>{{EventTarget}} integration</h2>
 
 <pre class=idl>
