@@ -450,45 +450,47 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
     1. Process |observer| as follows:
        <ol>
-         <dl class="switch">
-           <dt>If |observer| is an {{ObserverCallback}}</dt>
-           <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take an {{any}} |value|:
-               1. [=Invoke=] |observer| with |value|.
+         <li>
+           <dl class="switch">
+             <dt>If |observer| is an {{ObserverCallback}}</dt>
+             <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take an {{any}} |value|:
+                 1. [=Invoke=] |observer| with |value|.
 
-                  If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-                  [=report the exception=] |E|.
-           </dd>
+                    If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                    [=report the exception=] |E|.
+             </dd>
 
-           <dt>If |observer| is an {{Observer}}</dt>
-           <dd>
-             1. If |observer|'s {{Observer/next}} is not null, set |internal observer|'s [=internal
-                  observer/next steps=] to these steps that take an {{any}} |value|:
+             <dt>If |observer| is an {{Observer}}</dt>
+             <dd>
+               1. If |observer|'s {{Observer/next}} is not null, set |internal observer|'s [=internal
+                    observer/next steps=] to these steps that take an {{any}} |value|:
 
-                1. [=Invoke=] |observer|'s {{Observer/next}} with |value|.
+                  1. [=Invoke=] |observer|'s {{Observer/next}} with |value|.
 
-                   If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-                   [=report the exception=] |E|.
+                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                     [=report the exception=] |E|.
 
-             1. If |observer|'s {{Observer/error}} is not null, set |internal observer|'s [=internal
-                observer/error steps=] to these steps that take an {{any}} |error|:
+               1. If |observer|'s {{Observer/error}} is not null, set |internal observer|'s [=internal
+                  observer/error steps=] to these steps that take an {{any}} |error|:
 
-                1. [=Invoke=] |observer|'s {{Observer/error}} with |error|.
+                  1. [=Invoke=] |observer|'s {{Observer/error}} with |error|.
 
-                   If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-                   [=report the exception=] |E|.
+                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                     [=report the exception=] |E|.
 
-             1. If |observer|'s {{Observer/complete}} is not null, set |internal observer|'s [=internal
-                observer/complete steps=] to these steps:
+               1. If |observer|'s {{Observer/complete}} is not null, set |internal observer|'s [=internal
+                  observer/complete steps=] to these steps:
 
-                1. [=Invoke=] |observer|'s {{Observer/complete}}.
+                  1. [=Invoke=] |observer|'s {{Observer/complete}}.
 
-                   If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-                   [=report the exception=] |E|.
-           </dd>
+                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                     [=report the exception=] |E|.
+             </dd>
 
-           <dt>If |observer| is an [=internal observer=]</dt>
-           <dd>Set |internal observer| to |observer|.</dd>
-         </dl>
+             <dt>If |observer| is an [=internal observer=]</dt>
+             <dd>Set |internal observer| to |observer|.</dd>
+           </dl>
+         </li>
        </ol>
 
     1. [=Assert=]: |internal observer|'s [=internal observer/error steps=] is either the [=default
