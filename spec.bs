@@ -161,14 +161,14 @@ interface Subscriber {
 };
 </xmp>
 
-Each {{Subscriber}} has a <dfn for=Subscriber>next callback</dfn>, which is an
-{{ObserverCallback}}-or-null.
+Each {{Subscriber}} has a <dfn for=Subscriber>next algorithm</dfn>, which is a [=internal
+observer/next steps=]-or-null.
 
-Each {{Subscriber}} has a <dfn for=Subscriber>error callback</dfn>, which is an
-{{ObserverCallback}}-or-null.
+Each {{Subscriber}} has a <dfn for=Subscriber>error algorithm</dfn>, which is an [=internal
+observer/error steps=]-or-null.
 
-Each {{Subscriber}} has a <dfn for=Subscriber>complete callback</dfn>, which is a
-{{VoidFunction}}-or-null.
+Each {{Subscriber}} has a <dfn for=Subscriber>complete algorithm</dfn>, which is a [=internal
+observer/complete steps=]-or-null.
 
 Each {{Subscriber}} has a <dfn for=Subscriber>teardown callbacks</dfn>, which is a [=list=] of
 {{VoidFunction}}s, initially empty.
@@ -199,11 +199,9 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
-    1. If [=this=]'s [=Subscriber/next callback=] is non-null, [=invoke=] this's [=Subscriber/next
-       callback=] with |value|.
+    1. Run [=this=]'s [=Subscriber/next algorithm=] algorithm given |value|.
 
-       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
-       the exception=] |E|.
+       [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 </div>
 
 <div algorithm>
@@ -212,16 +210,13 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
-    1. Let |callback| be [=this=]'s [=Subscriber/error callback=].
+    1. Let |error algorithm| be [=this=]'s [=Subscriber/error algorithm=].
 
     1. [=close a subscription|Close=] [=this=].
 
-    1. If |callback| is not null, [=invoke=] |callback| with |error|.
+    1. Run |error algorithm| given |error|.
 
-       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
-       the exception=] |E|.
-
-    1. Otherwise, [=report the exception=] |error|.
+       [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
     1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
 </div>
@@ -232,14 +227,13 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
-    1. Let |callback| be [=this=]'s [=Subscriber/complete callback=].
+    1. Let |complete algorithm| be [=this=]'s [=Subscriber/complete algorithm=].
 
     1. [=close a subscription|Close=] [=this=].
 
-    1. If |callback| is not null, [=invoke=] |callback|.
+    1. Run |complete algorithm|.
 
-       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
-       the exception=] |E|.
+       [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
     1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
 </div>
@@ -264,8 +258,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. Set |subscriber|'s [=Subscriber/active=] boolean to false.
 
-    1. Set |subscriber|'s [=Subscriber/next callback=], [=Subscriber/error callback=], and
-       [=Subscriber/complete callback=] all to null.
+    1. Set |subscriber|'s [=Subscriber/next algorithm=], [=Subscriber/error algorithm=], and
+       [=Subscriber/complete algorithm=] all to null.
 
   <div class=note>
     <p>This algorithm intentionally does not have script-running side-effects; it just updates the
@@ -392,33 +386,129 @@ callback). The return value of {{EventTarget/on()}} is an example of the latter.
   The <dfn for=Observable method><code>subscribe(|observer|, |options|)</code></dfn> method steps
   are:
 
+    1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
+       and |options|.
+</div>
+
+<h4 id=observable-supporting-concepts>Supporting concepts</h4>
+
+<div algorithm>
+  The <dfn>default error algorithm</dfn> is an algorithm that takes an {{any}} |error|, and runs
+  these steps:
+
+    1. [=Report the exception=] |error|.
+
+  Note: We pull this default out separately so that every place in this specification that natively
+  <a for=Observable lt="subscribe to an Observable">subscribes</a> to an {{Observable}} (i.e.,
+  subscribes from spec prose, not going through the {{Observable/subscribe()}} method) doesn't have
+  to redundantly define these steps.
+</div>
+
+An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/items=]:
+
+<dl dfn-for="internal observer">
+  : <dfn>next steps</dfn>
+  :: An algorithm that takes a single parameter. Initially, these steps do nothing.
+
+  : <dfn>error steps</dfn>
+  :: An algorithm that takes a single parameter. Initially, the [=default error algorithm=].
+
+  : <dfn>complete steps</dfn>
+  :: An algorithm with no parameters. Initially, these steps do nothing.
+</dl>
+
+<div class=note>
+  <p>The [=internal observer=] [=struct=] is used to mirror the {{Observer/next}},
+  {{Observer/error}}, and {{Observer/complete}} [=callback functions=]. For any {{Observable}} that
+  is subscribed by JavaScript via the {{Observable/subscribe()}} method, these algorithm "steps"
+  will just be a wrapper around [=invoking=] the corresponding {{Observer/next}},
+  {{Observer/error}}, and {{Observer/complete}} [=callback functions=] provided by script.</p>
+
+  <p>But when internal spec prose (not user script) <a for=Observable lt="subscribe to an
+  Observable">subscribes</a> to an {{Observable}}, these "steps" are arbitrary spec algorithms that
+  are not provided via an {{ObserverUnion}} packed with Web IDL [=callback functions=]. See the
+  [[#promise-returning-operators]] that make use of this, for example.</p>
+</div>
+
+<div algorithm>
+  To <dfn for=Observable>subscribe to an {{Observable}}</dfn> given an
+  {{ObserverUnion}}-or-[=internal observer=] |observer|, and a {{SubscribeOptions}} |options|, run
+  these steps:
+
+  Note: We split this algorithm out from the Web IDL {{Observable/subscribe()}} method, so that
+  spec prose can <a for=Observable lt="subscribe to an Observable">subscribe</a> to an
+  {{Observable}} without going through the Web IDL bindings. See <a
+  href=https://github.com/w3c/IntersectionObserver/issues/464>w3c/IntersectionObserver#464</a> for
+  similar context, where "internal" prose <span class=allow-2119>must</span> not go through Web IDL
+  bindings on objects whose properties could be mutated by JavaScript. See
+  [[#promise-returning-operators]] for usage of this.
+
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
-    1. Let |nextCallback|, |errorCallback|, and |completeCallback| all be null.
+    1. Let |internal observer| be a new [=internal observer=].
 
-    1. If |observer| is an {{ObserverCallback}}, then set |nextCallback| to |observer|.
+    1. Process |observer| as follows:
+       <ol>
+         <li>
+           <dl class="switch">
+             <dt>If |observer| is an {{ObserverCallback}}</dt>
+             <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take
+                 an {{any}} |value|:
 
-    1. Otherwise:
+                 1. [=Invoke=] |observer| with |value|.
 
-      1. [=Assert=]: |observer| is an {{Observer}}.
+                    If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                    then [=report the exception=] |E|.
+             </dd>
 
-      1. Set |nextCallback| to |observer|'s {{Observer/next}}.
+             <dt>If |observer| is an {{Observer}}</dt>
+             <dd>
+               1. If |observer|'s {{Observer/next}} is not null, set |internal observer|'s
+                  [=internal observer/next steps=] to these steps that take an {{any}} |value|:
 
-      1. Set |errorCallback| to |observer|'s {{Observer/error}}.
+                  1. [=Invoke=] |observer|'s {{Observer/next}} with |value|.
 
-      1. Set |completeCallback| to |observer|'s {{Observer/complete}}.
+                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                     then [=report the exception=] |E|.
+
+               1. If |observer|'s {{Observer/error}} is not null, set |internal observer|'s
+                  [=internal observer/error steps=] to these steps that take an {{any}} |error|:
+
+                  1. [=Invoke=] |observer|'s {{Observer/error}} with |error|.
+
+                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                     then [=report the exception=] |E|.
+
+               1. If |observer|'s {{Observer/complete}} is not null, set |internal observer|'s
+                  [=internal observer/complete steps=] to these steps:
+
+                  1. [=Invoke=] |observer|'s {{Observer/complete}}.
+
+                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                     then [=report the exception=] |E|.
+             </dd>
+
+             <dt>If |observer| is an [=internal observer=]</dt>
+             <dd>Set |internal observer| to |observer|.</dd>
+           </dl>
+         </li>
+       </ol>
+
+    1. [=Assert=]: |internal observer|'s [=internal observer/error steps=] is either the [=default
+       error algorithm=], or an algorithm that [=invokes=] the provided {{Observer/error}}
+       [=callback function=].
 
     1. Let |subscriber| be a [=new=] {{Subscriber}}, initialized as:
 
-      : [=Subscriber/next callback=]
-      :: |nextCallback|
+      : [=Subscriber/next algorithm=]
+      :: |internal observer|'s [=internal observer/next steps=]
 
-      : [=Subscriber/error callback=]
-      :: |errorCallback|
+      : [=Subscriber/error algorithm=]
+      :: |internal observer|'s [=internal observer/error steps=]
 
-      : [=Subscriber/complete callback=]
-      :: |completeCallback|
+      : [=Subscriber/complete algorithm=]
+      :: |internal observer|'s [=internal observer/complete steps=]
 
       : [=Subscriber/signal=]
       :: The result of [=creating a dependent abort signal=] from the list «|subscriber|'s
@@ -460,6 +550,7 @@ callback). The return value of {{EventTarget/on()}} is an example of the latter.
     1. Otherwise, run the steps given by [=this=]'s [=Observable/subscribe callback=], given
        |subscriber|.
 </div>
+
 
 <h3 id=operators>Operators</h3>
 
@@ -513,7 +604,28 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn for=Observable method><code>toArray(|options|)</code></dfn> method steps are:
 
-    1. <span class=XXX>TODO: Spec this and use |options|.</span>
+    1. Let |p| [=a new promise=].
+
+    1. Let |values| be a new [=list=].
+
+    1. Let |observer| be a new [=internal observer=], initialized as follows:
+
+       : [=internal observer/next steps=]
+       :: <span class=XXX>TODO: Add the value to |values|.</span>
+
+       : [=internal observer/error steps=]
+       :: <span class=XXX>TODO: [=Reject=] |p| with an error.</span>
+
+       : [=internal observer/complete steps=]
+       :: <span class=XXX>TODO: [=Resolve=] |p| with |values|.</span>
+
+    1. <span class=XXX>TODO: Finish the actual spec for this method and use |options|'s
+       {{PromiseOptions/signal}} to [=reject=] |p| appropriately.</span>
+
+    1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
+       and |options|.
+
+    1. Return |p|.
 </div>
 
 <div algorithm>
