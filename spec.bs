@@ -392,33 +392,105 @@ callback). The return value of {{EventTarget/on()}} is an example of the latter.
   The <dfn for=Observable method><code>subscribe(|observer|, |options|)</code></dfn> method steps
   are:
 
+    1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
+       and |options|.
+</div>
+
+<h4 id=observable-supporting-concepts>Supporting concepts</h4>
+
+An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/items=]:
+
+<dl dfn-for="internal observer">
+  : <dfn>next steps</dfn>
+  :: An algorithm that takes a single parameter.
+
+  : <dfn>error steps</dfn>
+  :: An algorithm that takes a single parameter.
+
+  : <dfn>complete steps</dfn>
+  :: An algorithm with no parameters.
+</dl>
+
+Note: The [=internal observer=] [=struct=] is used to mirror the {{Observer/next}},
+{{Observer/error}}, and {{Observer/complete}} [=callback functions=], but for "internal" spec prose
+that <a for=Observable lt="subscribe to an Observable">subscribes</a> to an {{Observable}}. This is
+as opposed to JavaScript subscribing via the {{Observable/subscribe()}} method, with a
+{{ObserverUnion}} packed with Web IDL [=callback functions=].
+
+<div algorithm>
+  To <dfn for=Observable>subscribe to an {{Observable}}</dfn> given an
+  {{ObserverUnion}}-or-[=internal observer=] |observer|, and a {{SubscribeOptions}} |options|, run
+  these steps:
+
+  Note: We split this algorithm out from the Web IDL {{Observable/subscribe()}} method, so that
+  spec prose that wishes to <a for=Observable lt="subscribe to an Observable">subscribe</a> to an
+  {{Observable}} can do so without going through the Web IDL bindings. See <a
+  href=https://github.com/w3c/IntersectionObserver/issues/464>w3c/IntersectionObserver#464</a> for
+  similar context, where "internal" prose <span class=allow-2119>must</span> not go through Web IDL
+  bindings on objects whose properties could be mutated by JavaScript. See [[#operators]] for usage
+  of this.
+
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
-    1. Let |nextCallback|, |errorCallback|, and |completeCallback| all be null.
+    1. Let |internal observer| be a new [=internal observer=], initialized as:
+       : [=internal observer/next steps=]
+       : [=internal observer/error steps=]
+       : [=internal observer/complete steps=]
+       :: Algorithms that do nothing.
 
-    1. If |observer| is an {{ObserverCallback}}, then set |nextCallback| to |observer|.
+    1. Process |observer| as follows:
 
-    1. Otherwise:
+       <dl class="switch">
+         <dt>If |observer| is an {{ObserverCallback}}</dt>
 
-      1. [=Assert=]: |observer| is an {{Observer}}.
+         <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take an {{any}} |value|:</dd>
+       </dl>
 
-      1. Set |nextCallback| to |observer|'s {{Observer/next}}.
+    1. If |observer| is an {{ObserverCallback}}, then set |internal observer|'s [=internal
+       observer/next steps=] to these steps that take an {{any}} |value|:
 
-      1. Set |errorCallback| to |observer|'s {{Observer/error}}.
+       1. [=Invoke=] |observer| with |value|.
 
-      1. Set |completeCallback| to |observer|'s {{Observer/complete}}.
+          If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+          [=report the exception=] |E|.
+
+    1. Otherwise, if |observer| is an {{Observer}}:
+
+      1. Let |nextCallback| be |observer|'s {{Observer/next}}, |errorCallback| be |observer|'s
+         {{Observer/error}}, and |completeCallback| be |observer|'s {{Observer/complete}}.
+
+      1. Set |internal observer|'s [=internal observer/next steps=] to these steps that take an {{any}} |value|:
+
+         1. [=Invoke=] |nextCallback| with |value|.
+
+            If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+            [=report the exception=] |E|.
+
+      1. Set |internal observer|'s [=internal observer/error steps=] to these steps that take an {{any}} |value|:
+
+         1. [=Invoke=] |errorCallback| with |value|.
+
+            If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+            [=report the exception=] |E|.
+
+      1. Set |internal observer|'s [=internal observer/complete steps=] to these steps:
+
+         1. [=Invoke=] |completeCallback| with |value|.
+
+            If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+            [=report the exception=] |E|.
 
     1. Let |subscriber| be a [=new=] {{Subscriber}}, initialized as:
 
       : [=Subscriber/next callback=]
-      :: |nextCallback|
+      :: |internal observer|'s [=internal observer/next steps=]
 
       : [=Subscriber/error callback=]
-      :: |errorCallback|
+      :: |internal observer|'s [=internal observer/error steps=]
 
       : [=Subscriber/complete callback=]
-      :: |completeCallback|
+      :: |internal observer|'s [=internal observer/complete steps=]
 
       : [=Subscriber/signal=]
       :: The result of [=creating a dependent abort signal=] from the list «|subscriber|'s
@@ -460,6 +532,7 @@ callback). The return value of {{EventTarget/on()}} is an example of the latter.
     1. Otherwise, run the steps given by [=this=]'s [=Observable/subscribe callback=], given
        |subscriber|.
 </div>
+
 
 <h3 id=operators>Operators</h3>
 
@@ -513,7 +586,26 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn for=Observable method><code>toArray(|options|)</code></dfn> method steps are:
 
-    1. <span class=XXX>TODO: Spec this and use |options|.</span>
+    1. Let |p| [=a new promise=].
+
+    1. Let |values| be a new [=list=].
+
+    1. Let |observer| be a new [=internal observer=], initialized as follows:
+
+       : [=internal observer/next steps=]
+       :: <span class=XXX>TODO</span>
+
+       : [=internal observer/error steps=]
+       :: <span class=XXX>TODO</span>
+
+       : [=internal observer/complete steps=]
+       :: <span class=XXX>TODO</span>
+
+    1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
+
+    1. Return |p|.
+
+    1. <span class=XXX>TODO: Spec this and use |options| and |p|, and |values|.</span>
 </div>
 
 <div algorithm>
