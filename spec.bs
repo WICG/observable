@@ -164,7 +164,7 @@ interface Subscriber {
 Each {{Subscriber}} has a <dfn for=Subscriber>next algorithm</dfn>, which is a [=internal
 observer/next steps=]-or-null.
 
-Each {{Subscriber}} has a <dfn for=Subscriber>error algorithm</dfn>, which is a [=internal
+Each {{Subscriber}} has a <dfn for=Subscriber>error algorithm</dfn>, which is an [=internal
 observer/error steps=]-or-null.
 
 Each {{Subscriber}} has a <dfn for=Subscriber>complete algorithm</dfn>, which is a [=internal
@@ -201,7 +201,7 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. Run [=this=]'s [=Subscriber/next algorithm=] algorithm given |value|.
 
-       [=Assert=]: No <a spec=webidl lt="an exception was thrown">an exception was thrown</a>.
+       [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 </div>
 
 <div algorithm>
@@ -216,7 +216,7 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. Run |error algorithm| given |error|.
 
-       [=Assert=]: No <a spec=webidl lt="an exception was thrown">an exception was thrown</a>.
+       [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
     1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
 </div>
@@ -233,7 +233,7 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. Run |complete algorithm|.
 
-       [=Assert=]: No <a spec=webidl lt="an exception was thrown">an exception was thrown</a>.
+       [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
     1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
 </div>
@@ -422,7 +422,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
   {{Observer/error}}, and {{Observer/complete}} [=callback functions=]. For any {{Observable}} that
   is subscribed by JavaScript via the {{Observable/subscribe()}} method, these algorithm "steps"
   will just be a wrapper around [=invoking=] the corresponding {{Observer/next}},
-  {{Observer/error}}, and {{Observer/complete}} [=callback functions=] given by user script.</p>
+  {{Observer/error}}, and {{Observer/complete}} [=callback functions=] provided by script.</p>
 
   <p>But when internal spec prose (not user script) <a for=Observable lt="subscribe to an
   Observable">subscribes</a> to an {{Observable}}, these "steps" are arbitrary spec algorithms that
@@ -453,38 +453,40 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
          <li>
            <dl class="switch">
              <dt>If |observer| is an {{ObserverCallback}}</dt>
-             <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take an {{any}} |value|:
+             <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take
+                 an {{any}} |value|:
+
                  1. [=Invoke=] |observer| with |value|.
 
-                    If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-                    [=report the exception=] |E|.
+                    If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                    then [=report the exception=] |E|.
              </dd>
 
              <dt>If |observer| is an {{Observer}}</dt>
              <dd>
-               1. If |observer|'s {{Observer/next}} is not null, set |internal observer|'s [=internal
-                    observer/next steps=] to these steps that take an {{any}} |value|:
+               1. If |observer|'s {{Observer/next}} is not null, set |internal observer|'s
+                  [=internal observer/next steps=] to these steps that take an {{any}} |value|:
 
                   1. [=Invoke=] |observer|'s {{Observer/next}} with |value|.
 
-                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-                     [=report the exception=] |E|.
+                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                     then [=report the exception=] |E|.
 
-               1. If |observer|'s {{Observer/error}} is not null, set |internal observer|'s [=internal
-                  observer/error steps=] to these steps that take an {{any}} |error|:
+               1. If |observer|'s {{Observer/error}} is not null, set |internal observer|'s
+                  [=internal observer/error steps=] to these steps that take an {{any}} |error|:
 
                   1. [=Invoke=] |observer|'s {{Observer/error}} with |error|.
 
-                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-                     [=report the exception=] |E|.
+                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                     then [=report the exception=] |E|.
 
-               1. If |observer|'s {{Observer/complete}} is not null, set |internal observer|'s [=internal
-                  observer/complete steps=] to these steps:
+               1. If |observer|'s {{Observer/complete}} is not null, set |internal observer|'s
+                  [=internal observer/complete steps=] to these steps:
 
                   1. [=Invoke=] |observer|'s {{Observer/complete}}.
 
-                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-                     [=report the exception=] |E|.
+                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                     then [=report the exception=] |E|.
              </dd>
 
              <dt>If |observer| is an [=internal observer=]</dt>
