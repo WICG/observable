@@ -34,6 +34,8 @@ urlPrefix: https://dom.spec.whatwg.org; spec: DOM
       text: passive; url: event-listener-passive
       text: once; url: event-listener-once
       text: signal; url: event-listener-signal
+    for: AbortSignal
+      text: dependent signals; url: abortsignal-dependent-signals
 </pre>
 
 <style>
@@ -521,7 +523,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        Note: This can happen when {{SubscribeOptions}}'s {{SubscribeOptions/signal}} is already
        [=AbortSignal/aborted=].
 
-    1. Otherwise, [=AbortSignal/add=] the following algorithm to |subscriber|'s
+    1. Otherwise, [=AbortSignal/add|add the following abort algorithm=] to |subscriber|'s
        [=Subscriber/signal=]:
 
        1. [=close a subscription|Close=] |subscriber|.
@@ -605,21 +607,36 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Let |p| [=a new promise=].
 
+    1. If |options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
+
+       1. [=Reject=] |p| with |options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
+
+       1. Return |p|.
+
+    1. [=AbortSignal/add|Add the following abort algorithm=] to |options|'s
+       {{SubscribeOptions/signal}}:
+
+       1. [=Reject=] |p| with |options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
+
+       Note: All we have to do here is [=reject=] |p|. Note that the subscription to [=this=]
+       {{Observable}} will also be canceled automatically, since the "inner" [=Subscriber/signal=]
+       (created during <a for=Observable lt="subscribe to an Observable">subscription</a>) is a
+       [=AbortSignal/dependent signal=] of |options|'s {{SubscribeOptions/signal}}.
+
     1. Let |values| be a new [=list=].
 
     1. Let |observer| be a new [=internal observer=], initialized as follows:
 
        : [=internal observer/next steps=]
-       :: <span class=XXX>TODO: Add the value to |values|.</span>
+       :: [=list/Append=] the passed in <var ignore>value</var> to |values|.
 
        : [=internal observer/error steps=]
-       :: <span class=XXX>TODO: [=Reject=] |p| with an error.</span>
+       :: [=Reject=] |p| with the passed in <var ignore>error</var>.
 
        : [=internal observer/complete steps=]
-       :: <span class=XXX>TODO: [=Resolve=] |p| with |values|.</span>
-
-    1. <span class=XXX>TODO: Finish the actual spec for this method and use |options|'s
-       {{SubscribeOptions/signal}} to [=reject=] |p| appropriately.</span>
+       :: [=Resolve=] |p| with |values|.
 
     1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
        and |options|.
