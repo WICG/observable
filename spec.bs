@@ -307,15 +307,15 @@ console.assert(producedValues.length === 0);
 // SubscribeCallback is where the Observable "creator's" code lives. It's
 // called when subscribe() is called, to set up a new subscription.
 callback SubscribeCallback = undefined (Subscriber subscriber);
-callback ObserverCallback = undefined (any value);
+callback SubscriptionObserverCallback = undefined (any value);
 
 dictionary SubscriptionObserver {
-  ObserverCallback next;
-  ObserverCallback error;
+  SubscriptionObserverCallback next;
+  SubscriptionObserverCallback error;
   VoidFunction complete;
 };
 
-typedef (ObserverCallback or SubscriptionObserver) ObserverUnion;
+typedef (SubscriptionObserverCallback or SubscriptionObserver) ObserverUnion;
 
 dictionary SubscribeOptions {
   AbortSignal signal;
@@ -451,7 +451,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        <ol>
          <li>
            <dl class="switch">
-             <dt>If |observer| is an {{ObserverCallback}}</dt>
+             <dt>If |observer| is a {{SubscriptionObserverCallback}}</dt>
              <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take
                  an {{any}} |value|:
 
