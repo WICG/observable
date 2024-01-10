@@ -418,10 +418,11 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
 <div class=note>
   <p>The [=internal observer=] [=struct=] is used to mirror the {{SubscriptionObserver/next}},
-  {{SubscriptionObserver/error}}, and {{SubscriptionObserver/complete}} [=callback functions=]. For any {{Observable}} that
-  is subscribed by JavaScript via the {{Observable/subscribe()}} method, these algorithm "steps"
-  will just be a wrapper around [=invoking=] the corresponding {{SubscriptionObserver/next}},
-  {{SubscriptionObserver/error}}, and {{SubscriptionObserver/complete}} [=callback functions=] provided by script.</p>
+  {{SubscriptionObserver/error}}, and {{SubscriptionObserver/complete}} [=callback functions=]. For
+  any {{Observable}} that is subscribed by JavaScript via the {{Observable/subscribe()}} method,
+  these algorithm "steps" will just be a wrapper around [=invoking=] the corresponding
+  {{SubscriptionObserver/next}}, {{SubscriptionObserver/error}}, and
+  {{SubscriptionObserver/complete}} [=callback functions=] provided by script.</p>
 
   <p>But when internal spec prose (not user script) <a for=Observable lt="subscribe to an
   Observable">subscribes</a> to an {{Observable}}, these "steps" are arbitrary spec algorithms that
