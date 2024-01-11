@@ -605,9 +605,6 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn for=Observable method><code>toArray(|options|)</code></dfn> method steps are:
 
-    1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
-       Document=] is not [=Document/fully active=], then return.
-
     1. Let |p| [=a new promise=].
 
     1. If |options|'s {{SubscribeOptions/signal}} is not null:
