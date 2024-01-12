@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="457ba36c335eee37b0e05c3549c5d11efd1e971a" name="document-revision">
+  <meta content="69de650008f8f8220e5c1058beb4fe82ad4b0510" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -902,7 +902,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-01-09">9 January 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-01-12">12 January 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1206,10 +1206,11 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
    <dl>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="internal observer" data-dfn-type="dfn" data-noexport id="internal-observer-next-steps">next steps</dfn>
     <dd data-md>
-     <p>An algorithm that takes a single parameter. Initially, these steps do nothing.</p>
+     <p>An algorithm that takes a single parameter of type <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⑦">any</a></code>. Initially, these steps do nothing.</p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="internal observer" data-dfn-type="dfn" data-noexport id="internal-observer-error-steps">error steps</dfn>
     <dd data-md>
-     <p>An algorithm that takes a single parameter. Initially, the <a data-link-type="dfn" href="#default-error-algorithm" id="ref-for-default-error-algorithm">default error algorithm</a>.</p>
+     <p>An algorithm that takes a single parameter of type <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⑧">any</a></code>. Initially, the <a data-link-type="dfn" href="#default-error-algorithm" id="ref-for-default-error-algorithm">default error
+ algorithm</a>.</p>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="internal observer" data-dfn-type="dfn" data-noexport id="internal-observer-complete-steps">complete steps</dfn>
     <dd data-md>
      <p>An algorithm with no parameters. Initially, these steps do nothing.</p>
@@ -1242,7 +1243,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <dt>If <var>observer</var> is an <code class="idl"><a data-link-type="idl" href="#callbackdef-observercallback" id="ref-for-callbackdef-observercallback③">ObserverCallback</a></code>
          <dd>
           Set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①">next steps</a> to these steps that take
-           an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⑦">any</a></code> <var>value</var>: 
+           an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⑨">any</a></code> <var>value</var>: 
           <ol>
            <li data-md>
             <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function②">Invoke</a> <var>observer</var> with <var>value</var>.</p>
@@ -1253,7 +1254,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <dd>
           <ol>
            <li data-md>
-            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-observer-next" id="ref-for-dom-observer-next②">next</a></code> is not null, set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps②">next steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⑧">any</a></code> <var>value</var>:</p>
+            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-observer-next" id="ref-for-dom-observer-next②">next</a></code> is not null, set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps②">next steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②⓪">any</a></code> <var>value</var>:</p>
             <ol>
              <li data-md>
               <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function③">Invoke</a> <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-observer-next" id="ref-for-dom-observer-next③">next</a></code> with <var>value</var>.</p>
@@ -1261,7 +1262,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
  then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#report-the-exception" id="ref-for-report-the-exception④">report the exception</a> <var>E</var>.</p>
             </ol>
            <li data-md>
-            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-observer-error" id="ref-for-dom-observer-error②">error</a></code> is not null, set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①">error steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①⑨">any</a></code> <var>error</var>:</p>
+            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-observer-error" id="ref-for-dom-observer-error②">error</a></code> is not null, set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①">error steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②①">any</a></code> <var>error</var>:</p>
             <ol>
              <li data-md>
               <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function④">Invoke</a> <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-observer-error" id="ref-for-dom-observer-error③">error</a></code> with <var>error</var>.</p>
@@ -2118,7 +2119,7 @@ window.dfnpanelData['bdbd19d1'] = {"dfnID": "bdbd19d1", "url": "https://webidl.s
 window.dfnpanelData['7004c2a7'] = {"dfnID": "7004c2a7", "url": "https://webidl.spec.whatwg.org/#VoidFunction", "dfnText": "VoidFunction", "refSections": [{"refs": [{"id": "ref-for-VoidFunction"}, {"id": "ref-for-VoidFunction\u2460"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-VoidFunction\u2461"}, {"id": "ref-for-VoidFunction\u2462"}], "title": "2.2. The Observable interface"}], "external": true};
 window.dfnpanelData['dacde8b5'] = {"dfnID": "dacde8b5", "url": "https://webidl.spec.whatwg.org/#a-new-promise", "dfnText": "a new promise", "refSections": [{"refs": [{"id": "ref-for-a-new-promise"}], "title": "2.3.3. Promise-returning operators"}], "external": true};
 window.dfnpanelData['cc61f510'] = {"dfnID": "cc61f510", "url": "https://webidl.spec.whatwg.org/#an-exception-was-thrown", "dfnText": "an exception was thrown", "refSections": [{"refs": [{"id": "ref-for-an-exception-was-thrown"}, {"id": "ref-for-an-exception-was-thrown\u2460"}, {"id": "ref-for-an-exception-was-thrown\u2461"}, {"id": "ref-for-an-exception-was-thrown\u2462"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-an-exception-was-thrown\u2463"}, {"id": "ref-for-an-exception-was-thrown\u2464"}, {"id": "ref-for-an-exception-was-thrown\u2465"}, {"id": "ref-for-an-exception-was-thrown\u2466"}, {"id": "ref-for-an-exception-was-thrown\u2467"}, {"id": "ref-for-an-exception-was-thrown\u2468"}], "title": "2.2.1. Supporting concepts"}], "external": true};
-window.dfnpanelData['6c6b1005'] = {"dfnID": "6c6b1005", "url": "https://webidl.spec.whatwg.org/#idl-any", "dfnText": "any", "refSections": [{"refs": [{"id": "ref-for-idl-any"}, {"id": "ref-for-idl-any\u2460"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-any\u2461"}, {"id": "ref-for-idl-any\u2462"}, {"id": "ref-for-idl-any\u2463"}, {"id": "ref-for-idl-any\u2464"}, {"id": "ref-for-idl-any\u2465"}, {"id": "ref-for-idl-any\u2466"}, {"id": "ref-for-idl-any\u2467"}, {"id": "ref-for-idl-any\u2468"}, {"id": "ref-for-idl-any\u2460\u24ea"}, {"id": "ref-for-idl-any\u2460\u2460"}, {"id": "ref-for-idl-any\u2460\u2461"}, {"id": "ref-for-idl-any\u2460\u2462"}, {"id": "ref-for-idl-any\u2460\u2463"}, {"id": "ref-for-idl-any\u2460\u2464"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-idl-any\u2460\u2465"}, {"id": "ref-for-idl-any\u2460\u2466"}, {"id": "ref-for-idl-any\u2460\u2467"}, {"id": "ref-for-idl-any\u2460\u2468"}], "title": "2.2.1. Supporting concepts"}], "external": true};
+window.dfnpanelData['6c6b1005'] = {"dfnID": "6c6b1005", "url": "https://webidl.spec.whatwg.org/#idl-any", "dfnText": "any", "refSections": [{"refs": [{"id": "ref-for-idl-any"}, {"id": "ref-for-idl-any\u2460"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-any\u2461"}, {"id": "ref-for-idl-any\u2462"}, {"id": "ref-for-idl-any\u2463"}, {"id": "ref-for-idl-any\u2464"}, {"id": "ref-for-idl-any\u2465"}, {"id": "ref-for-idl-any\u2466"}, {"id": "ref-for-idl-any\u2467"}, {"id": "ref-for-idl-any\u2468"}, {"id": "ref-for-idl-any\u2460\u24ea"}, {"id": "ref-for-idl-any\u2460\u2460"}, {"id": "ref-for-idl-any\u2460\u2461"}, {"id": "ref-for-idl-any\u2460\u2462"}, {"id": "ref-for-idl-any\u2460\u2463"}, {"id": "ref-for-idl-any\u2460\u2464"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-idl-any\u2460\u2465"}, {"id": "ref-for-idl-any\u2460\u2466"}, {"id": "ref-for-idl-any\u2460\u2467"}, {"id": "ref-for-idl-any\u2460\u2468"}, {"id": "ref-for-idl-any\u2461\u24ea"}, {"id": "ref-for-idl-any\u2461\u2460"}], "title": "2.2.1. Supporting concepts"}], "external": true};
 window.dfnpanelData['5372cca8'] = {"dfnID": "5372cca8", "url": "https://webidl.spec.whatwg.org/#idl-boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-idl-boolean"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-boolean\u2460"}, {"id": "ref-for-idl-boolean\u2461"}, {"id": "ref-for-idl-boolean\u2462"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-idl-boolean\u2463"}, {"id": "ref-for-idl-boolean\u2464"}], "title": "3. EventTarget integration"}], "external": true};
 window.dfnpanelData['3ab7bf79'] = {"dfnID": "3ab7bf79", "url": "https://webidl.spec.whatwg.org/#dfn-callback-function", "dfnText": "callback function", "refSections": [{"refs": [{"id": "ref-for-dfn-callback-function"}, {"id": "ref-for-dfn-callback-function\u2460"}, {"id": "ref-for-dfn-callback-function\u2461"}, {"id": "ref-for-dfn-callback-function\u2462"}], "title": "2.2.1. Supporting concepts"}], "external": true};
 window.dfnpanelData['10ce5f6f'] = {"dfnID": "10ce5f6f", "url": "https://webidl.spec.whatwg.org/#invoke-a-callback-function", "dfnText": "invoke", "refSections": [{"refs": [{"id": "ref-for-invoke-a-callback-function"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-invoke-a-callback-function\u2460"}, {"id": "ref-for-invoke-a-callback-function\u2461"}, {"id": "ref-for-invoke-a-callback-function\u2462"}, {"id": "ref-for-invoke-a-callback-function\u2463"}, {"id": "ref-for-invoke-a-callback-function\u2464"}, {"id": "ref-for-invoke-a-callback-function\u2465"}, {"id": "ref-for-invoke-a-callback-function\u2466"}, {"id": "ref-for-invoke-a-callback-function\u2467"}], "title": "2.2.1. Supporting concepts"}], "external": true};
