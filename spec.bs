@@ -407,10 +407,11 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
 <dl dfn-for="internal observer">
   : <dfn>next steps</dfn>
-  :: An algorithm that takes a single parameter. Initially, these steps do nothing.
+  :: An algorithm that takes a single parameter of type {{any}}. Initially, these steps do nothing.
 
   : <dfn>error steps</dfn>
-  :: An algorithm that takes a single parameter. Initially, the [=default error algorithm=].
+  :: An algorithm that takes a single parameter of type {{any}}. Initially, the [=default error
+     algorithm=].
 
   : <dfn>complete steps</dfn>
   :: An algorithm with no parameters. Initially, these steps do nothing.
