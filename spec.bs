@@ -462,7 +462,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
                     then [=report the exception=] |E|.
              </dd>
 
-             <dt>If |observer| is an {{SubscriptionObserver}}</dt>
+             <dt>If |observer| is a {{SubscriptionObserver}}</dt>
              <dd>
                1. If |observer|'s {{SubscriptionObserver/next}} is not null, set |internal observer|'s
                   [=internal observer/next steps=] to these steps that take an {{any}} |value|:
