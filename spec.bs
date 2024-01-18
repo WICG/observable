@@ -273,7 +273,7 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     script, because running script <span class=allow-2119>may</span> reentrantly invoke one of the
     methods that closed the subscription in the first place. And closing the subscription <span
     class=allow-2119>must</span> ensure that even if a method gets reentrantly invoked, none of the
-    {{Observer}} callbacks are ever invoked again. Consider this example:</p>
+    {{SubscriptionObserver}} callbacks are ever invoked again. Consider this example:</p>
 
     <div class=example id=reentrant-example>
       <pre highlight=js>
@@ -309,15 +309,15 @@ console.assert(producedValues.length === 0);
 // SubscribeCallback is where the Observable "creator's" code lives. It's
 // called when subscribe() is called, to set up a new subscription.
 callback SubscribeCallback = undefined (Subscriber subscriber);
-callback ObserverCallback = undefined (any value);
+callback SubscriptionObserverCallback = undefined (any value);
 
-dictionary Observer {
-  ObserverCallback next;
-  ObserverCallback error;
+dictionary SubscriptionObserver {
+  SubscriptionObserverCallback next;
+  SubscriptionObserverCallback error;
   VoidFunction complete;
 };
 
-typedef (ObserverCallback or Observer) ObserverUnion;
+typedef (SubscriptionObserverCallback or SubscriptionObserver) ObserverUnion;
 
 dictionary SubscribeOptions {
   AbortSignal signal;
@@ -420,11 +420,12 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 </dl>
 
 <div class=note>
-  <p>The [=internal observer=] [=struct=] is used to mirror the {{Observer/next}},
-  {{Observer/error}}, and {{Observer/complete}} [=callback functions=]. For any {{Observable}} that
-  is subscribed by JavaScript via the {{Observable/subscribe()}} method, these algorithm "steps"
-  will just be a wrapper around [=invoking=] the corresponding {{Observer/next}},
-  {{Observer/error}}, and {{Observer/complete}} [=callback functions=] provided by script.</p>
+  <p>The [=internal observer=] [=struct=] is used to mirror the {{SubscriptionObserver/next}},
+  {{SubscriptionObserver/error}}, and {{SubscriptionObserver/complete}} [=callback functions=]. For
+  any {{Observable}} that is subscribed by JavaScript via the {{Observable/subscribe()}} method,
+  these algorithm "steps" will just be a wrapper around [=invoking=] the corresponding
+  {{SubscriptionObserver/next}}, {{SubscriptionObserver/error}}, and
+  {{SubscriptionObserver/complete}} [=callback functions=] provided by script.</p>
 
   <p>But when internal spec prose (not user script) <a for=Observable lt="subscribe to an
   Observable">subscribes</a> to an {{Observable}}, these "steps" are arbitrary spec algorithms that
@@ -454,7 +455,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        <ol>
          <li>
            <dl class="switch">
-             <dt>If |observer| is an {{ObserverCallback}}</dt>
+             <dt>If |observer| is a {{SubscriptionObserverCallback}}</dt>
              <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take
                  an {{any}} |value|:
 
@@ -464,28 +465,28 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
                     then [=report the exception=] |E|.
              </dd>
 
-             <dt>If |observer| is an {{Observer}}</dt>
+             <dt>If |observer| is a {{SubscriptionObserver}}</dt>
              <dd>
-               1. If |observer|'s {{Observer/next}} is not null, set |internal observer|'s
+               1. If |observer|'s {{SubscriptionObserver/next}} is not null, set |internal observer|'s
                   [=internal observer/next steps=] to these steps that take an {{any}} |value|:
 
-                  1. [=Invoke=] |observer|'s {{Observer/next}} with |value|.
+                  1. [=Invoke=] |observer|'s {{SubscriptionObserver/next}} with |value|.
 
                      If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
                      then [=report the exception=] |E|.
 
-               1. If |observer|'s {{Observer/error}} is not null, set |internal observer|'s
+               1. If |observer|'s {{SubscriptionObserver/error}} is not null, set |internal observer|'s
                   [=internal observer/error steps=] to these steps that take an {{any}} |error|:
 
-                  1. [=Invoke=] |observer|'s {{Observer/error}} with |error|.
+                  1. [=Invoke=] |observer|'s {{SubscriptionObserver/error}} with |error|.
 
                      If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
                      then [=report the exception=] |E|.
 
-               1. If |observer|'s {{Observer/complete}} is not null, set |internal observer|'s
+               1. If |observer|'s {{SubscriptionObserver/complete}} is not null, set |internal observer|'s
                   [=internal observer/complete steps=] to these steps:
 
-                  1. [=Invoke=] |observer|'s {{Observer/complete}}.
+                  1. [=Invoke=] |observer|'s {{SubscriptionObserver/complete}}.
 
                      If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
                      then [=report the exception=] |E|.
@@ -498,7 +499,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        </ol>
 
     1. [=Assert=]: |internal observer|'s [=internal observer/error steps=] is either the [=default
-       error algorithm=], or an algorithm that [=invokes=] the provided {{Observer/error}}
+       error algorithm=], or an algorithm that [=invokes=] the provided {{SubscriptionObserver/error}}
        [=callback function=].
 
     1. Let |subscriber| be a [=new=] {{Subscriber}}, initialized as:
