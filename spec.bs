@@ -567,7 +567,96 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn for=Observable method><code>takeUntil(|notifier|)</code></dfn> method steps are:
 
-    1. <span class=XXX>TODO: Spec this and use |notifier|.</span>
+    1. Let |sourceObservable| be [=this=].
+
+    1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
+       algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+
+       1. <span class=XXX>TODO: We probably want to do something with |subscriber|'s
+          [=Subscriber/signal=]. If that signal is aborted, then presumably we should unsubscribe
+          from both |notifier| and |sourceObservable|</span>.
+
+       1. Let |controller| be a [=new=] {{AbortController}}.
+
+          <div class=note>
+            Note that this method involves <a for=Observable lt="subscribe to an
+            Observable">Subscribing</a> to two {{Observable}}s: (1) |notifier|, and
+            |sourceObservable|. This |controller| is how we "unsubscribe" from **both** of them. We
+            do this in both of the following situations:
+
+              1. |notifier| starts emitting values (either "next" or "error"). In this case, we
+                 unsubscribe from |notifier| since we got all we need from it, and no longer need it
+                 to keep producing values. We also unsubscribe from |sourceObservable|, because it
+                 no longer needs to produce values that get plumbed through this method's returned
+                 |observable|, because we're manually ending the subscription to |observable|, since
+                 |notifier| finally produced a value.
+
+              1. |sourceObservable| either {{Subscriber/error()}}s or {{Subscriber/complete()}}s
+                 itself. In this case, we unsubscribe from |notifier| since we no longer need to
+                 listen for values it emits in order to determine when |observable| can stop
+                 mirroring values from |sourceObservable| (since |sourceObservable| ran to
+                 completion by itself). Unsubscribing from |sourceObservable| isn't necessary, since
+                 its subscription has exhausted itself.
+          </div>
+
+       1. Let |notifierObserver| be a new [=internal observer=], initialized as follows:
+
+          : [=internal observer/next steps=]
+          :: 1. Run |subscriber|'s {{Subscriber/complete()}} method.
+
+             1. [=AbortController/Signal abort=] |controller|.
+
+          : [=internal observer/error steps=]
+          :: 1. Run |subscriber|'s {{Subscriber/complete()}} method.
+
+             1. [=AbortController/Signal abort=] |controller|.
+
+          Note: We do not specify [=internal observer/complete steps=], because if the |notifier|
+          {{Observable}} completes itself, we do not need to complete the |subscriber| associated
+          with the |observable| returned from this method. Rather, the |observable| will continue to
+          mirror |sourceObservable| uninterrupted.
+
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
+          |controller|'s {{AbortController/signal}}.
+
+       1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |notifier| given
+          |notifierObserver| and |options|.
+
+       1. If |subscriber|'s [=Subscriber/active=] is false, then return.
+
+          Note: This means that |sourceObservable|'s [=Observable/subscribe callback=] will not even
+          get invoked once, if |notifier| synchronously emits a value. If |notifier| synchronously
+          "completes" though (without emitting a "next" or "error" value) then we proceed to
+          subscribe to |sourceObservable|, and |observable| will mirror it uninterrupted. In that
+          case, |notifier| has lost the opportunity to ever stop the returned |observable| from
+          mirroring |sourceObservable|.
+
+       1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
+
+          : [=internal observer/next steps=]
+          :: Run |subscriber|'s {{Subscriber/next()}} method, given the passed in <var
+             ignore>value</var>.
+
+          : [=internal observer/error steps=]
+          :: 1. Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+                ignore>error</var>.
+
+             1. [=AbortController/Signal abort=] |controller|.
+
+          : [=internal observer/complete steps=]
+          :: 1. Run |subscriber|'s {{Subscriber/complete()}} method.
+
+             1. [=AbortController/Signal abort=] |controller|.
+
+          Note: |sourceObserver| is mostly a pass-through, mirroring everything that
+          |sourceObservable| emits, with the exception of having the ability to unsubscribe from the
+          |notifier| {{Observable}} in the case where |sourceObservable| is exhausted before
+          |notifier| emits anything.
+
+       1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
+          given |sourceObserver| and |options|.
+
+    1. Return |observable|.
 </div>
 
 <div algorithm>
