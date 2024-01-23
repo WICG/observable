@@ -572,10 +572,6 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-       1. <span class=XXX>TODO: We probably want to do something with |subscriber|'s
-          [=Subscriber/signal=]. If that signal is aborted, then presumably we should unsubscribe
-          from both |notifier| and |sourceObservable|</span>.
-
        1. Let |controller| be a [=new=] {{AbortController}}.
 
           <div class=note>
@@ -599,6 +595,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                  its subscription has exhausted itself.
           </div>
 
+       1. Let |signal| be the result of [=creating a dependent abort signal=] from the list
+          «|controller|'s [=AbortController/signal=], |subscriber|'s [=Subscriber/signal=]», using
+          {{AbortSignal}}, and the [=current realm=].
+
        1. Let |notifierObserver| be a new [=internal observer=], initialized as follows:
 
           : [=internal observer/next steps=]
@@ -616,8 +616,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           with the |observable| returned from this method. Rather, the |observable| will continue to
           mirror |sourceObservable| uninterrupted.
 
-       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-          |controller|'s {{AbortController/signal}}.
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is |signal|.
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |notifier| given
           |notifierObserver| and |options|.
