@@ -576,7 +576,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
           <div class=note>
             Note that this method involves <a for=Observable lt="subscribe to an
-            Observable">Subscribing</a> to two {{Observable}}s: (1) |notifier|, and
+            Observable">Subscribing</a> to two {{Observable}}s: (1) |notifier|, and (2)
             |sourceObservable|. This |controller| is how we "unsubscribe" from **both** of them. We
             do this in both of the following situations:
 
