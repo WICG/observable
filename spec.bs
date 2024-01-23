@@ -624,11 +624,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        1. If |subscriber|'s [=Subscriber/active=] is false, then return.
 
           Note: This means that |sourceObservable|'s [=Observable/subscribe callback=] will not even
-          get invoked once, if |notifier| synchronously emits a value. If |notifier| synchronously
-          "completes" though (without emitting a "next" or "error" value) then we proceed to
-          subscribe to |sourceObservable|, and |observable| will mirror it uninterrupted. In that
-          case, |notifier| has lost the opportunity to ever stop the returned |observable| from
-          mirroring |sourceObservable|.
+          get invoked once, if |notifier| synchronously emits a value. If |notifier| only
+          "completes" synchronously though (without emitting a "next" or "error" value), then
+          |subscriber|'s [=Subscriber/active=] will still be true, and we proceed to subscribe to
+          |sourceObservable|, which |observable| will mirror uninterrupted.
 
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
