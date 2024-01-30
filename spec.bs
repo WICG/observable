@@ -335,8 +335,6 @@ interface Observable {
   constructor(SubscribeCallback callback);
   undefined subscribe(optional ObserverUnion observer = {}, optional SubscribeOptions options = {});
 
-  undefined finally(VoidFunction callback);
-
   // Constructs a native Observable from value if it's any of the following:
   //   - Observable
   //   - AsyncIterable
@@ -354,6 +352,7 @@ interface Observable {
   Observable take(unsigned long long amount);
   Observable drop(unsigned long long amount);
   Observable flatMap(Mapper mapper);
+  Observable finally(VoidFunction callback);
 
   // Promise-returning operators.
   Promise<sequence<any>> toArray(optional SubscribeOptions options = {});
