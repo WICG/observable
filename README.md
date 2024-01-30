@@ -421,7 +421,11 @@ We propose the following operators in addition to the `Observable` interface:
     until the input observable emits its first value
 - `finally()`
   - Like `Promise.finally()`, it takes a callback which gets fired after the
-    observable completes in any way (`complete()`/`error()`)
+    observable completes in any way (`complete()`/`error()`).
+  - Returns an `Observable` that mirrors the source observable exactly. The callback
+    passed to `finally` is fired when a subscription to the resulting observable is terminated
+    for _any reason_. Either immediately after the source completes or errors, or when the consumer
+    unsubscribes by aborting the subscription.
 
 Versions of the above are often present in userland implementations of
 observables as they are useful for observable-specific reasons, but in addition
