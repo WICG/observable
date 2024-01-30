@@ -743,7 +743,45 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn for=Observable method><code>forEach(|callback|, |options|)</code></dfn> method steps are:
 
-    1. <span class=XXX>TODO: Spec this and use |callback| and |options|.</span>
+    1. Let |p| [=a new promise=].
+
+    1. If |options|'s {{SubscribeOptions/signal}} is not null:
+
+       1. If |options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
+
+          1. [=Reject=] |p| with |options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+             reason=].
+
+          1. Return |p|.
+
+       1. [=AbortSignal/add|Add the following abort algorithm=] to |options|'s
+          {{SubscribeOptions/signal}}:
+
+          1. [=Reject=] |p| with |options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+             reason=].
+
+    1. Let |idx| be an {{unsigned long long}}, initially 0.
+
+    1. Let |observer| be a new [=internal observer=], initialized as follows:
+
+       : [=internal observer/next steps=]
+       :: 1. [=Invoke=] |callback| with the passed in <var ignore>value</var>, and |idx|.
+
+             If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+             then [=report the exception=] |E|.
+
+          1. Increment |idx|.
+
+       : [=internal observer/error steps=]
+       :: [=Reject=] |p| with the passed in <var ignore>error</var>.
+
+       : [=internal observer/complete steps=]
+       :: [=Resolve=] |p| with {{undefined}}.
+
+    1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
+       and |options|.
+
+    1. Return |p|.
 </div>
 
 <div algorithm>
