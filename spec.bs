@@ -92,7 +92,6 @@ table {
 }
 dt {
   margin-top: 12px;
-  color: black;
 }
 dl, dd {
   padding-left: .5em;
