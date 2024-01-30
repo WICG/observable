@@ -794,13 +794,14 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |observer| be a new [=internal observer=], initialized as follows:
 
        : [=internal observer/next steps=]
-       :: 1. [=Invoke=] |callback| with the passed in <var ignore>value</var>, and |idx|.
+       ::
+         1. [=Invoke=] |callback| with the passed in <var ignore>value</var>, and |idx|.
 
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
              [=reject=] |p| with |E|, and [=AbortController/signal abort=] |visitor callback
              controller| with |E|.
 
-          1. Increment |idx|.
+         1. Increment |idx|.
 
        : [=internal observer/error steps=]
        :: [=Reject=] |p| with the passed in <var ignore>error</var>.
