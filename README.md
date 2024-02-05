@@ -585,7 +585,7 @@ const result = source.flatMap((value, index) =>
     - Begin **"mapping step"**:
       - Copy the `current index` into an `index` variable.
       - Increment the `current index`.
-      - Call the `mapping function` with the the `value` and the `index`.
+      - Call the `mapping function` with `value` and `index`.
       - Then pass the return value of the mapping function to `Observable.from()` to convert it to
         "inner observable" if it's not already.
       - Then create an `AbortSignal` that is dependent on the subscriber's and set `innerSignal`.
