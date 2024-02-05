@@ -579,7 +579,7 @@ const result = source.flatMap((value, index) =>
 - Let there be a `queue` of values that is empty.
 - Let there be an integer `current index` that is `0`.
 - Let there be an `innerSignal` that is either `undefined` or an `AbortSignal`.
-- Let there be an `isSourceComplete` that is `false`.
+- Let there be a boolean `isSourceComplete` that is `false`.
 - When the `source` emits a `value`:
   - If `innerSignal` is `undefined`
     - Begin **"mapping step"**:
