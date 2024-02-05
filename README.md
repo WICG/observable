@@ -591,7 +591,7 @@ const result = source.flatMap((value, index) =>
       - Then create an `AbortSignal` that is dependent on the subscriber's and set `innerSignal`.
       - Pass the `innerSignal` to the subscribe for the inner observable.
       - Forward all values emitted by the inner observable to the `result` observer.
-      - If the inner observable completes
+      - If the inner observable completes;
       - If there are values in the `queue`
         - Take the first one from the `queue` and return to the **"mapping step"**.
       - If the `queue` is empty
