@@ -743,7 +743,76 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn for=Observable method><code>forEach(|callback|, |options|)</code></dfn> method steps are:
 
-    1. <span class=XXX>TODO: Spec this and use |callback| and |options|.</span>
+    1. Let |p| [=a new promise=].
+
+    1. Let |visitor callback controller| be a [=new=] {{AbortController}}.
+
+    1. Let |internal options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
+       result of [=creating a dependent abort signal=] from the list
+       «|visitor callback controller|'s [=AbortController/signal=], |options|'s
+       {{SubscribeOptions/signal}} if non-null», using {{AbortSignal}}, and the [=current realm=].
+
+       <div class=note>
+         <p>Many trivial [=internal observers=] act as pass-throughs, and do not control the
+         subscription to the {{Observable}} that they represent; that is, their [=internal
+         observer/error steps=] and [=internal observer/complete steps=] are called when the
+         subscription is terminated, and their [=internal observer/next steps=] simply pass some
+         version of the given value along the chain.</p>
+
+         <p>For this operator, however, the below |observer|'s [=internal observer/next steps=] are
+         responsible for actually aborting the underlying subscription to [=this=], in the event
+         that |callback| throws an exception. In that case, the {{SubscribeOptions}}'s
+         {{SubscribeOptions/signal}} we pass through to "<a for=Observable lt="subscribe to an
+         Observable">Subscribe to an <code>Observable</code></a>", needs to be a [=creating a
+         dependent abort signal|dependent signal=] derived from |options|'s
+         {{SubscribeOptions/signal}}, **and** the {{AbortSignal}} of an {{AbortController}} that the
+         [=internal observer/next steps=] below has access to, and can [=AbortController/signal
+         abort=] when needed.
+       </div>
+
+    1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
+
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s
+          [=AbortSignal/abort reason=].
+
+       1. Return |p|.
+
+    1. [=AbortSignal/add|Add the following abort algorithm=] to |internal options|'s
+       {{SubscribeOptions/signal}}:
+
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
+
+          Note: The fact that rejection of |p| is tied to |internal options|'s
+          {{SubscribeOptions/signal}}, and not |options|'s {{SubscribeOptions/signal}} means, that
+          any [=microtasks=] [=queue a microtask|queued=] during the firing of |options|'s
+          {{SubscribeOptions/signal}}'s {{AbortSignal/abort}} event will run before |p|'s
+          rejection handler runs.
+
+    1. Let |idx| be an {{unsigned long long}}, initially 0.
+
+    1. Let |observer| be a new [=internal observer=], initialized as follows:
+
+       : [=internal observer/next steps=]
+       ::
+         1. [=Invoke=] |callback| with the passed in <var ignore>value</var>, and |idx|.
+
+             If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+             [=reject=] |p| with |E|, and [=AbortController/signal abort=] |visitor callback
+             controller| with |E|.
+
+         1. Increment |idx|.
+
+       : [=internal observer/error steps=]
+       :: [=Reject=] |p| with the passed in <var ignore>error</var>.
+
+       : [=internal observer/complete steps=]
+       :: [=Resolve=] |p| with {{undefined}}.
+
+    1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
+       and |internal options|.
+
+    1. Return |p|.
 </div>
 
 <div algorithm>
