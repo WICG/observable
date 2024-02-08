@@ -664,6 +664,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
+       1. Let |controller| be a [=new=] {{AbortController}}.
+
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
           : [=internal observer/next steps=]
@@ -671,8 +673,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                 |mappedValue| be the returned value.
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
-                steps.
+                then run |subscriber|'s {{Subscriber/error()}} method, given |E|,
+                [=AbortController/signal abort=] |controller|, and abort these steps.
 
              1. Run |subscriber|'s {{Subscriber/next()}} method, given |mappedValue|.
 
@@ -683,8 +685,11 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           : [=internal observer/complete steps=]
           :: Run |subscriber|'s {{Subscriber/complete()}} method.
 
-       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-          |subscriber|'s [=AbortController/signal=].
+       1. Let |signal| be the result of [=creating a dependent abort signal=] from the list
+          «|controller|'s [=AbortController/signal=], |subscriber|'s [=Subscriber/signal=]», using
+          {{AbortSignal}}, and the [=current realm=].
+
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is |signal|.
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
           given |sourceObserver| and |options|.
