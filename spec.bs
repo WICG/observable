@@ -659,7 +659,40 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn for=Observable method><code>map(|mapper|)</code></dfn> method steps are:
 
-    1. <span class=XXX>TODO: Spec this and use |mapper|.</span>
+    1. Let |sourceObservable| be [=this=].
+
+    1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
+       algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+
+       1. Let |controller| be a [=new=] {{AbortController}}.
+
+       1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
+
+          : [=internal observer/next steps=]
+          :: 1. [=Invoke=] |mapper| with the passed in <var ignore>value</var>, and let
+                |mappedValue| be the returned value.
+
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                then [=report the exception=] |E| and abort these steps.
+
+             1. Run |subscriber|'s {{Subscriber/next()}} method, given |mappedValue|.
+
+          : [=internal observer/error steps=]
+          :: 1. Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+                ignore>error</var>.
+
+             1. [=AbortController/Signal abort=] |controller|.
+
+          : [=internal observer/complete steps=]
+          :: Run |subscriber|'s {{Subscriber/complete()}} method.
+
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
+          |controller|'s [=AbortController/signal=].
+
+       1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
+          given |sourceObserver| and |options|.
+
+    1. Return |observable|.
 </div>
 
 <div algorithm>
