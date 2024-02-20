@@ -216,13 +216,13 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. [=close a subscription|Close=] [=this=].
 
+    1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
+
     1. If |error algorithm| is not null, then run |error algorithm| given |error|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
     1. Otherwise (i.e., when |error algorithm| is null), [=report the exception=] |error|.
-
-    1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
 </div>
 
 <div algorithm>
@@ -235,11 +235,11 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. [=close a subscription|Close=] [=this=].
 
+    1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
+
     1. If |complete algorithm| is not null, then run |complete algorithm|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
-
-    1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
 </div>
 
 <div algorithm>
