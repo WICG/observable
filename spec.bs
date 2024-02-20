@@ -632,11 +632,11 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
              ignore>value</var>.
 
           : [=internal observer/error steps=]
-          :: 1. Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
-                ignore>error</var>.
+          :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+             ignore>error</var>.
 
           : [=internal observer/complete steps=]
-          :: 1. Run |subscriber|'s {{Subscriber/complete()}} method.
+          :: Run |subscriber|'s {{Subscriber/complete()}} method.
 
           Note: |sourceObserver| is mostly a pass-through, mirroring everything that
           |sourceObservable| emits, with the exception of having the ability to unsubscribe from the
