@@ -36,6 +36,7 @@ urlPrefix: https://dom.spec.whatwg.org; spec: DOM
       text: signal; url: event-listener-signal
     for: AbortSignal
       text: dependent signals; url: abortsignal-dependent-signals
+      text: signal abort
 </pre>
 
 <style>
@@ -571,51 +572,47 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-       1. Let |controller| be a [=new=] {{AbortController}}.
+       <div class=note>
+         Note that this method involves <a for=Observable lt="subscribe to an
+         Observable">Subscribing</a> to two {{Observable}}s: (1) |notifier|, and (2)
+         |sourceObservable|. We "unsubscribe" from **both** of them in the following situations:
 
-          <div class=note>
-            Note that this method involves <a for=Observable lt="subscribe to an
-            Observable">Subscribing</a> to two {{Observable}}s: (1) |notifier|, and (2)
-            |sourceObservable|. This |controller| is how we "unsubscribe" from **both** of them. We
-            do this in both of the following situations:
+           1. |notifier| starts emitting values (either "next" or "error"). In this case, we
+              unsubscribe from |notifier| since we got all we need from it, and no longer need it
+              to keep producing values. We also unsubscribe from |sourceObservable|, because it
+              no longer needs to produce values that get plumbed through this method's returned
+              |observable|, because we're manually ending the subscription to |observable|, since
+              |notifier| finally produced a value.
 
-              1. |notifier| starts emitting values (either "next" or "error"). In this case, we
-                 unsubscribe from |notifier| since we got all we need from it, and no longer need it
-                 to keep producing values. We also unsubscribe from |sourceObservable|, because it
-                 no longer needs to produce values that get plumbed through this method's returned
-                 |observable|, because we're manually ending the subscription to |observable|, since
-                 |notifier| finally produced a value.
-
-              1. |sourceObservable| either {{Subscriber/error()}}s or {{Subscriber/complete()}}s
-                 itself. In this case, we unsubscribe from |notifier| since we no longer need to
-                 listen for values it emits in order to determine when |observable| can stop
-                 mirroring values from |sourceObservable| (since |sourceObservable| ran to
-                 completion by itself). Unsubscribing from |sourceObservable| isn't necessary, since
-                 its subscription has exhausted itself.
-          </div>
-
-       1. Let |signal| be the result of [=creating a dependent abort signal=] from the list
-          «|controller|'s [=AbortController/signal=], |subscriber|'s [=Subscriber/signal=]», using
-          {{AbortSignal}}, and the [=current realm=].
+           1. |sourceObservable| either {{Subscriber/error()}}s or {{Subscriber/complete()}}s
+              itself. In this case, we unsubscribe from |notifier| since we no longer need to
+              listen for values it emits in order to determine when |observable| can stop
+              mirroring values from |sourceObservable| (since |sourceObservable| ran to
+              completion by itself). Unsubscribing from |sourceObservable| isn't necessary, since
+              its subscription has been exhausted by itself.
+       </div>
 
        1. Let |notifierObserver| be a new [=internal observer=], initialized as follows:
 
           : [=internal observer/next steps=]
-          :: 1. Run |subscriber|'s {{Subscriber/complete()}} method.
+          :: Run |subscriber|'s {{Subscriber/complete()}} method.
 
-             1. [=AbortController/Signal abort=] |controller|.
+             Note: This will "unsubscribe" from |sourceObservable|, if it has been subscribed to by
+             this point. This is because |sourceObservable| is subscribed to with the "outer"
+             |subscriber|'s [=Subscriber/signal=] as an input signal, and that signal will get
+             [=AbortSignal/signal abort|aborted=] when the "outer" |subscriber|'s
+             {{Subscriber/complete()}} is called above (and below).
 
           : [=internal observer/error steps=]
-          :: 1. Run |subscriber|'s {{Subscriber/complete()}} method.
-
-             1. [=AbortController/Signal abort=] |controller|.
+          :: Run |subscriber|'s {{Subscriber/complete()}} method.
 
           Note: We do not specify [=internal observer/complete steps=], because if the |notifier|
           {{Observable}} completes itself, we do not need to complete the |subscriber| associated
           with the |observable| returned from this method. Rather, the |observable| will continue to
           mirror |sourceObservable| uninterrupted.
 
-       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is |signal|.
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
+          |subscriber|'s [=Subscriber/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |notifier| given
           |notifierObserver| and |options|.
@@ -638,12 +635,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           :: 1. Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
                 ignore>error</var>.
 
-             1. [=AbortController/Signal abort=] |controller|.
-
           : [=internal observer/complete steps=]
           :: 1. Run |subscriber|'s {{Subscriber/complete()}} method.
-
-             1. [=AbortController/Signal abort=] |controller|.
 
           Note: |sourceObserver| is mostly a pass-through, mirroring everything that
           |sourceObservable| emits, with the exception of having the ability to unsubscribe from the
