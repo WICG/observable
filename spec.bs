@@ -553,6 +553,11 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        |subscriber|.
 </div>
 
+<wpt>
+  /dom/observable/tentative/observable-constructor.any.js
+  /dom/observable/tentative/observable-constructor.window.js
+</wpt>
+
 
 <h3 id=operators>Operators</h3>
 
@@ -647,6 +652,11 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           given |sourceObserver| and |options|.
 
     1. Return |observable|.
+
+  <wpt>
+    /dom/observable/tentative/observable-takeUntil.any.js
+    /dom/observable/tentative/observable-takeUntil.window.js
+  </wpt>
 </div>
 
 <div algorithm>
@@ -687,6 +697,11 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           given |sourceObserver| and |options|.
 
     1. Return |observable|.
+
+  <wpt>
+    /dom/observable/tentative/observable-map.any.js
+    /dom/observable/tentative/observable-map.window.js
+  </wpt>
 </div>
 
 <div algorithm>
@@ -724,6 +739,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           given |sourceObserver| and |options|.
 
     1. Return |observable|.
+
+  <wpt>
+    /dom/observable/tentative/observable-filter.any.js
+  </wpt>
 </div>
 
 <div algorithm>
@@ -761,6 +780,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           given |sourceObserver| and |options|.
 
     1. Return |observable|.
+
+  <wpt>
+    /dom/observable/tentative/observable-take.any.js
+  </wpt>
 </div>
 
 <div algorithm>
@@ -795,6 +818,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           given |sourceObserver| and |options|.
 
     1. Return |observable|.
+
+  <wpt>
+    /dom/observable/tentative/observable-drop.any.js
+  </wpt>
 </div>
 
 <div algorithm>
@@ -855,6 +882,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        and |options|.
 
     1. Return |p|.
+
+  <wpt>
+    /dom/observable/tentative/observable-toArray.any.js
+  </wpt>
 </div>
 
 <div algorithm>
@@ -930,6 +961,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        and |internal options|.
 
     1. Return |p|.
+
+  <wpt>
+    /dom/observable/tentative/observable-forEach.any.js
+  </wpt>
 </div>
 
 <div algorithm>
@@ -1028,6 +1063,11 @@ partial interface EventTarget {
 
     1. Run |subscriber|'s {{Subscriber/next()}} method with |event|.
 </div>
+
+<wpt>
+  /dom/observable/tentative/observable-event-target.any.js
+  /dom/observable/tentative/observable-event-target.window.js
+</wpt>
 
 
 <h2 id=security-and-privacy>Security & Privacy Considerations</h2>
