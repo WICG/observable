@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="5a5a4271c9dc0d7f1fd7b3be31e42da616664af0" name="document-revision">
+  <meta content="ec12e21fa0ca557ebe52a92da9f097265ed69268" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -901,7 +901,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-02-22">22 February 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-02-24">24 February 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -912,6 +912,8 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
      <dd><a href="https://github.com/WICG/observable">GitHub WICG/observable</a> (<a href="https://github.com/WICG/observable/issues/new">new issue</a>, <a href="https://github.com/WICG/observable/issues?state=open">open issues</a>)
      <dt>Commits:
      <dd><a href="https://github.com/WICG/observable/commits/master/spec.bs">GitHub spec.bs commits</a>
+     <dt>Test Suite:
+     <dd class="wpt-overview"><a href="https://wpt.fyi/results/dom/observable/tentative/">https://wpt.fyi/results/dom/observable/tentative/</a>
     </dl>
    </div>
    <div data-fill-with="warning"></div>
@@ -1328,6 +1330,13 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <p>Otherwise, run the steps given by <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⓪">this</a>'s <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback③">subscribe callback</a>, given <var>subscriber</var>.</p>
     </ol>
    </div>
+   <details class="wpt-tests-block" dir="ltr" lang="en" open>
+    <summary>Tests</summary>
+    <ul class="wpt-tests-list">
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-constructor.any.js" title="dom/observable/tentative/observable-constructor.any.js">observable-constructor.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-constructor.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-constructor.any.js"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-constructor.window.js" title="dom/observable/tentative/observable-constructor.window.js">observable-constructor.window.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-constructor.window.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-constructor.window.js"><small>(source)</small></a>
+    </ul>
+   </details>
    <h3 class="heading settled" data-level="2.3" id="operators"><span class="secno">2.3. </span><span class="content">Operators</span><a class="self-link" href="#operators"></a></h3>
    <p>For now, see <a href="https://github.com/wicg/observable#operators">https://github.com/wicg/observable#operators</a>.</p>
    <h4 class="heading settled" data-level="2.3.1" id="observable-from"><span class="secno">2.3.1. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from">from()</a></code></span><a class="self-link" href="#observable-from"></a></h4>
@@ -1403,6 +1412,13 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Return <var>observable</var>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-takeUntil.any.js" title="dom/observable/tentative/observable-takeUntil.any.js">observable-takeUntil.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-takeUntil.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-takeUntil.any.js"><small>(source)</small></a>
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-takeUntil.window.js" title="dom/observable/tentative/observable-takeUntil.window.js">observable-takeUntil.window.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-takeUntil.window.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-takeUntil.window.js"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="map(mapper)" data-algorithm-for="Observable">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export id="dom-observable-map"><code>map(<var>mapper</var>)</code></dfn> method steps are: 
@@ -1446,6 +1462,13 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Return <var>observable</var>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-map.any.js" title="dom/observable/tentative/observable-map.any.js">observable-map.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-map.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-map.any.js"><small>(source)</small></a>
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-map.window.js" title="dom/observable/tentative/observable-map.window.js">observable-map.window.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-map.window.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-map.window.js"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="filter(predicate)" data-algorithm-for="Observable">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export id="dom-observable-filter"><code>filter(<var>predicate</var>)</code></dfn> method steps are: 
@@ -1485,6 +1508,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Return <var>observable</var>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-filter.any.js" title="dom/observable/tentative/observable-filter.any.js">observable-filter.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-filter.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-filter.any.js"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="take(amount)" data-algorithm-for="Observable">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export id="dom-observable-take"><code>take(<var>amount</var>)</code></dfn> method steps are: 
@@ -1526,6 +1555,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Return <var>observable</var>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-take.any.js" title="dom/observable/tentative/observable-take.any.js">observable-take.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-take.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-take.any.js"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="drop(amount)" data-algorithm-for="Observable">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export id="dom-observable-drop"><code>drop(<var>amount</var>)</code></dfn> method steps are: 
@@ -1564,6 +1599,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Return <var>observable</var>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-drop.any.js" title="dom/observable/tentative/observable-drop.any.js">observable-drop.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-drop.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-drop.any.js"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="flatMap(mapper)" data-algorithm-for="Observable">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export id="dom-observable-flatmap"><code>flatMap(<var>mapper</var>)</code></dfn> method steps are: 
@@ -1626,6 +1667,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-toArray.any.js" title="dom/observable/tentative/observable-toArray.any.js">observable-toArray.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-toArray.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-toArray.any.js"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="forEach(callback, options)" data-algorithm-for="Observable">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="forEach(callback, options)|forEach(callback)" id="dom-observable-foreach"><code>forEach(<var>callback</var>, <var>options</var>)</code></dfn> method steps are: 
@@ -1693,6 +1740,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Return <var>p</var>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-forEach.any.js" title="dom/observable/tentative/observable-forEach.any.js">observable-forEach.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-forEach.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-forEach.any.js"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="every(predicate, options)" data-algorithm-for="Observable">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="method" data-export data-lt="every(predicate, options)|every(predicate)" id="dom-observable-every"><code>every(<var>predicate</var>, <var>options</var>)</code></dfn> method steps are: 
@@ -1793,6 +1846,13 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑥">next()</a></code> method with <var>event</var>.</p>
     </ol>
    </div>
+   <details class="wpt-tests-block" dir="ltr" lang="en" open>
+    <summary>Tests</summary>
+    <ul class="wpt-tests-list">
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-event-target.any.js" title="dom/observable/tentative/observable-event-target.any.js">observable-event-target.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-event-target.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-event-target.any.js"><small>(source)</small></a>
+     <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-event-target.window.js" title="dom/observable/tentative/observable-event-target.window.js">observable-event-target.window.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-event-target.window.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-event-target.window.js"><small>(source)</small></a>
+    </ul>
+   </details>
    <h2 class="heading settled" data-level="4" id="security-and-privacy"><span class="secno">4. </span><span class="content">Security &amp; Privacy Considerations</span><a class="self-link" href="#security-and-privacy"></a></h2>
    <p>This material is being upstreamed from our explainer into this specification, and in the meantime
 you can consult the following resources:</p>
@@ -2772,5 +2832,123 @@ Each variable has a last-used color.
     function nameFromIndex(index) {
         return "selected" + index;
     }
+}
+</script>
+<script>/* Boilerplate: script-wpt */
+let wptPath = "/dom/observable/tentative/";
+"use strict";
+
+document.addEventListener("DOMContentLoaded", async ()=>{
+    if(wptPath == "/") return;
+
+    const runsUrl = "https://wpt.fyi/api/runs?label=master&label=stable&max-count=1&product=chrome&product=firefox&product=safari&product=edge";
+    const runs = await (await fetch(runsUrl)).json();
+
+    const testResults = await (await fetch("https://wpt.fyi/api/search", {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json",
+        },
+        body: JSON.stringify({
+            "run_ids": runs.map(x=>x.id),
+            "query": {"path": wptPath},
+        })
+    })).json();
+
+    const browsers = runs.map(x=>({name:x.browser_name, version:x.browser_version, passes:0, total: 0}));
+    const resultsFromPath = new Map(testResults.results.map(result=>{
+        const testPath = result.test;
+        const passes = result.legacy_status.map(x=>[x.passes, x.total]);
+        return [testPath, passes];
+    }));
+    const seenTests = new Set();
+    document.querySelectorAll(".wpt-name").forEach(nameEl=>{
+        const passData = resultsFromPath.get("/" + nameEl.getAttribute("title"));
+        if(!passData) {
+            console.log("Couldn't find test in results:", nameEl);
+            return
+        }
+        const numTests = passData[0][1];
+        if(numTests > 1) {
+            nameEl.insertAdjacentElement("beforeend",
+                el("small", {}, ` (${numTests} tests)`));
+        }
+        if(passData == undefined) return;
+        const resultsEl = el("span",{"class":"wpt-results"},
+            ...passData.map((p,i) => el("span",
+            {
+                "title": `${browsers[i].name} ${p[0]}/${p[1]}`,
+                "class": "wpt-result",
+                "style": `background: conic-gradient(forestgreen ${p[0]/p[1]*360}deg, darkred 0deg);`,
+            })),
+        );
+        nameEl.insertAdjacentElement("afterend", resultsEl);
+
+        // Only update the summary pass/total count if we haven't seen this
+        // test before, to support authors listing the same test multiple times
+        // in a spec.
+        if (!seenTests.has(nameEl.getAttribute("title"))) {
+            seenTests.add(nameEl.getAttribute("title"));
+            passData.forEach((p,i) => {
+                browsers[i].passes += p[0];
+                browsers[i].total += p[1];
+            });
+        }
+    });
+    const overview = document.querySelector(".wpt-overview");
+    if(overview) {
+        overview.appendChild(el('ul',{}, ...browsers.map(formatWptResult)));
+        document.head.appendChild(el('style', {},
+            `.wpt-overview ul { display: flex; flex-flow: row wrap; gap: .2em; justify-content: start; list-style: none; padding: 0; margin: 0;}
+             .wpt-overview li { padding: .25em 1em; color: black; text-align: center; }
+             .wpt-overview img { height: 1.5em; height: max(1.5em, 32px); background: transparent; }
+             .wpt-overview .browser { font-weight: bold; }
+             .wpt-overview .passes-none { background: #e57373; }
+             .wpt-overview .passes-hardly { background: #ffb74d; }
+             .wpt-overview .passes-a-few { background: #ffd54f; }
+             .wpt-overview .passes-half { background: #fff176; }
+             .wpt-overview .passes-lots { background: #dce775; }
+             .wpt-overview .passes-most { background: #aed581; }
+             .wpt-overview .passes-all { background: #81c784; }`));
+    }
+});
+function el(name, attrs, ...content) {
+    const x = document.createElement(name);
+    for(const [k,v] of Object.entries(attrs)) {
+        x.setAttribute(k, v);
+    }
+    for(let child of content) {
+        if(typeof child == "string") child = document.createTextNode(child);
+        try {
+        x.appendChild(child);
+        } catch(e) { console.log({x, child}); }
+    }
+    return x;
+}
+function formatWptResult({name, version, passes, total}) {
+    const passRate = passes/total;
+    let passClass = "";
+    if(passRate == 0)      passClass = "passes-none";
+    else if(passRate < .2) passClass = "passes-hardly";
+    else if(passRate < .4) passClass = "passes-a-few";
+    else if(passRate < .6) passClass = "passes-half";
+    else if(passRate < .8) passClass = "passes-lots";
+    else if(passRate < 1)  passClass = "passes-most";
+    else                   passClass = "passes-all";
+
+    name = name[0].toUpperCase() + name.slice(1);
+    const shortVersion = /^\d+/.exec(version);
+    const icon = []
+
+    if(name == "Chrome") icon.push(el('img', {alt:"", src:"https://wpt.fyi/static/chrome_64x64.png"}));
+    if(name == "Edge") icon.push(el('img', {alt:"", src:"https://wpt.fyi/static/edge_64x64.png"}));
+    if(name == "Safari") icon.push(el('img', {alt:"", src:"https://wpt.fyi/static/safari_64x64.png"}));
+    if(name == "Firefox") icon.push(el('img', {alt:"", src:"https://wpt.fyi/static/firefox_64x64.png"}));
+
+    return el('li', {"class":passClass},
+        el('nobr', {'class':'browser'}, ...icon, ` ${name} ${shortVersion}`),
+        el('br', {}),
+        el('nobr', {'class':'pass-rate'}, `${passes}/${total}`)
+    );
 }
 </script>
