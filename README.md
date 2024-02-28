@@ -441,7 +441,7 @@ methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
 - `filter()`
 - `take()`
 - `drop()`
-- `flatMap()`
+- `flatMap()` (Because the types are different, there are [some semantics to note](#flatmap-semantics).)
 - `reduce()`
 - `toArray()`
 - `forEach()`
@@ -472,6 +472,65 @@ Note that the operators `every()`, `find()`, `some()`, and `reduce()` return
 Promises whose scheduling differs from that of Observables, which sometimes
 means event handlers that call `e.preventDefault()` will run too late. See the
 [Concerns](#concerns) section which goes into more detail.
+
+### flatMap semantics
+
+`flatMap` generally behaves like `Iterator.prototype.flatMap`, however, since it's push-based,
+there can be a temporal element. Given that, it behaves much like RxJS's `concatMap`, which is
+one of the most useful operators from the library.
+
+At a high-level, it subscribes to the source, and then maps to, and emits values from "inner
+observables", one at a time, ensuring they're subscribed to in sequence.
+
+Given the following example:
+
+```ts
+const result = source.flatMap((value, index) =>
+	getNextInnerObservable(value, index),
+);
+```
+
+- `flatMap` is a method on `Observable` that is called with a `mapping function`, which takes a
+  value from the source observable, and a zero-based counter (or "index") of that value, and
+  returns a value that can be converted to an observable with `Observable.from`. `flatMap` returns
+  an obeservable we'll call `result`.
+- When you subscribe to `result`, it subscribes to `source` immediately.
+- Let there be a `queue` of values that is empty.
+- Let there be an integer `current index` that is `0`.
+- Let there be an `innerSignal` that is either `undefined` or an `AbortSignal`.
+- Let there be a boolean `isSourceComplete` that is `false`.
+- When the `source` emits a `value`:
+  - If `innerSignal` is `undefined`
+    - Begin **"mapping step"**:
+      - Copy the `current index` into an `index` variable.
+      - Increment the `current index`.
+      - Call the `mapping function` with `value` and `index`.
+      - Then pass the return value of the mapping function to `Observable.from()` to convert it to
+        "inner observable" if it's not already.
+      - Then create an `AbortSignal` that is dependent on the subscriber's and set `innerSignal`.
+      - Subscribe to the inner observable, passing `innerSignal`
+      - Forward all values emitted by the inner observable to the `result` observer.
+      - If the inner observable completes;
+      - If there are values in the `queue`
+        - Take the first one from the `queue` and return to the **"mapping step"**.
+      - If the `queue` is empty
+        - If `isSourceComplete` is `true`
+        - Complete `result`.
+        - If `isSourceComplete` is `false`
+        - Wait
+      - If the inner observable errors
+        - Forward the error to `result`.
+  - Otherwise, if `innerSignal` is an `AbortSignal`
+    - Add the value to the `queue` and wait.
+- If the `source` completes:
+  - If `innerSignal` is `undefined`
+    - Complete `result`.
+  - If `innerSignal` is `AbortSignal`
+    - Set `isSourceComplete` to `true`.
+- If the `source` errors:
+  - Forward the error to `result`.
+- If the user aborts the signal passed to the subscription of `result`
+  - Abort any `innerSignal` that exists, and terminate subscription.
 
 ## Background & landscape
 
