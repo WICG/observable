@@ -840,13 +840,13 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           : [=internal observer/next steps=]
           :: 1. If |activeInnerSubscription| is true, then:
              
-             :: 1. [=list/Append=] the passed in <var ignore>value</var> to |queue|.
+                1. [=list/Append=] the passed in <var ignore>value</var> to |queue|.
              
                 1. Return.
              
              1. Otherwise:
              
-             :: 1. Set |activeInnerSubscription| to true.
+                1. Set |activeInnerSubscription| to true.
              
                 1. Let |innerObservable| be the result of [=Invoke=] |mapper| with the passed in <var ignore>value</var>.
              
@@ -862,13 +862,13 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                 : [=internal observer/complete steps=]
                 :: 1. If |queue| is not empty, then:
              
-                   :: 1. Let |nextValue| be [=list/Remove=] the first item from |queue|.
+                      1. Let |nextValue| be [=list/Remove=] the first item from |queue|.
              
                       1. Repeat the steps above starting from the step where |innerObservable| is obtained by invoking |mapper| with |nextValue|.
              
                    1. Otherwise:
              
-                   :: 1. Set |activeInnerSubscription| to false.
+                      1. Set |activeInnerSubscription| to false.
              
                       1. If |sourceObserver| has also completed, run |subscriber|'s {{Subscriber/complete()}} method.
 
