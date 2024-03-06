@@ -848,11 +848,15 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
              
                 1. Set |activeInnerSubscription| to true.
              
-                1. Let |innerObservable| be the result of [=Invoke=] |mapper| with the passed in <var ignore>value</var>.
+                1. Let |mappedResult| be the result of [=Invoke=] |mapper| with the passed in <var ignore>value</var>.
 
                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
                     then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
                     steps.
+                1. Let |innerObservable| be the result of [=converting=] |mappedResult| to an {{Observable}} using the [=Observable/from()=] method.
+
+                    If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                    then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
 
              1. Let |innerObserver| be a new [=internal observer=], initialized as follows:
 
