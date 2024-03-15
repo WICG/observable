@@ -829,54 +829,68 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Let |sourceObservable| be [=this=].
 
-    1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+    1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
+       algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-       1. Let |queue| be a new [=list=] to keep track of items emitted by the source observable that need to be processed.
+       1. Let |queue| be a new [=list=] of {{Observable}}s, initially empty.
 
-       1. Let |activeInnerSubscription| be false, indicating whether an inner subscription is currently active.
+          Note: This |queue| is used to store any {{Observable}}s emitted by |sourceObservable|,
+          while |observable| is currently subscribed to an {{Observable}} emitted earlier by
+          |sourceObservable| that has not yet been exhausted.
+
+       1. Let |activeInnerSubscription| be a [=boolean=], initially false.
 
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
           : [=internal observer/next steps=]
           :: 1. If |activeInnerSubscription| is true, then:
-             
-                1. [=list/Append=] the passed in <var ignore>value</var> to |queue|.
-             
-                1. Return.
-             
+
+                1. [=list/Append=] |value| to |queue|.
+
+                   Note: This |value| will eventually be processed once the {{Observable}} that is
+                   currently subscribed-to (as indicated by |activeInnerSubscription|) is exhausted.
+
              1. Otherwise:
-             
+
                 1. Set |activeInnerSubscription| to true.
-             
-                1. Let |mappedResult| be the result of [=Invoke=] |mapper| with the passed in <var ignore>value</var>.
 
-                    If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                    then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
-                    steps.
-                1. Let |innerObservable| be the result of [=converting=] |mappedResult| to an {{Observable}} using the [=Observable/from()=] method.
+                1. Let |mappedResult| be the result of [=invoking=] |mapper| with the passed in
+                   |value|. <span class=todo>What's the return value of {{Mapper}}? If so, call from() on it.</span>
 
-                    If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                    then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
+                   If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                   then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
+                   steps.
+
+                1. Let |innerObservable| be the result of calling {{Observable/from()}} with
+                   |mappedResult|.
+
+                   If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                   then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
+                   steps.
+
+                   Issue: We shouldn't invoke {{Observable/from()}} directly. Rather, we should
+                   call some internal algorithm that passes-back the exceptions for us to handle
+                   properly here, since we want to pipe them to |subscriber|.
 
              1. Let |innerObserver| be a new [=internal observer=], initialized as follows:
 
                 : [=internal observer/next steps=]
-                :: Run |subscriber|'s {{Subscriber/next()}} method, given the passed in <var ignore>value</var>.
+                :: Run |subscriber|'s {{Subscriber/next()}} method, given the passed in |value|.
 
                 : [=internal observer/error steps=]
                 :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var ignore>error</var>.
 
                 : [=internal observer/complete steps=]
                 :: 1. If |queue| is not empty, then:
-             
+
                       1. Let |nextValue| be [=list/Remove=] the first item from |queue|.
-             
+
                       1. Repeat the steps above starting from the step where |innerObservable| is obtained by invoking |mapper| with |nextValue|.
-             
+
                    1. Otherwise:
-             
+
                       1. Set |activeInnerSubscription| to false.
-             
+
                       1. If |sourceObserver| has also completed, run |subscriber|'s {{Subscriber/complete()}} method.
 
              1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is |subscriber|'s [=Subscriber/signal=].
