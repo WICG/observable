@@ -832,7 +832,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-       1. Let |queue| be a new [=list=] of {{Observable}}s, initially empty.
+       1. Let |outerSubscriptionHasCompleted| to a [=boolean=], initially false.
+
+       1. Let |queue| be a new [=list=] of {{any}} values, initially empty.
 
           Note: This |queue| is used to store any {{Observable}}s emitted by |sourceObservable|,
           while |observable| is currently subscribed to an {{Observable}} emitted earlier by
@@ -854,60 +856,106 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
                 1. Set |activeInnerSubscription| to true.
 
-                1. Let |mappedResult| be the result of [=invoking=] |mapper| with the passed in
-                   |value|. <span class=todo>What's the return value of {{Mapper}}? If so, call from() on it.</span>
+                1. Run the [=flatmap process next value steps=] with |value|, |subscriber|,
+                   |mapper|, and <b>references</b> to all of the following: |queue|,
+                   |activeInnerSubscription|, and |outerSubscriptionHasCompleted|.
 
-                   If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                   then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
-                   steps.
+                   <div class=note>
+                     <p>Note: This [=flatmap process next value steps=] will subscribe to the
+                     {{Observable}} derived from |value| (if one such can be derived) and keep
+                     processing values from it until its subscription becomes inactive (either by
+                     error or completion). If this "inner" {{Observable}} completes, then the
+                     processing steps will recursively invoke themselves with the next {{any}} in
+                     |queue|.</p>
 
-                1. Let |innerObservable| be the result of calling {{Observable/from()}} with
-                   |mappedResult|.
-
-                   If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                   then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
-                   steps.
-
-                   Issue: We shouldn't invoke {{Observable/from()}} directly. Rather, we should
-                   call some internal algorithm that passes-back the exceptions for us to handle
-                   properly here, since we want to pipe them to |subscriber|.
-
-             1. Let |innerObserver| be a new [=internal observer=], initialized as follows:
-
-                : [=internal observer/next steps=]
-                :: Run |subscriber|'s {{Subscriber/next()}} method, given the passed in |value|.
-
-                : [=internal observer/error steps=]
-                :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var ignore>error</var>.
-
-                : [=internal observer/complete steps=]
-                :: 1. If |queue| is not empty, then:
-
-                      1. Let |nextValue| be [=list/Remove=] the first item from |queue|.
-
-                      1. Repeat the steps above starting from the step where |innerObservable| is obtained by invoking |mapper| with |nextValue|.
-
-                   1. Otherwise:
-
-                      1. Set |activeInnerSubscription| to false.
-
-                      1. If |sourceObserver| has also completed, run |subscriber|'s {{Subscriber/complete()}} method.
-
-             1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is |subscriber|'s [=Subscriber/signal=].
-
-             1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable| given |innerObserver| and |innerOptions|.
+                     <p>If no such value [=list/exists=], then the processing steps will terminate,
+                     <b>unsetting</b> |activeInnerSubscription|, so that future values emitted from
+                     |sourceObservable| are processed correctly.</p>
+                   </div>
 
           : [=internal observer/error steps=]
-          :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var ignore>error</var>.
+          :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+             ignore>error</var>.
 
           : [=internal observer/complete steps=]
-          :: If |activeInnerSubscription| is false, and |queue| is empty, run |subscriber|'s {{Subscriber/complete()}} method.
+          :: 1. Set |outerSubscriptionHasCompleted| to true.
 
-       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is |subscriber|'s [=Subscriber/signal=].
+                Note: If |activeInnerSubscription| is true, then the below step will *not* complete
+                |subscriber|. In that case, the [=flatmap process next value steps=] will be
+                responsible for completing |subscriber| when |queue| is [=list/empty=], after the
+                "inner" subscription becomes inactive.
 
-       1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable| given |sourceObserver| and |options|.
+             1. If |activeInnerSubscription| is false and |queue| is [=list/empty=], run
+                |subscriber|'s {{Subscriber/complete()}} method.
+
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
+          |subscriber|'s [=Subscriber/signal=].
+
+       1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
+          given |sourceObserver| and |options|.
 
     1. Return |observable|.
+</div>
+
+<div algorithm>
+  The <dfn>flatmap process next value steps</dfn>, given an {{any}} |value|, a {{Subscriber}}
+  |subscriber|, a {{Mapper}} |mapper|, and <b>references</b> to all of the following: a [=list=] of
+  {{any}} values |queue|, a [=boolean=] |activeInnerSubscription|, and a [=boolean=]
+  |outerSubscriptionHasCompleted|:
+
+    1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value|.
+
+       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
+       |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
+
+    1. Let |innerObservable| be the result of calling {{Observable/from()}} with |mappedResult|.
+
+       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
+       |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
+
+       Issue: We shouldn't invoke {{Observable/from()}} directly. Rather, we should
+       call some internal algorithm that passes-back the exceptions for us to handle
+       properly here, since we want to pipe them to |subscriber|.
+
+     1. Let |innerObserver| be a new [=internal observer=], initialized as follows:
+
+        : [=internal observer/next steps=]
+        :: Run |subscriber|'s {{Subscriber/next()}} method, given the passed in |value|.
+
+        : [=internal observer/error steps=]
+        :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+           ignore>error</var>.
+
+        : [=internal observer/complete steps=]
+        :: 1. If |queue| is not empty, then:
+
+              1. Let |nextValue| be the first item in |queue|; [=list/remove=] remove this item from
+                 |queue|.
+
+              1. Run [=flatmap process next value steps=] given |nextValue|, |subscriber|, |mapper|,
+                 and <b>references</b> to |queue| and |activeInnerSubscription|.
+
+           1. Otherwise:
+
+              1. Set |activeInnerSubscription| to false.
+
+                 Note: Because |activeInnerSubscription| is a reference, this has the effect of
+                 ensuring that all subsequent values emitted from the "outer" {{Observable}} (called
+                 <var ignore>sourceObservable</var>.
+
+              1. If |outerSubscriptionHasCompleted| is true, run |subscriber|'s
+                 {{Subscriber/complete()}} method.
+
+                 Note: This means the "outer" {{Observable}} has already completed, but did not
+                 proceed to complete |subscriber| yet because there was at least one more pending
+                 "inner" {{Observable}} (i.e., |innerObservable|) that had already been queued and
+                 had not yet completed. Until right now!
+
+     1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
+        |subscriber|'s [=Subscriber/signal=].
+
+     1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable| given
+        |innerObserver| and |innerOptions|.
 </div>
 
 
