@@ -958,7 +958,6 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
         |innerObserver| and |innerOptions|.
 </div>
 
-
 <div algorithm>
   The <dfn for=Observable method><code>finally(|callback|)</code></dfn> method steps are:
 
