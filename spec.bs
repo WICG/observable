@@ -352,6 +352,7 @@ interface Observable {
   Observable take(unsigned long long amount);
   Observable drop(unsigned long long amount);
   Observable flatMap(Mapper mapper);
+  Observable switchMap(Mapper mapper);
   Observable finally(VoidFunction callback);
 
   // Promise-returning operators.
@@ -953,6 +954,116 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
      1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
         |subscriber|'s [=Subscriber/signal=].
+
+     1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable| given
+        |innerObserver| and |innerOptions|.
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>switchMap(|mapper|)</code></dfn> method steps are:
+
+    1. Let |sourceObservable| be [=this=].
+
+    1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
+       algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+
+       1. Let |outerSubscriptionHasCompleted| be a [=boolean=], initially false.
+
+       1. Let |activeInnerAbortController| be an {{AbortController}}-or-null, initially null.
+
+          Note: This {{AbortController}} is assigned to a new {{AbortController}} only by this
+          algorithm's <a href=#switchmap-next-steps>next steps</a> (below), and only assigned to
+          null by the [=switchmap process next value steps=], when the "inner" {{Observable}} either
+          completes or errors. This variable is used as a marker for whether there is currently an
+          active "inner" subscription. The <a href=#switchmap-complete-steps>complete steps</a>
+          below care about this, because if |sourceObservable| completes while there is an active
+          "inner" subscription, we do not immediately complete |subscriber|. In that case,
+          |subscriber|'s completion becomes blocked on the "inner" subscription's completion.
+
+       1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
+
+          : <dt id=switchmap-next-steps>[=internal observer/next steps=]</dt>
+          :: 1. If |activeInnerAbortController| is not null, then [=AbortController/signal abort=]
+                |activeInnerAbortController|.
+
+                Note: This "unsubscribes" from the "inner" {{Observable}} that was derived from the
+                value that was <i>last</i> pushed from |sourceObservable|. Then we immediately
+                subscribe to the <i>new</i> {{Observable}} that we're about to derive from |value|,
+                i.e., the <i>most-recently</i> pushed value from |sourceObservable|.
+
+             1. Set |activeInnerAbortController| to a [=new=] {{AbortController}}.
+
+             1. Run the [=switchmap process next value steps=] with |value|, |subscriber|, |mapper|,
+                and <b>references</b> to all of the following: |activeInnerAbortController|, and
+                |outerSubscriptionHasCompleted|.
+
+                Note: The [=switchmap process next value steps=] will subscribe to the
+                {{Observable}} derived from |value| (if one such can be derived) and keep processing
+                values from it until either (1) its subscription becomes inactive (either by error or
+                completion), or (2) |activeInnerAbortController| <a href=#switchmap-next-steps>gets
+                aborted</a>, due to |sourceObservable| pushing another <i>newer</i> value that will
+                replace the current "inner" subscription.
+
+          : [=internal observer/error steps=]
+          :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+             ignore>error</var>.
+
+          : <dt id=switchmap-complete-steps>[=internal observer/complete steps=]</dt>
+          :: 1. Set |outerSubscriptionHasCompleted| to true.
+
+                Note: If |activeInnerAbortController| is not null, then we don't immediately
+                complete |subscriber|. Instead, the [=switchmap process next value steps=] will
+                complete |subscriber| when the inner subscription finally becomes inactive on its
+                own.
+
+             1. If |activeInnerAbortController| is null, run |subscriber|'s
+                {{Subscriber/complete()}} method.
+
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
+          |subscriber|'s [=Subscriber/signal=].
+
+       1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
+          given |sourceObserver| and |options|.
+
+    1. Return |observable|.
+</div>
+
+<div algorithm>
+  The <dfn>switchmap process next value steps</dfn>, given an {{any}} |value|, a {{Subscriber}}
+  |subscriber|, a {{Mapper}} |mapper|, and <b>references</b> to all of the following: an
+  {{AbortController}} |activeInnerAbortController|, and a [=boolean=] |outerSubscriptionHasCompleted|:
+
+    1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value|.
+
+       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
+       |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
+
+    1. Let |innerObservable| be the result of calling {{Observable/from()}} with |mappedResult|.
+
+       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
+       |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
+
+     1. Let |innerObserver| be a new [=internal observer=], initialized as follows:
+
+        : [=internal observer/next steps=]
+        :: Run |subscriber|'s {{Subscriber/next()}} method, given the passed in |value|.
+
+        : [=internal observer/error steps=]
+        :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+           ignore>error</var>.
+
+        : [=internal observer/complete steps=]
+        :: 1. Set |activeInnerAbortController| to null.
+              Note: This is observable from the {{Observable/switchMap()}} method steps, since
+              this variable is take by reference.
+
+           1. If |outerSubscriptionHasCompleted| is true, run |subscriber|'s
+              {{Subscriber/complete()}} method.
+
+     1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
+        result of [=creating a dependent abort signal=] from the list
+        «|activeInnerAbortController|'s [=AbortController/signal=], |subscriber|'s
+        [=Subscriber/signal=]», using {{AbortSignal}}, and the [=current realm=].
 
      1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable| given
         |innerObserver| and |innerOptions|.
