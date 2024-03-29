@@ -1014,7 +1014,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                 Note: If |activeInnerAbortController| is not null, then we don't immediately
                 complete |subscriber|. Instead, the [=switchmap process next value steps=] will
                 complete |subscriber| when the inner subscription finally becomes inactive on its
-                own.
+                own volition.
 
              1. If |activeInnerAbortController| is null, run |subscriber|'s
                 {{Subscriber/complete()}} method.
@@ -1031,7 +1031,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn>switchmap process next value steps</dfn>, given an {{any}} |value|, a {{Subscriber}}
   |subscriber|, a {{Mapper}} |mapper|, and <b>references</b> to all of the following: an
-  {{AbortController}} |activeInnerAbortController|, and a [=boolean=] |outerSubscriptionHasCompleted|:
+  {{AbortController}} |activeInnerAbortController|, and a [=boolean=]
+  |outerSubscriptionHasCompleted|, are to run these steps:
 
     1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value|.
 
@@ -1052,13 +1053,21 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
         :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
            ignore>error</var>.
 
-        : [=internal observer/complete steps=]
-        :: 1. Set |activeInnerAbortController| to null.
-              Note: This is observable from the {{Observable/switchMap()}} method steps, since
-              this variable is take by reference.
+           Note: We don't have to set |activeInnerAbortController| to null here, to signal to the
+           {{Observable/switchMap()}} method steps above that the inner "subscription" has been
+           canceled. That's because calling |subscriber|'s {{Subscriber/error()}} method already
+           unsubscribes from the "outer" source Observable, so it will not be able to push any more
+           values to the {{Observable/switchMap()}} internal observer.
 
-           1. If |outerSubscriptionHasCompleted| is true, run |subscriber|'s
+        : [=internal observer/complete steps=]
+        :: 1. If |outerSubscriptionHasCompleted| is true, run |subscriber|'s
               {{Subscriber/complete()}} method.
+
+           1. Otherwise, set |activeInnerAbortController| to null.
+
+              Note: Because this variable is a reference, it signals to the <a
+              href=#switchmap-complete-steps>switchMap complete steps</a> that there is no active
+              inner subscription.
 
      1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
         result of [=creating a dependent abort signal=] from the list
