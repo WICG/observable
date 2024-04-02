@@ -1138,7 +1138,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        :: [=Reject=] |p| with the passed in <var ignore>error</var>.
 
        : [=internal observer/complete steps=]
-       :: [=Resolve=] |p| with {{undefined}}.
+       :: [=Reject=] |p| with a [=new=] {{RangeError}}.
+
+          Note: This is only reached when the source {{Observable}} completes *before* it emits a
+          single value, which is considered an error.
 
     1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |internal
        observer| and |internal options|.
