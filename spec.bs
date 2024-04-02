@@ -358,7 +358,8 @@ interface Observable {
   Promise<sequence<any>> toArray(optional SubscribeOptions options = {});
   Promise<undefined> forEach(Visitor callback, optional SubscribeOptions options = {});
   Promise<boolean> every(Predicate predicate, optional SubscribeOptions options = {});
-  // Maybe? Promise<any> first(optional SubscribeOptions options = {});
+  Promise<any> first(optional SubscribeOptions options = {});
+  Promise<any> last(optional SubscribeOptions options = {});
   Promise<any> find(Predicate predicate, optional SubscribeOptions options = {});
   Promise<boolean> some(Predicate predicate, optional SubscribeOptions options = {});
   Promise<any> reduce(Reducer reducer, optional any initialValue, optional SubscribeOptions options = {});
@@ -1099,6 +1100,57 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
   The <dfn for=Observable method><code>every(|predicate|, |options|)</code></dfn> method steps are:
 
     1. <span class=XXX>TODO: Spec this and use |predicate| and |options|.</span>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>first(|options|)</code></dfn> method steps are:
+
+    1. Let |p| [=a new promise=].
+
+    1. Let |controller| be a [=new=] {{AbortController}}.
+
+    1. Let |internal options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
+       result of [=creating a dependent abort signal=] from the list «|controller|'s
+       [=AbortController/signal=], |options|'s {{SubscribeOptions/signal}} if non-null», using
+       {{AbortSignal}}, and the [=current realm=].
+
+    1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
+
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s
+          [=AbortSignal/abort reason=].
+
+       1. Return |p|.
+
+    1. [=AbortSignal/add|Add the following abort algorithm=] to |internal options|'s
+       {{SubscribeOptions/signal}}:
+
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
+
+    1. Let |internal observer| be a new [=internal observer=], initialized as follows:
+
+       : [=internal observer/next steps=]
+       :: 1. [=Resolve=] |p| with the passed in <var ignore>value</var>.
+          
+          1. [=AbortController/Signal abort=] |controller|.
+
+       : [=internal observer/error steps=]
+       :: [=Reject=] |p| with the passed in <var ignore>error</var>.
+
+       : [=internal observer/complete steps=]
+       :: [=Resolve=] |p| with {{undefined}}.
+
+    1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |internal
+       observer| and |internal options|.
+
+    1. Return |p|.
+
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>last(|options|)</code></dfn> method steps are:
+
+    1. <span class=XXX>TODO: Spec this and use |options|.</span>
 </div>
 
 <div algorithm>
