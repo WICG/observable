@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="e3e8f94b8ae0465c9ae8b31c46210839a11d0daa" name="document-revision">
+  <meta content="5fac9fd6cfaf594df97f4fbe2b09597e0725a7e1" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -901,7 +901,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-03-18">18 March 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-04-03">3 April 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1018,6 +1018,13 @@ callbacks it owns after it has been <a data-link-type="dfn" href="#close-a-subsc
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>'s <a data-link-type="dfn" href="#subscriber-next-algorithm" id="ref-for-subscriber-next-algorithm">next algorithm</a> is not null, then run <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④">this</a>'s <a data-link-type="dfn" href="#subscriber-next-algorithm" id="ref-for-subscriber-next-algorithm①">next algorithm</a> given <var>value</var>.</p>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert">Assert</a>: No <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown">exception was thrown</a>.</p>
+      <div class="note" role="note">
+       <p>Note: No exception can be thrown here because in the case where <a data-link-type="dfn" href="#subscriber-next-algorithm" id="ref-for-subscriber-next-algorithm②">next
+   algorithm</a> is just a wrapper around a script-provided callback, the <a href="#process-observer">process observer</a> steps take care to wrap these callbacks in
+   logic that, when invoking them, catches any exceptions, and reports them to the global.</p>
+       <p>When the <a data-link-type="dfn" href="#subscriber-next-algorithm" id="ref-for-subscriber-next-algorithm③">next algorithm</a> is a spec algorithm, those steps take care to not
+   throw any exceptions outside of itself, to appease this assert.</p>
+      </div>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="error(error)" data-algorithm-for="Subscriber">
@@ -1035,6 +1042,7 @@ callbacks it owns after it has been <a data-link-type="dfn" href="#close-a-subsc
      <li data-md>
       <p>If <var>error algorithm</var> is not null, then run <var>error algorithm</var> given <var>error</var>.</p>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert①">Assert</a>: No <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①">exception was thrown</a>.</p>
+      <p class="note" role="note"><span class="marker">Note:</span> See the documentation in <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①">next()</a></code> for details on why this is true.</p>
      <li data-md>
       <p>Otherwise (i.e., when <var>error algorithm</var> is null), <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#report-the-exception" id="ref-for-report-the-exception">report the exception</a> <var>error</var>.</p>
     </ol>
@@ -1054,6 +1062,7 @@ callbacks it owns after it has been <a data-link-type="dfn" href="#close-a-subsc
      <li data-md>
       <p>If <var>complete algorithm</var> is not null, then run <var>complete algorithm</var>.</p>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert②">Assert</a>: No <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown②">exception was thrown</a>.</p>
+      <p class="note" role="note"><span class="marker">Note:</span> See the documentation in <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next②">next()</a></code> for details on why this is true.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="addTeardown(teardown)" data-algorithm-for="Subscriber">
@@ -1076,7 +1085,7 @@ callbacks it owns after it has been <a data-link-type="dfn" href="#close-a-subsc
      <li data-md>
       <p>Set <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-active" id="ref-for-subscriber-active②">active</a> boolean to false.</p>
      <li data-md>
-      <p>Set <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-next-algorithm" id="ref-for-subscriber-next-algorithm②">next algorithm</a>, <a data-link-type="dfn" href="#subscriber-error-algorithm" id="ref-for-subscriber-error-algorithm①">error algorithm</a>, and <a data-link-type="dfn" href="#subscriber-complete-algorithm" id="ref-for-subscriber-complete-algorithm①">complete algorithm</a> all to null.</p>
+      <p>Set <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-next-algorithm" id="ref-for-subscriber-next-algorithm④">next algorithm</a>, <a data-link-type="dfn" href="#subscriber-error-algorithm" id="ref-for-subscriber-error-algorithm①">error algorithm</a>, and <a data-link-type="dfn" href="#subscriber-complete-algorithm" id="ref-for-subscriber-complete-algorithm①">complete algorithm</a> all to null.</p>
     </ol>
     <div class="note" role="note">
      <p>This algorithm intentionally does not have script-running side-effects; it just updates the
@@ -1238,7 +1247,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <p>Let <var>internal observer</var> be a new <a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer②">internal observer</a>.</p>
      <li data-md>
       <p>Process <var>observer</var> as follows:</p>
-      <ol>
+      <ol id="process-observer">
        <li>
         <dl class="switch">
          <dt>If <var>observer</var> is a <code class="idl"><a data-link-type="idl" href="#callbackdef-subscriptionobservercallback" id="ref-for-callbackdef-subscriptionobservercallback③">SubscriptionObserverCallback</a></code>
@@ -1289,7 +1298,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>subscriber</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new">new</a> <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①③">Subscriber</a></code>, initialized as:</p>
       <dl>
-       <dt data-md><a data-link-type="dfn" href="#subscriber-next-algorithm" id="ref-for-subscriber-next-algorithm③">next algorithm</a>
+       <dt data-md><a data-link-type="dfn" href="#subscriber-next-algorithm" id="ref-for-subscriber-next-algorithm⑤">next algorithm</a>
        <dd data-md>
         <p><var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps③">next steps</a></p>
        <dt data-md><a data-link-type="dfn" href="#subscriber-error-algorithm" id="ref-for-subscriber-error-algorithm②">error algorithm</a>
@@ -1398,7 +1407,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
         <dl>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps⑤">next steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①">next()</a></code> method, given the passed in <var>value</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next③">next()</a></code> method, given the passed in <var>value</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑤">error steps</a>
          <dd data-md>
           <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error④">error()</a></code> method, given the passed in <var>error</var>.</p>
@@ -1446,7 +1455,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p>Increment <var>idx</var>.</p>
            <li data-md>
-            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next②">next()</a></code> method, given <var>mappedValue</var>.</p>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next④">next()</a></code> method, given <var>mappedValue</var>.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑥">error steps</a>
          <dd data-md>
@@ -1492,7 +1501,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
   then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑦">error()</a></code> method, given <var>E</var>, and abort these
   steps.</p>
            <li data-md>
-            <p>If <var>matches</var> is true, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next③">next()</a></code> method, given <var>value</var>.</p>
+            <p>If <var>matches</var> is true, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑤">next()</a></code> method, given <var>value</var>.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑦">error steps</a>
          <dd data-md>
@@ -1535,7 +1544,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <dd data-md>
           <ol>
            <li data-md>
-            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next④">next()</a></code> method with the passed in <var>value</var>.</p>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑥">next()</a></code> method with the passed in <var>value</var>.</p>
            <li data-md>
             <p>Decrement <var>amount</var>.</p>
            <li data-md>
@@ -1583,7 +1592,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert④">Assert</a>: <var>amount</var> is 0.</p>
            <li data-md>
-            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑤">next()</a></code> method with the passed in <var>value</var>.</p>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑦">next()</a></code> method with the passed in <var>value</var>.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑨">error steps</a>
          <dd data-md>
@@ -1695,7 +1704,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <dl>
        <dt data-md><a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①①">next steps</a>
        <dd data-md>
-        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑥">next()</a></code> method, given the passed in <var>value</var>.</p>
+        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑧">next()</a></code> method, given the passed in <var>value</var>.</p>
        <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①①">error steps</a>
        <dd data-md>
         <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①④">error()</a></code> method, given the passed in <var>error</var>.</p>
@@ -1963,7 +1972,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
   an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#event" id="ref-for-event①">Event</a></code> <var>event</var>, and runs these steps: 
     <ol>
      <li data-md>
-      <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑦">next()</a></code> method with <var>event</var>.</p>
+      <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑨">next()</a></code> method with <var>event</var>.</p>
     </ol>
    </div>
    <details class="wpt-tests-block" dir="ltr" lang="en" open>
@@ -2618,7 +2627,7 @@ window.dfnpanelData['4013a022'] = {"dfnID": "4013a022", "url": "https://webidl.s
 window.dfnpanelData['5f90bbfb'] = {"dfnID": "5f90bbfb", "url": "https://webidl.spec.whatwg.org/#idl-undefined", "dfnText": "undefined", "refSections": [{"refs": [{"id": "ref-for-idl-undefined"}, {"id": "ref-for-idl-undefined\u2460"}, {"id": "ref-for-idl-undefined\u2461"}, {"id": "ref-for-idl-undefined\u2462"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-idl-undefined\u2463"}, {"id": "ref-for-idl-undefined\u2464"}, {"id": "ref-for-idl-undefined\u2465"}, {"id": "ref-for-idl-undefined\u2466"}, {"id": "ref-for-idl-undefined\u2467"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-idl-undefined\u2468"}], "title": "2.3.3. Promise-returning operators"}], "external": true};
 window.dfnpanelData['f14b47b8'] = {"dfnID": "f14b47b8", "url": "https://webidl.spec.whatwg.org/#idl-unsigned-long-long", "dfnText": "unsigned long long", "refSections": [{"refs": [{"id": "ref-for-idl-unsigned-long-long"}, {"id": "ref-for-idl-unsigned-long-long\u2460"}, {"id": "ref-for-idl-unsigned-long-long\u2461"}, {"id": "ref-for-idl-unsigned-long-long\u2462"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-idl-unsigned-long-long\u2463"}], "title": "2.3.2. Observable-returning operators"}, {"refs": [{"id": "ref-for-idl-unsigned-long-long\u2464"}], "title": "2.3.3. Promise-returning operators"}], "external": true};
 window.dfnpanelData['subscriber'] = {"dfnID": "subscriber", "url": "#subscriber", "dfnText": "Subscriber", "refSections": [{"refs": [{"id": "ref-for-subscriber"}, {"id": "ref-for-subscriber\u2460"}, {"id": "ref-for-subscriber\u2461"}, {"id": "ref-for-subscriber\u2462"}, {"id": "ref-for-subscriber\u2463"}, {"id": "ref-for-subscriber\u2464"}, {"id": "ref-for-subscriber\u2465"}, {"id": "ref-for-subscriber\u2466"}, {"id": "ref-for-subscriber\u2467"}, {"id": "ref-for-subscriber\u2468"}, {"id": "ref-for-subscriber\u2460\u24ea"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-subscriber\u2460\u2460"}, {"id": "ref-for-subscriber\u2460\u2461"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-subscriber\u2460\u2462"}], "title": "2.2.1. Supporting concepts"}, {"refs": [{"id": "ref-for-subscriber\u2460\u2463"}, {"id": "ref-for-subscriber\u2460\u2464"}, {"id": "ref-for-subscriber\u2460\u2465"}, {"id": "ref-for-subscriber\u2460\u2466"}, {"id": "ref-for-subscriber\u2460\u2467"}, {"id": "ref-for-subscriber\u2460\u2468"}, {"id": "ref-for-subscriber\u2461\u24ea"}], "title": "2.3.2. Observable-returning operators"}, {"refs": [{"id": "ref-for-subscriber\u2461\u2460"}, {"id": "ref-for-subscriber\u2461\u2461"}], "title": "3. EventTarget integration"}], "external": false};
-window.dfnpanelData['subscriber-next-algorithm'] = {"dfnID": "subscriber-next-algorithm", "url": "#subscriber-next-algorithm", "dfnText": "next algorithm", "refSections": [{"refs": [{"id": "ref-for-subscriber-next-algorithm"}, {"id": "ref-for-subscriber-next-algorithm\u2460"}, {"id": "ref-for-subscriber-next-algorithm\u2461"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-subscriber-next-algorithm\u2462"}], "title": "2.2.1. Supporting concepts"}], "external": false};
+window.dfnpanelData['subscriber-next-algorithm'] = {"dfnID": "subscriber-next-algorithm", "url": "#subscriber-next-algorithm", "dfnText": "next algorithm", "refSections": [{"refs": [{"id": "ref-for-subscriber-next-algorithm"}, {"id": "ref-for-subscriber-next-algorithm\u2460"}, {"id": "ref-for-subscriber-next-algorithm\u2461"}, {"id": "ref-for-subscriber-next-algorithm\u2462"}, {"id": "ref-for-subscriber-next-algorithm\u2463"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-subscriber-next-algorithm\u2464"}], "title": "2.2.1. Supporting concepts"}], "external": false};
 window.dfnpanelData['subscriber-error-algorithm'] = {"dfnID": "subscriber-error-algorithm", "url": "#subscriber-error-algorithm", "dfnText": "error algorithm", "refSections": [{"refs": [{"id": "ref-for-subscriber-error-algorithm"}, {"id": "ref-for-subscriber-error-algorithm\u2460"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-subscriber-error-algorithm\u2461"}], "title": "2.2.1. Supporting concepts"}], "external": false};
 window.dfnpanelData['subscriber-complete-algorithm'] = {"dfnID": "subscriber-complete-algorithm", "url": "#subscriber-complete-algorithm", "dfnText": "complete algorithm", "refSections": [{"refs": [{"id": "ref-for-subscriber-complete-algorithm"}, {"id": "ref-for-subscriber-complete-algorithm\u2460"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-subscriber-complete-algorithm\u2461"}], "title": "2.2.1. Supporting concepts"}], "external": false};
 window.dfnpanelData['subscriber-teardown-callbacks'] = {"dfnID": "subscriber-teardown-callbacks", "url": "#subscriber-teardown-callbacks", "dfnText": "teardown callbacks", "refSections": [{"refs": [{"id": "ref-for-subscriber-teardown-callbacks"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-subscriber-teardown-callbacks\u2460"}], "title": "2.2.1. Supporting concepts"}], "external": false};
@@ -2627,7 +2636,7 @@ window.dfnpanelData['subscriber-signal'] = {"dfnID": "subscriber-signal", "url":
 window.dfnpanelData['subscriber-active'] = {"dfnID": "subscriber-active", "url": "#subscriber-active", "dfnText": "active", "refSections": [{"refs": [{"id": "ref-for-subscriber-active"}, {"id": "ref-for-subscriber-active\u2460"}, {"id": "ref-for-subscriber-active\u2461"}, {"id": "ref-for-subscriber-active\u2462"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-subscriber-active\u2463"}, {"id": "ref-for-subscriber-active\u2464"}], "title": "2.3.2. Observable-returning operators"}], "external": false};
 window.dfnpanelData['dom-subscriber-active'] = {"dfnID": "dom-subscriber-active", "url": "#dom-subscriber-active", "dfnText": "active", "refSections": [{"refs": [{"id": "ref-for-dom-subscriber-active"}], "title": "2.1. The Subscriber interface"}], "external": false};
 window.dfnpanelData['dom-subscriber-signal'] = {"dfnID": "dom-subscriber-signal", "url": "#dom-subscriber-signal", "dfnText": "signal", "refSections": [{"refs": [{"id": "ref-for-dom-subscriber-signal"}], "title": "2.1. The Subscriber interface"}], "external": false};
-window.dfnpanelData['dom-subscriber-next'] = {"dfnID": "dom-subscriber-next", "url": "#dom-subscriber-next", "dfnText": "next(value)", "refSections": [{"refs": [{"id": "ref-for-dom-subscriber-next"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-dom-subscriber-next\u2460"}, {"id": "ref-for-dom-subscriber-next\u2461"}, {"id": "ref-for-dom-subscriber-next\u2462"}, {"id": "ref-for-dom-subscriber-next\u2463"}, {"id": "ref-for-dom-subscriber-next\u2464"}, {"id": "ref-for-dom-subscriber-next\u2465"}], "title": "2.3.2. Observable-returning operators"}, {"refs": [{"id": "ref-for-dom-subscriber-next\u2466"}], "title": "3. EventTarget integration"}], "external": false};
+window.dfnpanelData['dom-subscriber-next'] = {"dfnID": "dom-subscriber-next", "url": "#dom-subscriber-next", "dfnText": "next(value)", "refSections": [{"refs": [{"id": "ref-for-dom-subscriber-next"}, {"id": "ref-for-dom-subscriber-next\u2460"}, {"id": "ref-for-dom-subscriber-next\u2461"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-dom-subscriber-next\u2462"}, {"id": "ref-for-dom-subscriber-next\u2463"}, {"id": "ref-for-dom-subscriber-next\u2464"}, {"id": "ref-for-dom-subscriber-next\u2465"}, {"id": "ref-for-dom-subscriber-next\u2466"}, {"id": "ref-for-dom-subscriber-next\u2467"}], "title": "2.3.2. Observable-returning operators"}, {"refs": [{"id": "ref-for-dom-subscriber-next\u2468"}], "title": "3. EventTarget integration"}], "external": false};
 window.dfnpanelData['dom-subscriber-error'] = {"dfnID": "dom-subscriber-error", "url": "#dom-subscriber-error", "dfnText": "error(error)", "refSections": [{"refs": [{"id": "ref-for-dom-subscriber-error"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-dom-subscriber-error\u2460"}, {"id": "ref-for-dom-subscriber-error\u2461"}], "title": "2.2.1. Supporting concepts"}, {"refs": [{"id": "ref-for-dom-subscriber-error\u2462"}, {"id": "ref-for-dom-subscriber-error\u2463"}, {"id": "ref-for-dom-subscriber-error\u2464"}, {"id": "ref-for-dom-subscriber-error\u2465"}, {"id": "ref-for-dom-subscriber-error\u2466"}, {"id": "ref-for-dom-subscriber-error\u2467"}, {"id": "ref-for-dom-subscriber-error\u2468"}, {"id": "ref-for-dom-subscriber-error\u2460\u24ea"}, {"id": "ref-for-dom-subscriber-error\u2460\u2460"}, {"id": "ref-for-dom-subscriber-error\u2460\u2461"}, {"id": "ref-for-dom-subscriber-error\u2460\u2462"}, {"id": "ref-for-dom-subscriber-error\u2460\u2463"}], "title": "2.3.2. Observable-returning operators"}], "external": false};
 window.dfnpanelData['dom-subscriber-complete'] = {"dfnID": "dom-subscriber-complete", "url": "#dom-subscriber-complete", "dfnText": "complete()", "refSections": [{"refs": [{"id": "ref-for-dom-subscriber-complete"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-dom-subscriber-complete\u2460"}, {"id": "ref-for-dom-subscriber-complete\u2461"}, {"id": "ref-for-dom-subscriber-complete\u2462"}, {"id": "ref-for-dom-subscriber-complete\u2463"}, {"id": "ref-for-dom-subscriber-complete\u2464"}, {"id": "ref-for-dom-subscriber-complete\u2465"}, {"id": "ref-for-dom-subscriber-complete\u2466"}, {"id": "ref-for-dom-subscriber-complete\u2467"}, {"id": "ref-for-dom-subscriber-complete\u2468"}, {"id": "ref-for-dom-subscriber-complete\u2460\u24ea"}, {"id": "ref-for-dom-subscriber-complete\u2460\u2460"}, {"id": "ref-for-dom-subscriber-complete\u2460\u2461"}, {"id": "ref-for-dom-subscriber-complete\u2460\u2462"}], "title": "2.3.2. Observable-returning operators"}], "external": false};
 window.dfnpanelData['dom-subscriber-addteardown'] = {"dfnID": "dom-subscriber-addteardown", "url": "#dom-subscriber-addteardown", "dfnText": "addTeardown(teardown)", "refSections": [{"refs": [{"id": "ref-for-dom-subscriber-addteardown"}], "title": "2.1. The Subscriber interface"}], "external": false};
