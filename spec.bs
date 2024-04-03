@@ -205,6 +205,16 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
        [=Subscriber/next algorithm=] given |value|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
+
+       <div class=note>
+         <p>Note: No exception can be thrown here because in the case where [=Subscriber/next
+         algorithm=] is just a wrapper around a script-provided callback, the <a
+         href=#process-observer>process observer</a> steps take care to wrap these callbacks in
+         logic that, when invoking them, catches any exceptions, and reports them to the global.</p>
+
+         <p>When the [=Subscriber/next algorithm=] is a spec algorithm, those steps take care to not
+         throw any exceptions outside of itself, to appease this assert.</p>
+       </div>
 </div>
 
 <div algorithm>
@@ -222,6 +232,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If |error algorithm| is not null, then run |error algorithm| given |error|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
+
+       Note: See the documentation in {{Subscriber/next()}} for details on why this is true.
 
     1. Otherwise (i.e., when |error algorithm| is null), [=report the exception=] |error|.
 </div>
@@ -241,6 +253,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If |complete algorithm| is not null, then run |complete algorithm|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
+
+       Note: See the documentation in {{Subscriber/next()}} for details on why this is true.
 </div>
 
 <div algorithm>
@@ -451,7 +465,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
     1. Let |internal observer| be a new [=internal observer=].
 
     1. Process |observer| as follows:
-       <ol>
+       <ol id=process-observer>
          <li>
            <dl class="switch">
              <dt>If |observer| is a {{SubscriptionObserverCallback}}</dt>
