@@ -1124,16 +1124,20 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Let |lastValue| be an {{any}}-or-null, initially null.
 
+    1. Let |hasLastValue| be a [=boolean=], initially false.
+
     1. Let |observer| be a new [=internal observer=], initialized as follows:
 
        : [=internal observer/next steps=]
-       :: Set |lastValue| to the passed in <var ignore>value</var>.
+       :: 1. Set |hasLastValue| to true.
+       
+          1. Set |lastValue| to the passed in <var ignore>value</var>.
 
        : [=internal observer/error steps=]
        :: [=Reject=] |p| with the passed in <var ignore>error</var>.
 
        : [=internal observer/complete steps=]
-       :: 1. If |lastValue| is not null, [=resolve=] |p| with |lastValue|.
+       :: 1. If |hasLastValue| is true, [=resolve=] |p| with |lastValue|.
 
           1. Otherwise, [=reject=] |p| with a [=new=] {{RangeError}}.
 
