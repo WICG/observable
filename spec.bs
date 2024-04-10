@@ -198,7 +198,7 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 <div algorithm>
   The <dfn for=Subscriber method><code>next(|value|)</code></dfn> method steps are:
 
-    1. If [=this=]'s [=Subscriber/active=] is false, then return.
+    1. If [=this=]'s [=Subscriber/active=] is false, [=report the exception=] |error|, then return.
 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
