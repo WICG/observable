@@ -731,7 +731,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
           : [=internal observer/next steps=]
-          :: 1. [=Invoke=] |predicate| with the passed in |value| and |idx}, and let |matches| be
+          :: 1. [=Invoke=] |predicate| with the passed in |value| and |idx|, and let |matches| be
                 the returned value.
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
