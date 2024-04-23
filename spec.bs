@@ -1015,8 +1015,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
                 Note: If |activeInnerAbortController| is not null, then we don't immediately
                 complete |subscriber|. Instead, the [=switchmap process next value steps=] will
-                complete |subscriber| when the inner subscription finally becomes inactive on its
-                own volition.
+                complete |subscriber| when the inner subscription finally completes itself.
 
              1. If |activeInnerAbortController| is null, run |subscriber|'s
                 {{Subscriber/complete()}} method.
