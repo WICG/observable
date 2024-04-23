@@ -967,6 +967,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
+       1. Let |idx| be an {{unsigned long long}}, initially 0.
+
        1. Let |outerSubscriptionHasCompleted| be a [=boolean=], initially false.
 
        1. Let |activeInnerAbortController| be an {{AbortController}}-or-null, initially null.
@@ -994,8 +996,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
              1. Set |activeInnerAbortController| to a [=new=] {{AbortController}}.
 
              1. Run the [=switchmap process next value steps=] with |value|, |subscriber|, |mapper|,
-                and <b>references</b> to all of the following: |activeInnerAbortController|, and
-                |outerSubscriptionHasCompleted|.
+                and <b>references</b> to all of the following: |activeInnerAbortController|,
+                |outerSubscriptionHasCompleted|, and |idx|.
 
                 Note: The [=switchmap process next value steps=] will subscribe to the
                 {{Observable}} derived from |value| (if one such can be derived) and keep processing
@@ -1031,13 +1033,15 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn>switchmap process next value steps</dfn>, given an {{any}} |value|, a {{Subscriber}}
   |subscriber|, a {{Mapper}} |mapper|, and <b>references</b> to all of the following: an
-  {{AbortController}} |activeInnerAbortController|, and a [=boolean=]
-  |outerSubscriptionHasCompleted|, are to run these steps:
+  {{AbortController}} |activeInnerAbortController|, a [=boolean=]
+  |outerSubscriptionHasCompleted|, and an {{unsigned long long}} |idx| are to run these steps:
 
-    1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value|.
+    1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value| and |idx|.
 
        If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
        |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
+
+    1. Set |idx| to |idx| + 1.
 
     1. Let |innerObservable| be the result of calling {{Observable/from()}} with |mappedResult|.
 
