@@ -337,7 +337,7 @@ dictionary SubscribeOptions {
   AbortSignal signal;
 };
 
-callback Predicate = boolean (any value);
+callback Predicate = boolean (any value, unsigned long long index);
 callback Reducer = any (any accumulator, any currentValue);
 callback Mapper = any (any element, unsigned long long index);
 // Differs from Mapper only in return type, since this callback is exclusively
@@ -726,15 +726,19 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
+       1. Let |idx| be an {{unsigned long long}}, initially 0.
+
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
           : [=internal observer/next steps=]
-          :: 1. [=Invoke=] |predicate| with the passed in |value|, and let |matches|
-                be the returned value.
+          :: 1. [=Invoke=] |predicate| with the passed in |value| and |idx|, and let |matches| be
+                the returned value.
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
                 then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
                 steps.
+
+             1. Set |idx| to |idx| + 1.
 
              1. If |matches| is true, then run |subscriber|'s {{Subscriber/next()}} method, given
                 |value|.
