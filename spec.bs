@@ -851,6 +851,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
+       1. Let |idx| be an {{unsigned long long}}, initially 0.
+
        1. Let |outerSubscriptionHasCompleted| to a [=boolean=], initially false.
 
        1. Let |queue| be a new [=list=] of {{any}} values, initially empty.
@@ -877,7 +879,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
                 1. Run the [=flatmap process next value steps=] with |value|, |subscriber|,
                    |mapper|, and <b>references</b> to all of the following: |queue|,
-                   |activeInnerSubscription|, and |outerSubscriptionHasCompleted|.
+                   |activeInnerSubscription|, |outerSubscriptionHasCompleted|, and |idx|.
 
                    <div class=note>
                      <p>Note: This [=flatmap process next value steps=] will subscribe to the
@@ -919,13 +921,15 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn>flatmap process next value steps</dfn>, given an {{any}} |value|, a {{Subscriber}}
   |subscriber|, a {{Mapper}} |mapper|, and <b>references</b> to all of the following: a [=list=] of
-  {{any}} values |queue|, a [=boolean=] |activeInnerSubscription|, and a [=boolean=]
-  |outerSubscriptionHasCompleted|:
+  {{any}} values |queue|, a [=boolean=] |activeInnerSubscription|, a [=boolean=]
+  |outerSubscriptionHasCompleted|, and an {{unsigned long long}} |idx|:
 
-    1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value|.
+    1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value| and |idx|.
 
        If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
        |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
+
+    1. Set |idx| to |idx| + 1.
 
     1. Let |innerObservable| be the result of calling {{Observable/from()}} with |mappedResult|.
 
