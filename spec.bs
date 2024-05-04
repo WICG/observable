@@ -1323,7 +1323,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
        : [=internal observer/next steps=]
        :: 1. [=Resolve=] |p| with the passed in <var ignore>value</var>.
-          
+
           1. [=AbortController/Signal abort=] |controller|.
 
        : [=internal observer/error steps=]
@@ -1348,7 +1348,48 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn for=Observable method><code>last(|options|)</code></dfn> method steps are:
 
-    1. <span class=XXX>TODO: Spec this and use |options|.</span>
+    1. Let |p| [=a new promise=].
+
+    1. If |options|'s {{SubscribeOptions/signal}} is not null:
+
+       1. If |options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
+
+          1. [=Reject=] |p| with |options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+             reason=].
+
+          1. Return |p|.
+
+       1. [=AbortSignal/add|Add the following abort algorithm=] to |options|'s
+          {{SubscribeOptions/signal}}:
+
+          1. [=Reject=] |p| with |options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+             reason=].
+
+    1. Let |lastValue| be an {{any}}-or-null, initially null.
+
+    1. Let |hasLastValue| be a [=boolean=], initially false.
+
+    1. Let |observer| be a new [=internal observer=], initialized as follows:
+
+       : [=internal observer/next steps=]
+       :: 1. Set |hasLastValue| to true.
+
+          1. Set |lastValue| to the passed in <var ignore>value</var>.
+
+       : [=internal observer/error steps=]
+       :: [=Reject=] |p| with the passed in <var ignore>error</var>.
+
+       : [=internal observer/complete steps=]
+       :: 1. If |hasLastValue| is true, [=resolve=] |p| with |lastValue|.
+
+          1. Otherwise, [=resolve=] |p| with {{undefined}}.
+
+             Note: See the note in {{Observable/first()}}.
+
+    1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
+       and |options|.
+
+    1. Return |p|.
 </div>
 
 <div algorithm>
