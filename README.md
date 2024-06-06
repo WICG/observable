@@ -214,36 +214,33 @@ keys the user might hit while using an app:
 
 ```js
 const pattern = [
-	'ArrowUp',
-	'ArrowUp',
-	'ArrowDown',
-	'ArrowDown',
-	'ArrowLeft',
-	'ArrowRight',
-	'ArrowLeft',
-	'ArrowRight',
-	'b',
-	'a',
-	'b',
-	'a',
-	'Enter',
+  'ArrowUp',
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowDown',
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowLeft',
+  'ArrowRight',
+  'b',
+  'a',
+  'b',
+  'a',
+  'Enter',
 ];
 
-const keys = document.on('keydown').map((e) => e.key);
+const keys = document.on('keydown').map(e => e.key);
+
 keys
-	.flatMap((firstKey) => {
-		if (firstKey === pattern[0]) {
-			return keys
-				.take(pattern.length - 1)
-				.every((k, i) => k === pattern[i + 1]);
-		}
-	})
-	.filter((matched) => matched)
-	.subscribe({
-		next: (_) => {
-			console.log('Secret code matched!');
-		},
-	});
+  .flatMap(firstKey => {
+    if (firstKey === pattern[0]) {
+      return keys
+        .take(pattern.length - 1)
+        .every((k, i) => k === pattern[i + 1]);
+    }
+  })
+  .filter(matched => matched)
+  .subscribe(() => console.log('Secret code matched!'));
 ```
 
 <details>
@@ -265,10 +262,11 @@ document.addEventListener('keydown', e => {
         console.log('Secret code matched!');
         document.removeEventListener('keydown', handler)
       }
-    }
-    document.addEventListener('keydown', handler)
+    };
+
+    document.addEventListener('keydown', handler);
   }
-})
+}, {once: true});
 ```
 
 </details>
