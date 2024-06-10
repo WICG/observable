@@ -51,14 +51,13 @@ await element.on('mousemove')
 ```js
 // Imperative
 const controller = new AbortController();
-element.addEventListener(
-	'mousemove',
-	(e) => {
-		element.addEventListener('mouseup', (e) => controller.abort());
-		console.log(e);
-	},
-	{ signal: controller.signal },
-);
+element.addEventListener('mousemove', e => {
+  console.log(e);
+
+  element.addEventListener('mouseup', e => {
+    controller.abort();
+  });
+}, { signal: controller.signal });
 ```
 
 </details>
