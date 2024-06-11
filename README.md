@@ -429,7 +429,7 @@ We propose the following operators in addition to the `Observable` interface:
 - `catch()`
   - Like `Promise.catch()`, it takes a mapping function which is fired if the observable
     source emits an error. The mapping function should map into a new value which will be converted
-    into an observable with `from` interally and subscribed to in leiu of the errored source.
+    into an observable with `from` internally and subscribed to in lieu of the errored source.
   - Returns an `Observable` that mirrors the source observable exactly, other than when the
     source observable errors.
 - `finally()`
