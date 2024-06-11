@@ -413,9 +413,22 @@ If the subscriber has already been aborted (i.e., `subscriber.signal.aborted` is
 
 We propose the following operators in addition to the `Observable` interface:
 
+- `switchMap(mapFn)`
+  - Maps the value to a new observable, then subscribes to it, flattening its values
+    into the output. When another value arrives from source, the previously mapped
+    observable's subscription is aborted, and the new value is mapped to a value that is
+    converted to an observable with `from` internally, and subscribed to, flattening its values
+    into the output. This operator is useful for switching between streams, toggling streams
+    on and off, and implicitly interupting async work and starting new work.
 - `takeUntil(Observable)`
   - Returns an observable that mirrors the one that this method is called on,
     until the input observable emits its first value
+- `catch()`
+  - Like `Promise.catch()`, it takes a mapping function which is fired if the observable
+    source emits an error. The mapping function should map into a new value which will be converted
+    into an observable with `from` internally and subscribed to in lieu of the errored source.
+  - Returns an `Observable` that mirrors the source observable exactly, other than when the
+    source observable errors.
 - `finally()`
   - Like `Promise.finally()`, it takes a callback which gets fired after the
     observable completes in any way (`complete()`/`error()`).
@@ -423,6 +436,10 @@ We propose the following operators in addition to the `Observable` interface:
     passed to `finally` is fired when a subscription to the resulting observable is terminated
     for _any reason_. Either immediately after the source completes or errors, or when the consumer
     unsubscribes by aborting the subscription.
+- `scan(reducer, initValue?)`
+  - Like `reduce()`, only it emits the accumulated value synchronously after each call to
+    the reducer. `observable.reduce(fn, init)` is the same as `observable.scan(fn, init).last()`
+  - This is a common tool used in localized state tracking, and can be used to create a "redux pattern".
 
 Versions of the above are often present in userland implementations of
 observables as they are useful for observable-specific reasons, but in addition
