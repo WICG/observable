@@ -417,7 +417,7 @@ If the subscriber has already been aborted (i.e., `subscriber.signal.aborted` is
 We propose the following operators in addition to the `Observable` interface:
 
 - `switchMap(mapFn)`
-  - Maps the value to a new observable, the subscribes to it, flattening its values
+  - Maps the value to a new observable, then subscribes to it, flattening its values
     into the output. When another value arrives from source, the previously mapped
     observable's subscription is aborted, and the new value is mapped to a value that is
     converted to an observable with `from` internally, and subscribed to, flattening its values
