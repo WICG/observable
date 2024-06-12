@@ -413,6 +413,10 @@ If the subscriber has already been aborted (i.e., `subscriber.signal.aborted` is
 
 We propose the following operators in addition to the `Observable` interface:
 
+- `catch()`
+  - Like `Promise#catch()`, it takes a callback which gets fired after the source
+    observable errors. It will then map to a new observable, returned by the callback,
+    unless the error is rethrown.
 - `takeUntil(Observable)`
   - Returns an observable that mirrors the one that this method is called on,
     until the input observable emits its first value
