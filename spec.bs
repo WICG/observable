@@ -164,13 +164,13 @@ interface Subscriber {
 </xmp>
 
 Each {{Subscriber}} has a <dfn for=Subscriber>next algorithm</dfn>, which is a [=internal
-observer/next steps=]-or-null.
+observer/next steps=].
 
 Each {{Subscriber}} has a <dfn for=Subscriber>error algorithm</dfn>, which is an [=internal
-observer/error steps=]-or-null.
+observer/error steps=].
 
 Each {{Subscriber}} has a <dfn for=Subscriber>complete algorithm</dfn>, which is a [=internal
-observer/complete steps=]-or-null.
+observer/complete steps=].
 
 Each {{Subscriber}} has a <dfn for=Subscriber>teardown callbacks</dfn>, which is a [=list=] of
 {{VoidFunction}}s, initially empty.
@@ -203,8 +203,7 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
-    1. If [=this=]'s [=Subscriber/next algorithm=] is not null, then run [=this=]'s
-       [=Subscriber/next algorithm=] given |value|.
+    1. Run [=this=]'s [=Subscriber/next algorithm=] given |value|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
@@ -227,19 +226,15 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
-    1. Let |error algorithm| be [=this=]'s [=Subscriber/error algorithm=].
-
     1. [=close a subscription|Close=] [=this=].
 
     1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
 
-    1. If |error algorithm| is not null, then run |error algorithm| given |error|.
+    1. Run [=this=]'s [=Subscriber/error algorithm=] given |error|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
        Note: See the documentation in {{Subscriber/next()}} for details on why this is true.
-
-    1. Otherwise (i.e., when |error algorithm| is null), [=report the exception=] |error|.
 </div>
 
 <div algorithm>
@@ -250,13 +245,11 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
-    1. Let |complete algorithm| be [=this=]'s [=Subscriber/complete algorithm=].
-
     1. [=close a subscription|Close=] [=this=].
 
     1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
 
-    1. If |complete algorithm| is not null, then run |complete algorithm|.
+    1. Run [=this=]'s [=Subscriber/complete algorithm=].
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
@@ -282,9 +275,6 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
   To <dfn>close a subscription</dfn> given a {{Subscriber}} |subscriber|, run these steps:
 
     1. Set |subscriber|'s [=Subscriber/active=] boolean to false.
-
-    1. Set |subscriber|'s [=Subscriber/next algorithm=], [=Subscriber/error algorithm=], and
-       [=Subscriber/complete algorithm=] all to null.
 
   <div class=note>
     <p>This algorithm intentionally does not have script-running side-effects; it just updates the
