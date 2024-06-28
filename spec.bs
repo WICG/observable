@@ -1545,7 +1545,87 @@ For now, see
 <div algorithm>
   The <dfn for=Observable method><code>finally(|callback|)</code></dfn> method steps are:
 
-    1. <span class=XXX>TODO: Spec this and use |callback|.</span>
+    1. Let |sourceObservable| be [=this=].
+
+    1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
+       algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+
+       1. Let |finally callback steps| be the following steps:
+
+         1. [=Invoke=] |callback|.
+
+            If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
+            |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
+
+       1. [=AbortSignal/add|Add the algorithm=] |finally callback steps| to |subscriber|'s
+          [=Subscriber/signal=].
+
+          Note: This is necessary to ensure |callback| gets invoked on *consumer-initiated*
+          unsubscription. In that case, |subscriber|'s [=Subscriber/signal=] gets
+          [=AbortSignal/signal abort|aborted=], and neither the |sourceObserver|'s
+          [=internal observer/error steps=] nor [=internal observer/complete steps=] are invoked.
+
+       1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
+
+          : [=internal observer/next steps=]
+          :: Run |subscriber|'s {{Subscriber/next()}} method, given the passed in <var
+             ignore>value</var>.
+
+          : [=internal observer/error steps=]
+          :: 1. Run the |finally callback steps|.
+
+                <div class=example id=manual-finally-callback-steps>
+                  <p>This "manual" invocation of |finally callback steps| is necessary to ensure
+                  that |callback| is invoked on producer-initiated unsubscription. Without this,
+                  we'd simply delegate to {{Subscriber/error()}} below, which first [=close a
+                  subscription|closes=] the subscription, *and then* [=AbortSignal/signal
+                  abort|aborts=] |subscriber|'s [=Subscriber/signal=].</p>
+
+                  <p>That means when |finally callback steps| eventually runs as a result of
+                  abortion, |subscriber| would already be [=Subscriber/active|inactive=]. So if
+                  |callback| throws an error during, it would never be plumbed through to
+                  {{Subscriber/error()}} (that method is a no-op once
+                  [=Subscriber/active|inactive=]). See the following example which exercises this
+                  case exactly:</p>
+
+                  <pre highlight=js>
+const controller = new AbortController();
+const observable = new Observable(subscriber =&gt; {
+  subscriber.complete();
+});
+
+observable
+  .finally(() =&gt; {
+    throw new Error('finally error');
+  })
+  .subscribe({
+    error: e =&gt; console.log('erorr passed through'),
+  }, {signal: controller.signal});
+
+controller.abort(); // Logs 'error passed through'.
+                  </pre>
+                </div>
+
+             1. Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+                ignore>error</var>.
+
+                Note: The |finally callback steps| possibly calls |subscriber|'s
+                {{Subscriber/error()}} method first, if |callback| throws an error. In that case, it
+                is still safe to call it again unconditionally, because the subscription will
+                already be closed, making the call a no-op.
+
+          : [=internal observer/complete steps=]
+          :: 1. Run the |finally callback steps|.
+
+             1. Run |subscriber|'s {{Subscriber/complete()}} method.
+
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
+          |subscriber|'s [=Subscriber/signal=].
+
+       1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
+          given |sourceObserver| and |options|.
+
+    1. Return |observable|.
 </div>
 
 
