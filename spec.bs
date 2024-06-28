@@ -478,24 +478,26 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
              <dt>If |observer| is a {{SubscriptionObserver}}</dt>
              <dd>
-               1. If |observer|'s {{SubscriptionObserver/next}} is not null, set |internal observer|'s
-                  [=internal observer/next steps=] to these steps that take an {{any}} |value|:
+               1. If |observer|'s {{SubscriptionObserver/next}} [=map/exists=], then set
+                  |internal observer|'s [=internal observer/next steps=] to these steps that take an
+                  {{any}} |value|:
 
                   1. [=Invoke=] |observer|'s {{SubscriptionObserver/next}} with |value|.
 
                      If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
                      then [=report the exception=] |E|.
 
-               1. If |observer|'s {{SubscriptionObserver/error}} is not null, set |internal observer|'s
-                  [=internal observer/error steps=] to these steps that take an {{any}} |error|:
+               1. If |observer|'s {{SubscriptionObserver/error}} [=map/exists=], then set
+                  |internal observer|'s [=internal observer/error steps=] to these steps that take
+                  an {{any}} |error|:
 
                   1. [=Invoke=] |observer|'s {{SubscriptionObserver/error}} with |error|.
 
                      If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
                      then [=report the exception=] |E|.
 
-               1. If |observer|'s {{SubscriptionObserver/complete}} is not null, set |internal observer|'s
-                  [=internal observer/complete steps=] to these steps:
+               1. If |observer|'s {{SubscriptionObserver/complete}} [=map/exists=], then set
+                  |internal observer|'s [=internal observer/complete steps=] to these steps:
 
                   1. [=Invoke=] |observer|'s {{SubscriptionObserver/complete}}.
 
