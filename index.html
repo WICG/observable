@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="3384ee3af24815571465f864b91d8e753cead155" name="document-revision">
+  <meta content="7b4cb0711780ca78baa0472bdaeb0ebf50492009" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -1264,7 +1264,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <dd>
           <ol>
            <li data-md>
-            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-next" id="ref-for-dom-subscriptionobserver-next②">next</a></code> is not null, set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps②">next steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②②">any</a></code> <var>value</var>:</p>
+            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-next" id="ref-for-dom-subscriptionobserver-next②">next</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exists</a>, then set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps②">next steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②②">any</a></code> <var>value</var>:</p>
             <ol>
              <li data-md>
               <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function③">Invoke</a> <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-next" id="ref-for-dom-subscriptionobserver-next③">next</a></code> with <var>value</var>.</p>
@@ -1272,7 +1272,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
  then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#report-the-exception" id="ref-for-report-the-exception④">report the exception</a> <var>E</var>.</p>
             </ol>
            <li data-md>
-            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-error" id="ref-for-dom-subscriptionobserver-error②">error</a></code> is not null, set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①">error steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②③">any</a></code> <var>error</var>:</p>
+            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-error" id="ref-for-dom-subscriptionobserver-error②">error</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a>, then set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①">error steps</a> to these steps that take
+  an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②③">any</a></code> <var>error</var>:</p>
             <ol>
              <li data-md>
               <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function④">Invoke</a> <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-error" id="ref-for-dom-subscriptionobserver-error③">error</a></code> with <var>error</var>.</p>
@@ -1280,7 +1281,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
  then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#report-the-exception" id="ref-for-report-the-exception⑤">report the exception</a> <var>E</var>.</p>
             </ol>
            <li data-md>
-            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-complete" id="ref-for-dom-subscriptionobserver-complete②">complete</a></code> is not null, set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①">complete steps</a> to these steps:</p>
+            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-complete" id="ref-for-dom-subscriptionobserver-complete②">complete</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exists</a>, then set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①">complete steps</a> to these steps:</p>
             <ol>
              <li data-md>
               <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function⑤">Invoke</a> <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-complete" id="ref-for-dom-subscriptionobserver-complete③">complete</a></code>.</p>
@@ -2525,7 +2526,8 @@ possible.</p>
      <li><span class="dfn-paneled" id="77b4c09a">assert</span>
      <li><span class="dfn-paneled" id="36858240">boolean</span>
      <li><span class="dfn-paneled" id="03afaf9c">empty</span>
-     <li><span class="dfn-paneled" id="75393c04">exist</span>
+     <li><span class="dfn-paneled" id="75393c04">exist <small>(for list)</small></span>
+     <li><span class="dfn-paneled" id="1243a891">exist <small>(for map)</small></span>
      <li><span class="dfn-paneled" id="16d07e10">for each</span>
      <li><span class="dfn-paneled" id="c88f3887">item</span>
      <li><span class="dfn-paneled" id="649608b9">list</span>
@@ -3002,7 +3004,8 @@ window.dfnpanelData['53275e46'] = {"dfnID": "53275e46", "url": "https://infra.sp
 window.dfnpanelData['77b4c09a'] = {"dfnID": "77b4c09a", "url": "https://infra.spec.whatwg.org/#assert", "dfnText": "assert", "refSections": [{"refs": [{"id": "ref-for-assert"}, {"id": "ref-for-assert\u2460"}, {"id": "ref-for-assert\u2461"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-assert\u2462"}], "title": "2.2.1. Supporting concepts"}, {"refs": [{"id": "ref-for-assert\u2463"}], "title": "2.3.2. Observable-returning operators"}], "external": true};
 window.dfnpanelData['36858240'] = {"dfnID": "36858240", "url": "https://infra.spec.whatwg.org/#boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-boolean"}, {"id": "ref-for-boolean\u2460"}, {"id": "ref-for-boolean\u2461"}, {"id": "ref-for-boolean\u2462"}, {"id": "ref-for-boolean\u2463"}, {"id": "ref-for-boolean\u2464"}], "title": "2.3.2. Observable-returning operators"}, {"refs": [{"id": "ref-for-boolean\u2465"}], "title": "2.3.3. Promise-returning operators"}], "external": true};
 window.dfnpanelData['03afaf9c'] = {"dfnID": "03afaf9c", "url": "https://infra.spec.whatwg.org/#list-empty", "dfnText": "empty", "refSections": [{"refs": [{"id": "ref-for-list-empty"}, {"id": "ref-for-list-empty\u2460"}], "title": "2.3.2. Observable-returning operators"}], "external": true};
-window.dfnpanelData['75393c04'] = {"dfnID": "75393c04", "url": "https://infra.spec.whatwg.org/#list-contain", "dfnText": "exist", "refSections": [{"refs": [{"id": "ref-for-list-contain"}], "title": "2.3.2. Observable-returning operators"}], "external": true};
+window.dfnpanelData['75393c04'] = {"dfnID": "75393c04", "url": "https://infra.spec.whatwg.org/#list-contain", "dfnText": "exist (for list)", "refSections": [{"refs": [{"id": "ref-for-list-contain"}], "title": "2.3.2. Observable-returning operators"}], "external": true};
+window.dfnpanelData['1243a891'] = {"dfnID": "1243a891", "url": "https://infra.spec.whatwg.org/#map-exists", "dfnText": "exist (for map)", "refSections": [{"refs": [{"id": "ref-for-map-exists"}, {"id": "ref-for-map-exists\u2460"}, {"id": "ref-for-map-exists\u2461"}], "title": "2.2.1. Supporting concepts"}], "external": true};
 window.dfnpanelData['16d07e10'] = {"dfnID": "16d07e10", "url": "https://infra.spec.whatwg.org/#list-iterate", "dfnText": "for each", "refSections": [{"refs": [{"id": "ref-for-list-iterate"}], "title": "2.2.1. Supporting concepts"}], "external": true};
 window.dfnpanelData['c88f3887'] = {"dfnID": "c88f3887", "url": "https://infra.spec.whatwg.org/#struct-item", "dfnText": "item", "refSections": [{"refs": [{"id": "ref-for-struct-item"}], "title": "2.2.1. Supporting concepts"}], "external": true};
 window.dfnpanelData['649608b9'] = {"dfnID": "649608b9", "url": "https://infra.spec.whatwg.org/#list", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-list"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-list\u2460"}, {"id": "ref-for-list\u2461"}], "title": "2.3.2. Observable-returning operators"}, {"refs": [{"id": "ref-for-list\u2462"}], "title": "2.3.3. Promise-returning operators"}], "external": true};
