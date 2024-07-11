@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="7b4cb0711780ca78baa0472bdaeb0ebf50492009" name="document-revision">
+  <meta content="b8ee44bc3b50b32aee17d1bb205d446357f57b80" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -901,7 +901,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-06-28">28 June 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-07-11">11 July 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1541,7 +1541,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①⑦">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
-        <p>If <var>amount</var> is 0, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete⑧">complete()</a></code> method and abort
+        <p>Let <var>remaining</var> be <var>amount</var>.</p>
+       <li data-md>
+        <p>If <var>remaining</var> is 0, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete⑧">complete()</a></code> method and abort
   these steps.</p>
        <li data-md>
         <p>Let <var>sourceObserver</var> be a new <a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer⑧">internal observer</a>, initialized as follows:</p>
@@ -1552,9 +1554,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑥">next()</a></code> method with the passed in <var>value</var>.</p>
            <li data-md>
-            <p>Decrement <var>amount</var>.</p>
+            <p>Decrement <var>remaining</var>.</p>
            <li data-md>
-            <p>If <var>amount</var> is 0, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete⑨">complete()</a></code> method.</p>
+            <p>If <var>remaining</var> is 0, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete⑨">complete()</a></code> method.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑧">error steps</a>
          <dd data-md>
@@ -1588,15 +1590,17 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①⑧">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
+        <p>Let <var>remaining</var> be <var>amount</var>.</p>
+       <li data-md>
         <p>Let <var>sourceObserver</var> be a new <a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer⑨">internal observer</a>, initialized as follows:</p>
         <dl>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps⑨">next steps</a>
          <dd data-md>
           <ol>
            <li data-md>
-            <p>If <var>amount</var> is > 0, then decrement <var>amount</var> and abort these steps.</p>
+            <p>If <var>remaining</var> is > 0, then decrement <var>remaining</var> and abort these steps.</p>
            <li data-md>
-            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert④">Assert</a>: <var>amount</var> is 0.</p>
+            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert④">Assert</a>: <var>remaining</var> is 0.</p>
            <li data-md>
             <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑦">next()</a></code> method with the passed in <var>value</var>.</p>
           </ol>
