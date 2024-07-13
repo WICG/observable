@@ -36,7 +36,7 @@ urlPrefix: https://dom.spec.whatwg.org; spec: DOM
       text: signal; url: event-listener-signal
     for: AbortSignal
       text: dependent signals; url: abortsignal-dependent-signals
-      text: signal abort
+      text: signal abort; url:abortsignal-signal-abort
 </pre>
 
 <style>
@@ -175,14 +175,8 @@ observer/complete steps=].
 Each {{Subscriber}} has a <dfn for=Subscriber>teardown callbacks</dfn>, which is a [=list=] of
 {{VoidFunction}}s, initially empty.
 
-Each {{Subscriber}} has a <dfn for=Subscriber>complete or error controller</dfn>, which is an
+Each {{Subscriber}} has a <dfn for=Subscriber>subscription controller</dfn>, which is an
 {{AbortController}}.
-
-Each {{Subscriber}} has a <dfn for=Subscriber>signal</dfn>, which is an {{AbortSignal}}.
-
-Note: This is a [=create a dependent abort signal|dependent signal=], derived from both
-[=Subscriber/complete or error controller=]'s [=AbortController/signal=], and
-{{SubscribeOptions}}'s {{SubscribeOptions/signal}} (if non-null).
 
 Each {{Subscriber}} has a <dfn for=Subscriber>active</dfn> boolean, initially true.
 
@@ -193,7 +187,7 @@ The <dfn attribute for=Subscriber><code>active</code></dfn> getter steps are to 
 [=Subscriber/active=] boolean.
 
 The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to return [=this=]'s
-[=Subscriber/signal=].
+[=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
 <div algorithm>
   The <dfn for=Subscriber method><code>next(|value|)</code></dfn> method steps are:
@@ -228,8 +222,6 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. [=close a subscription|Close=] [=this=].
 
-    1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
-
     1. Run [=this=]'s [=Subscriber/error algorithm=] given |error|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
@@ -246,8 +238,6 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
        Document=] is not [=Document/fully active=], then return.
 
     1. [=close a subscription|Close=] [=this=].
-
-    1. [=AbortController/Signal abort=] [=this=]'s [=Subscriber/complete or error controller=].
 
     1. Run [=this=]'s [=Subscriber/complete algorithm=].
 
@@ -274,43 +264,51 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 <div algorithm>
   To <dfn>close a subscription</dfn> given a {{Subscriber}} |subscriber|, run these steps:
 
-    1. Set |subscriber|'s [=Subscriber/active=] boolean to false.
+    1. If |subscriber|'s [=Subscriber/active=] is false, then return.
 
-  <div class=note>
-    <p>This algorithm intentionally does not have script-running side-effects; it just updates the
-    internal state of a {{Subscriber}}. It's important that this algorithm sets
-    [=Subscriber/active=] to false and clears all of the callback algorithms *before* running any
-    script, because running script <span class=allow-2119>may</span> reentrantly invoke one of the
-    methods that closed the subscription in the first place. And closing the subscription <span
-    class=allow-2119>must</span> ensure that even if a method gets reentrantly invoked, none of the
-    {{SubscriptionObserver}} callbacks are ever invoked again. Consider this example:</p>
-
-    <div class=example id=reentrant-example>
-      <pre highlight=js>
-let innerSubscriber = null;
-const producedValues = [];
-
-const controller = new AbortController();
+       <div class=note>
+         <p>This guards against re-entrant invocation, which can happen in the "producer-initiated"
+         unsubscription case. Consider the following example:</p>
+         <div class=example id=re-entrant-close>
+           <pre highlight=js>
+const outerController = new AbortController();
 const observable = new Observable(subscriber =&gt; {
-  innerSubscriber = subscriber;
+  subscriber.addTeardown(() =&gt; {
+    // 2.) This teardown executes inside the "Close" algorithm, while it's
+    //     running. Aborting the downstream signal run its abort algorithms,
+    //     one of which is the currently-running "Close" algorithm.
+    outerController.abort();
+  });
+
+  // 1.) This immediately invokes the "Close" algorithm, which
+  //     sets subscriber.active to false.
   subscriber.complete();
 });
 
-observable.subscribe({
-  next: v =&gt; producedValues.push(v),
-  complete: () =&gt; innerSubscriber.next('from complete'),
+observable.subscribe({}, {signal: outerController.signal});
+           </pre>
+         </div>
+       </div>
 
-  }, {signal: controller.signal}
-);
+    1. Set |subscriber|'s [=Subscriber/active=] boolean to false.
 
-// This invokes the complete() callback, and even though it invokes next() from
-// within, the given next() callback will never run, because the subscription
-// has already been "closed" before the complete() callback actually executes.
-controller.abort();
-console.assert(producedValues.length === 0);
-      </pre>
-    </div>
-  </div>
+    1. [=AbortSignal/Signal abort=] |subscriber|'s [=Subscriber/subscription controller=].
+
+       Issue: Abort with an appropriate abort reason.
+
+    1. [=list/For each=] |teardown| of |subscriber|'s [=Subscriber/teardown callbacks=] sorted in
+       reverse insertion order:
+
+       1. If |subscriber|'s [=relevant global object=] is a {{Window}} object, and its [=associated
+          Document=] is not [=Document/fully active=], then abort these steps.
+
+          Note: This step runs repeatedly because each |teardown| could result in the above
+          {{Document}} becoming inactive.
+
+       1. [=Invoke=] |teardown|.
+
+          If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
+          |subscriber|'s {{Subscriber/error()}} method with |E|.
 </div>
 
 <h3 id=observable-api>The {{Observable}} interface</h3>
@@ -526,36 +524,15 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
       : [=Subscriber/complete algorithm=]
       :: |internal observer|'s [=internal observer/complete steps=]
 
-      : [=Subscriber/signal=]
-      :: The result of [=creating a dependent abort signal=] from the list «|subscriber|'s
-         [=Subscriber/complete or error controller=]'s [=AbortController/signal=], |options|'s
-         {{SubscribeOptions/signal}} if it is non-null», using {{AbortSignal}}, and the [=current
-         realm=].
+    1. If |options|'s {{SubscribeOptions/signal}} [=map/exists=], then:
 
-    1. If |subscriber|'s [=Subscriber/signal=] is [=AbortSignal/aborted=], then [=close a
-       subscription|close=] |subscriber|.
+       1. If |options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then [=close a
+          subscription|close=] |subscriber|.
 
-       Note: This can happen when {{SubscribeOptions}}'s {{SubscribeOptions/signal}} is already
-       [=AbortSignal/aborted=].
-
-    1. Otherwise, [=AbortSignal/add|add the following abort algorithm=] to |subscriber|'s
-       [=Subscriber/signal=]:
+    1. Otherwise, [=AbortSignal/add|add the following abort algorithm=] to |options|'s
+       {{SubscribeOptions/signal}}:
 
        1. [=close a subscription|Close=] |subscriber|.
-
-       1. [=list/For each=] |teardown| of |subscriber|'s [=Subscriber/teardown callbacks=] sorted in
-          reverse insertion order:
-
-          1. If |subscriber|'s [=relevant global object=] is a {{Window}} object, and its
-             [=associated Document=] is not [=Document/fully active=], then abort these steps.
-
-             Note: This step runs repeatedly because each |teardown| could result in the above
-             {{Document}} becoming inactive.
-
-          1. [=Invoke=] |teardown|.
-
-             If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
-             |subscriber|'s {{Subscriber/error()}} method with |E|.
 
     1. If [=this=]'s [=Observable/subscribe callback=] is a {{SubscribeCallback}}, [=invoke=] it
        with |subscriber|.
@@ -618,9 +595,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
              Note: This will "unsubscribe" from |sourceObservable|, if it has been subscribed to by
              this point. This is because |sourceObservable| is subscribed to with the "outer"
-             |subscriber|'s [=Subscriber/signal=] as an input signal, and that signal will get
-             [=AbortSignal/signal abort|aborted=] when the "outer" |subscriber|'s
-             {{Subscriber/complete()}} is called above (and below).
+             |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=] as
+             an input signal, and that signal will get [=AbortSignal/signal abort|aborted=] when the
+             "outer" |subscriber|'s {{Subscriber/complete()}} is called above (and below).
 
           : [=internal observer/error steps=]
           :: Run |subscriber|'s {{Subscriber/complete()}} method.
@@ -631,7 +608,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           mirror |sourceObservable| uninterrupted.
 
        1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-          |subscriber|'s [=Subscriber/signal=].
+          |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |notifier| given
           |notifierObserver| and |options|.
@@ -705,7 +682,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           :: Run |subscriber|'s {{Subscriber/complete()}} method.
 
        1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-          |subscriber|'s [=Subscriber/signal=].
+          |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
           given |sourceObserver| and |options|.
@@ -751,7 +728,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           :: Run |subscriber|'s {{Subscriber/complete()}} method.
 
        1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-          |subscriber|'s [=Subscriber/signal=].
+          |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
           given |sourceObserver| and |options|.
@@ -793,7 +770,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           :: Run |subscriber|'s {{Subscriber/complete()}} method.
 
        1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-          |subscriber|'s [=Subscriber/signal=].
+          |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
           given |sourceObserver| and |options|.
@@ -832,7 +809,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           :: Run |subscriber|'s {{Subscriber/complete()}} method.
 
        1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-          |subscriber|'s [=Subscriber/signal=].
+          |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
           given |sourceObserver| and |options|.
@@ -911,7 +888,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                 |subscriber|'s {{Subscriber/complete()}} method.
 
        1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-          |subscriber|'s [=Subscriber/signal=].
+          |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
           given |sourceObserver| and |options|.
@@ -976,7 +953,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                  had not yet completed. Until right now!
 
      1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-        |subscriber|'s [=Subscriber/signal=].
+        |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
      1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable| given
         |innerObserver| and |innerOptions|.
@@ -1044,7 +1021,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                 {{Subscriber/complete()}} method.
 
        1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
-          |subscriber|'s [=Subscriber/signal=].
+          |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
           given |sourceObserver| and |options|.
@@ -1098,7 +1075,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
      1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
         result of [=creating a dependent abort signal=] from the list
         «|activeInnerAbortController|'s [=AbortController/signal=], |subscriber|'s
-        [=Subscriber/signal=]», using {{AbortSignal}}, and the [=current realm=].
+        [=Subscriber/subscription controller=]'s [=AbortController/signal=]», using
+        {{AbortSignal}}, and the [=current realm=].
 
      1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable| given
         |innerObserver| and |innerOptions|.
@@ -1134,10 +1112,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
              reason=].
 
           Note: All we have to do here is [=reject=] |p|. Note that the subscription to [=this=]
-          {{Observable}} will also be canceled automatically, since the "inner"
-          [=Subscriber/signal=] (created during <a for=Observable lt="subscribe to an
-          Observable">subscription</a>) is a [=AbortSignal/dependent signal=] of |options|'s
-          {{SubscribeOptions/signal}}.
+          {{Observable}} will also be closed automatically, since the "inner" Subscriber gets
+          [=close a subscription|closed=] in response to |options|'s {{SubscribeOptions/signal}}
+          getting [=AbortSignal/signal abort=].
 
     1. Let |values| be a new [=list=].
 
@@ -1537,8 +1514,8 @@ partial interface EventTarget {
                Note: This is meant to capture the fact that |event target| can be garbage collected
                by the time this algorithm runs upon subscription.
 
-            1. If |subscriber|'s [=Subscriber/signal=] is [=AbortSignal/aborted=], abort these
-               steps.
+            1. If |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=]
+               is [=AbortSignal/aborted=], abort these steps.
 
             1. [=Add an event listener=] with |event target| and an [=event listener=] defined as follows:
 
