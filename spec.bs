@@ -307,8 +307,8 @@ observable.subscribe({}, {signal: outerController.signal});
 
        1. [=Invoke=] |teardown|.
 
-          If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
-          |subscriber|'s {{Subscriber/error()}} method with |E|.
+          If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
+          the exception=] |E|.
 </div>
 
 <h3 id=observable-api>The {{Observable}} interface</h3>
