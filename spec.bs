@@ -464,7 +464,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        <ol id=process-observer>
          <li>
            <dl class="switch">
-             <dt>If |observer| is a {{ObservableSubscriptionCallback}}</dt>
+             <dt>If |observer| is an {{ObservableSubscriptionCallback}}</dt>
              <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take
                  an {{any}} |value|:
 
