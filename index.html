@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="f954c9185831ba04946987e0566c7dffd06822a1" name="document-revision">
+  <meta content="e5238cb135a60ce4f601107cfad8b65b84db9a7c" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -901,7 +901,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-07-13">13 July 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-07-22">22 July 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1124,15 +1124,15 @@ observable<c- p>.</c->subscribe<c- p>({},</c-> <c- p>{</c->signal<c- o>:</c-> ou
 <pre class="idl highlight def">// SubscribeCallback is where the Observable "creator’s" code lives. It’s
 // called when subscribe() is called, to set up a new subscription.
 <c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-subscribecallback"><code><c- g>SubscribeCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined④"><c- b>undefined</c-></a> (<a data-link-type="idl-name" href="#subscriber" id="ref-for-subscriber⑨"><c- n>Subscriber</c-></a> <dfn class="idl-code" data-dfn-for="SubscribeCallback" data-dfn-type="argument" data-export id="dom-subscribecallback-subscriber"><code><c- g>subscriber</c-></code><a class="self-link" href="#dom-subscribecallback-subscriber"></a></dfn>);
-<c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-subscriptionobservercallback"><code><c- g>SubscriptionObserverCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑤"><c- b>undefined</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="SubscriptionObserverCallback" data-dfn-type="argument" data-export id="dom-subscriptionobservercallback-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-subscriptionobservercallback-value"></a></dfn>);
+<c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-observablesubscriptioncallback"><code><c- g>ObservableSubscriptionCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑤"><c- b>undefined</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②"><c- b>any</c-></a> <dfn class="idl-code" data-dfn-for="ObservableSubscriptionCallback" data-dfn-type="argument" data-export id="dom-observablesubscriptioncallback-value"><code><c- g>value</c-></code><a class="self-link" href="#dom-observablesubscriptioncallback-value"></a></dfn>);
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-subscriptionobserver"><code><c- g>SubscriptionObserver</c-></code></dfn> {
-  <a data-link-type="idl-name" href="#callbackdef-subscriptionobservercallback" id="ref-for-callbackdef-subscriptionobservercallback"><c- n>SubscriptionObserverCallback</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="SubscriptionObserver" data-dfn-type="dict-member" data-export data-type="SubscriptionObserverCallback " id="dom-subscriptionobserver-next"><code><c- g>next</c-></code></dfn>;
-  <a data-link-type="idl-name" href="#callbackdef-subscriptionobservercallback" id="ref-for-callbackdef-subscriptionobservercallback①"><c- n>SubscriptionObserverCallback</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="SubscriptionObserver" data-dfn-type="dict-member" data-export data-type="SubscriptionObserverCallback " id="dom-subscriptionobserver-error"><code><c- g>error</c-></code></dfn>;
+  <a data-link-type="idl-name" href="#callbackdef-observablesubscriptioncallback" id="ref-for-callbackdef-observablesubscriptioncallback"><c- n>ObservableSubscriptionCallback</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="SubscriptionObserver" data-dfn-type="dict-member" data-export data-type="ObservableSubscriptionCallback " id="dom-subscriptionobserver-next"><code><c- g>next</c-></code></dfn>;
+  <a data-link-type="idl-name" href="#callbackdef-observablesubscriptioncallback" id="ref-for-callbackdef-observablesubscriptioncallback①"><c- n>ObservableSubscriptionCallback</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="SubscriptionObserver" data-dfn-type="dict-member" data-export data-type="ObservableSubscriptionCallback " id="dom-subscriptionobserver-error"><code><c- g>error</c-></code></dfn>;
   <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction" id="ref-for-VoidFunction②"><c- n>VoidFunction</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="SubscriptionObserver" data-dfn-type="dict-member" data-export data-type="VoidFunction " id="dom-subscriptionobserver-complete"><code><c- g>complete</c-></code></dfn>;
 };
 
-<c- b>typedef</c-> (<a data-link-type="idl-name" href="#callbackdef-subscriptionobservercallback" id="ref-for-callbackdef-subscriptionobservercallback②"><c- n>SubscriptionObserverCallback</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#dictdef-subscriptionobserver" id="ref-for-dictdef-subscriptionobserver"><c- n>SubscriptionObserver</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-observerunion"><code><c- g>ObserverUnion</c-></code></dfn>;
+<c- b>typedef</c-> (<a data-link-type="idl-name" href="#callbackdef-observablesubscriptioncallback" id="ref-for-callbackdef-observablesubscriptioncallback②"><c- n>ObservableSubscriptionCallback</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#dictdef-subscriptionobserver" id="ref-for-dictdef-subscriptionobserver"><c- n>SubscriptionObserver</c-></a>) <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-observerunion"><code><c- g>ObserverUnion</c-></code></dfn>;
 
 <c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-subscribeoptions"><code><c- g>SubscribeOptions</c-></code></dfn> {
   <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal①"><c- n>AbortSignal</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="SubscribeOptions" data-dfn-type="dict-member" data-export data-type="AbortSignal " id="dom-subscribeoptions-signal"><code><c- g>signal</c-></code></dfn>;
@@ -1253,7 +1253,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <ol id="process-observer">
        <li>
         <dl class="switch">
-         <dt>If <var>observer</var> is a <code class="idl"><a data-link-type="idl" href="#callbackdef-subscriptionobservercallback" id="ref-for-callbackdef-subscriptionobservercallback③">SubscriptionObserverCallback</a></code>
+         <dt>If <var>observer</var> is an <code class="idl"><a data-link-type="idl" href="#callbackdef-observablesubscriptioncallback" id="ref-for-callbackdef-observablesubscriptioncallback③">ObservableSubscriptionCallback</a></code>
          <dd>
           Set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①">next steps</a> to these steps that take
            an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②①">any</a></code> <var>value</var>: 
@@ -2432,6 +2432,7 @@ possible.</p>
    <li><a href="#dom-observable-observable">Observable(callback)</a><span>, in § 2.2</span>
    <li><a href="#observable-event-listener-invoke-algorithm">observable event listener invoke algorithm</a><span>, in § 3</span>
    <li><a href="#dictdef-observableeventlisteneroptions">ObservableEventListenerOptions</a><span>, in § 3</span>
+   <li><a href="#callbackdef-observablesubscriptioncallback">ObservableSubscriptionCallback</a><span>, in § 2.2</span>
    <li><a href="#typedefdef-observerunion">ObserverUnion</a><span>, in § 2.2</span>
    <li><a href="#dom-eventtarget-on">on(type)</a><span>, in § 3</span>
    <li><a href="#dom-eventtarget-on">on(type, options)</a><span>, in § 3</span>
@@ -2459,7 +2460,6 @@ possible.</p>
    <li><a href="#observable-subscribe-to-an-observable">subscribe to an Observable</a><span>, in § 2.2.1</span>
    <li><a href="#subscriber-subscription-controller">subscription controller</a><span>, in § 2.1</span>
    <li><a href="#dictdef-subscriptionobserver">SubscriptionObserver</a><span>, in § 2.2</span>
-   <li><a href="#callbackdef-subscriptionobservercallback">SubscriptionObserverCallback</a><span>, in § 2.2</span>
    <li><a href="#dom-observable-switchmap">switchMap(mapper)</a><span>, in § 2.3.2</span>
    <li><a href="#switchmap-process-next-value-steps">switchmap process next value steps</a><span>, in § 2.3.2</span>
    <li><a href="#dom-observable-take">take(amount)</a><span>, in § 2.3.2</span>
@@ -2582,15 +2582,15 @@ possible.</p>
 // SubscribeCallback is where the Observable "creator’s" code lives. It’s
 // called when subscribe() is called, to set up a new subscription.
 <c- b>callback</c-> <a href="#callbackdef-subscribecallback"><code><c- g>SubscribeCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> (<a data-link-type="idl-name" href="#subscriber"><c- n>Subscriber</c-></a> <a href="#dom-subscribecallback-subscriber"><code><c- g>subscriber</c-></code></a>);
-<c- b>callback</c-> <a href="#callbackdef-subscriptionobservercallback"><code><c- g>SubscriptionObserverCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-subscriptionobservercallback-value"><code><c- g>value</c-></code></a>);
+<c- b>callback</c-> <a href="#callbackdef-observablesubscriptioncallback"><code><c- g>ObservableSubscriptionCallback</c-></code></a> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-observablesubscriptioncallback-value"><code><c- g>value</c-></code></a>);
 
 <c- b>dictionary</c-> <a href="#dictdef-subscriptionobserver"><code><c- g>SubscriptionObserver</c-></code></a> {
-  <a data-link-type="idl-name" href="#callbackdef-subscriptionobservercallback"><c- n>SubscriptionObserverCallback</c-></a> <a data-type="SubscriptionObserverCallback " href="#dom-subscriptionobserver-next"><code><c- g>next</c-></code></a>;
-  <a data-link-type="idl-name" href="#callbackdef-subscriptionobservercallback"><c- n>SubscriptionObserverCallback</c-></a> <a data-type="SubscriptionObserverCallback " href="#dom-subscriptionobserver-error"><code><c- g>error</c-></code></a>;
+  <a data-link-type="idl-name" href="#callbackdef-observablesubscriptioncallback"><c- n>ObservableSubscriptionCallback</c-></a> <a data-type="ObservableSubscriptionCallback " href="#dom-subscriptionobserver-next"><code><c- g>next</c-></code></a>;
+  <a data-link-type="idl-name" href="#callbackdef-observablesubscriptioncallback"><c- n>ObservableSubscriptionCallback</c-></a> <a data-type="ObservableSubscriptionCallback " href="#dom-subscriptionobserver-error"><code><c- g>error</c-></code></a>;
   <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#VoidFunction"><c- n>VoidFunction</c-></a> <a data-type="VoidFunction " href="#dom-subscriptionobserver-complete"><code><c- g>complete</c-></code></a>;
 };
 
-<c- b>typedef</c-> (<a data-link-type="idl-name" href="#callbackdef-subscriptionobservercallback"><c- n>SubscriptionObserverCallback</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#dictdef-subscriptionobserver"><c- n>SubscriptionObserver</c-></a>) <a href="#typedefdef-observerunion"><code><c- g>ObserverUnion</c-></code></a>;
+<c- b>typedef</c-> (<a data-link-type="idl-name" href="#callbackdef-observablesubscriptioncallback"><c- n>ObservableSubscriptionCallback</c-></a> <c- b>or</c-> <a data-link-type="idl-name" href="#dictdef-subscriptionobserver"><c- n>SubscriptionObserver</c-></a>) <a href="#typedefdef-observerunion"><code><c- g>ObserverUnion</c-></code></a>;
 
 <c- b>dictionary</c-> <a href="#dictdef-subscribeoptions"><code><c- g>SubscribeOptions</c-></code></a> {
   <a data-link-type="idl-name" href="https://dom.spec.whatwg.org/#abortsignal"><c- n>AbortSignal</c-></a> <a data-type="AbortSignal " href="#dom-subscribeoptions-signal"><code><c- g>signal</c-></code></a>;
@@ -3036,7 +3036,7 @@ window.dfnpanelData['dom-subscriber-complete'] = {"dfnID": "dom-subscriber-compl
 window.dfnpanelData['dom-subscriber-addteardown'] = {"dfnID": "dom-subscriber-addteardown", "url": "#dom-subscriber-addteardown", "dfnText": "addTeardown(teardown)", "refSections": [{"refs": [{"id": "ref-for-dom-subscriber-addteardown"}], "title": "2.1. The Subscriber interface"}], "external": false};
 window.dfnpanelData['close-a-subscription'] = {"dfnID": "close-a-subscription", "url": "#close-a-subscription", "dfnText": "close a subscription", "refSections": [{"refs": [{"id": "ref-for-close-a-subscription"}, {"id": "ref-for-close-a-subscription\u2460"}, {"id": "ref-for-close-a-subscription\u2461"}], "title": "2.1. The Subscriber interface"}, {"refs": [{"id": "ref-for-close-a-subscription\u2462"}, {"id": "ref-for-close-a-subscription\u2463"}], "title": "2.2.1. Supporting concepts"}, {"refs": [{"id": "ref-for-close-a-subscription\u2464"}], "title": "2.3.3. Promise-returning operators"}], "external": false};
 window.dfnpanelData['callbackdef-subscribecallback'] = {"dfnID": "callbackdef-subscribecallback", "url": "#callbackdef-subscribecallback", "dfnText": "SubscribeCallback", "refSections": [{"refs": [{"id": "ref-for-callbackdef-subscribecallback"}, {"id": "ref-for-callbackdef-subscribecallback\u2460"}, {"id": "ref-for-callbackdef-subscribecallback\u2461"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-callbackdef-subscribecallback\u2462"}], "title": "2.2.1. Supporting concepts"}], "external": false};
-window.dfnpanelData['callbackdef-subscriptionobservercallback'] = {"dfnID": "callbackdef-subscriptionobservercallback", "url": "#callbackdef-subscriptionobservercallback", "dfnText": "SubscriptionObserverCallback", "refSections": [{"refs": [{"id": "ref-for-callbackdef-subscriptionobservercallback"}, {"id": "ref-for-callbackdef-subscriptionobservercallback\u2460"}, {"id": "ref-for-callbackdef-subscriptionobservercallback\u2461"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-callbackdef-subscriptionobservercallback\u2462"}], "title": "2.2.1. Supporting concepts"}], "external": false};
+window.dfnpanelData['callbackdef-observablesubscriptioncallback'] = {"dfnID": "callbackdef-observablesubscriptioncallback", "url": "#callbackdef-observablesubscriptioncallback", "dfnText": "ObservableSubscriptionCallback", "refSections": [{"refs": [{"id": "ref-for-callbackdef-observablesubscriptioncallback"}, {"id": "ref-for-callbackdef-observablesubscriptioncallback\u2460"}, {"id": "ref-for-callbackdef-observablesubscriptioncallback\u2461"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-callbackdef-observablesubscriptioncallback\u2462"}], "title": "2.2.1. Supporting concepts"}], "external": false};
 window.dfnpanelData['dictdef-subscriptionobserver'] = {"dfnID": "dictdef-subscriptionobserver", "url": "#dictdef-subscriptionobserver", "dfnText": "SubscriptionObserver", "refSections": [{"refs": [{"id": "ref-for-dictdef-subscriptionobserver"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-dictdef-subscriptionobserver\u2460"}], "title": "2.2.1. Supporting concepts"}], "external": false};
 window.dfnpanelData['dom-subscriptionobserver-next'] = {"dfnID": "dom-subscriptionobserver-next", "url": "#dom-subscriptionobserver-next", "dfnText": "next", "refSections": [{"refs": [{"id": "ref-for-dom-subscriptionobserver-next"}, {"id": "ref-for-dom-subscriptionobserver-next\u2460"}, {"id": "ref-for-dom-subscriptionobserver-next\u2461"}, {"id": "ref-for-dom-subscriptionobserver-next\u2462"}], "title": "2.2.1. Supporting concepts"}], "external": false};
 window.dfnpanelData['dom-subscriptionobserver-error'] = {"dfnID": "dom-subscriptionobserver-error", "url": "#dom-subscriptionobserver-error", "dfnText": "error", "refSections": [{"refs": [{"id": "ref-for-dom-subscriptionobserver-error"}, {"id": "ref-for-dom-subscriptionobserver-error\u2460"}, {"id": "ref-for-dom-subscriptionobserver-error\u2461"}, {"id": "ref-for-dom-subscriptionobserver-error\u2462"}, {"id": "ref-for-dom-subscriptionobserver-error\u2463"}], "title": "2.2.1. Supporting concepts"}], "external": false};
