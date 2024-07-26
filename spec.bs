@@ -1301,7 +1301,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        : [=internal observer/next steps=]
        :: 1. [=Resolve=] |p| with the passed in <var ignore>value</var>.
 
-          1. [=AbortController/Signal abort=] |controller|.
+        1. [=AbortController/Signal abort=] |controller|.
 
        : [=internal observer/error steps=]
        :: [=Reject=] |p| with the passed in <var ignore>error</var>.
@@ -1351,7 +1351,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        : [=internal observer/next steps=]
        :: 1. Set |hasLastValue| to true.
 
-          1. Set |lastValue| to the passed in <var ignore>value</var>.
+        1. Set |lastValue| to the passed in <var ignore>value</var>.
 
        : [=internal observer/error steps=]
        :: [=Reject=] |p| with the passed in <var ignore>error</var>.
