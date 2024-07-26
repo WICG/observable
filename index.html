@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="037ecaf04de6aeca94ab544e14ceaf9c11419bd0" name="document-revision">
+  <meta content="530d498cccfffab3b9a4f840f85a576721254502" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -1318,12 +1318,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <ol>
        <li data-md>
         <p>If <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal①">signal</a></code> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted" id="ref-for-abortsignal-aborted">aborted</a>, then <a data-link-type="dfn" href="#close-a-subscription" id="ref-for-close-a-subscription③">close</a> <var>subscriber</var>.</p>
-      </ol>
-     <li data-md>
-      <p>Otherwise, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-add" id="ref-for-abortsignal-add">add the following abort algorithm</a> to <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal②">signal</a></code>:</p>
-      <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="#close-a-subscription" id="ref-for-close-a-subscription④">Close</a> <var>subscriber</var>.</p>
+        <p>Otherwise, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-add" id="ref-for-abortsignal-add">add the following abort algorithm</a> to <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal②">signal</a></code>:</p>
+        <ol>
+         <li data-md>
+          <p><a data-link-type="dfn" href="#close-a-subscription" id="ref-for-close-a-subscription④">Close</a> <var>subscriber</var>.</p>
+        </ol>
       </ol>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑨">this</a>'s <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback②">subscribe callback</a> is a <code class="idl"><a data-link-type="idl" href="#callbackdef-subscribecallback" id="ref-for-callbackdef-subscribecallback③">SubscribeCallback</a></code>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function⑧">invoke</a> it
