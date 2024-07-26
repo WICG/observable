@@ -455,7 +455,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
   bindings on objects whose properties could be mutated by JavaScript. See
   [[#promise-returning-operators]] for usage of this.
 
-    1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
+    1. If |observer|'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
     1. Let |internal observer| be a new [=internal observer=].
@@ -534,13 +534,13 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
        1. [=close a subscription|Close=] |subscriber|.
 
-    1. If [=this=]'s [=Observable/subscribe callback=] is a {{SubscribeCallback}}, [=invoke=] it
+    1. If |observer|'s [=Observable/subscribe callback=] is a {{SubscribeCallback}}, [=invoke=] it
        with |subscriber|.
 
        If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
        |subscriber|'s {{Subscriber/error()}} method with |E|.
 
-    1. Otherwise, run the steps given by [=this=]'s [=Observable/subscribe callback=], given
+    1. Otherwise, run the steps given by |observer|'s [=Observable/subscribe callback=], given
        |subscriber|.
 </div>
 
