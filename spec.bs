@@ -381,7 +381,7 @@ Each {{Observable}} has a <dfn for=Observable>subscribe callback</dfn>, which is
 Note: The "union" of these types is to support both {{Observable}}s created by JavaScript (that are
 always constructed with a {{SubscribeCallback}}), and natively-constructed {{Observable}} objects
 (whose [=Observable/subscribe callback=] could be an arbitrary set of native steps, not a JavaScript
-callback). The return value of {{EventTarget/on()}} is an example of the latter.
+callback). The return value of {{EventTarget/when()}} is an example of the latter.
 
 <div algorithm>
   The <dfn for=Observable constructor lt="Observable(callback)"><code>new
@@ -1492,12 +1492,12 @@ dictionary ObservableEventListenerOptions {
 };
 
 partial interface EventTarget {
-  Observable on(DOMString type, optional ObservableEventListenerOptions options = {});
+  Observable when(DOMString type, optional ObservableEventListenerOptions options = {});
 };
 </pre>
 
 <div algorithm>
-  The <dfn for=EventTarget method><code>on(|type|, |options|)</code></dfn> method steps are:
+  The <dfn for=EventTarget method><code>when(|type|, |options|)</code></dfn> method steps are:
 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
@@ -1541,7 +1541,7 @@ partial interface EventTarget {
                :: null
 
                   Note: The {{AbortSignal}} for event listeners [=add an event listener|added=] by
-                  {{EventTarget/on()}} is managed by the {{Observable}} itself. See
+                  {{EventTarget/when()}} is managed by the {{Observable}} itself. See
                   {{Observable/subscribe()}} and {{SubscribeOptions}}.
 
     1. Return |observable|.
