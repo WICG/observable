@@ -333,10 +333,10 @@ dictionary SubscribeOptions {
 
 callback Predicate = boolean (any value, unsigned long long index);
 callback Reducer = any (any accumulator, any currentValue);
-callback Mapper = any (any element, unsigned long long index);
+callback Mapper = any (any value, unsigned long long index);
 // Differs from Mapper only in return type, since this callback is exclusively
 // used to visit each element in a sequence, not transform it.
-callback Visitor = undefined (any element, unsigned long long index);
+callback Visitor = undefined (any value, unsigned long long index);
 
 [Exposed=*]
 interface Observable {
