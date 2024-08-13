@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 82ce88815, updated Thu Sep 7 16:33:55 2023 -0700" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="6aecc70cf88c815b678c66acbc3d467f9adf08f2" name="document-revision">
+  <meta content="9866a5e66546fcff6970e177b9152795e5ba227c" name="document-revision">
 <style>
 /* Put nice boxes around each algorithm. */
 [data-algorithm]:not(.heading) {
@@ -901,7 +901,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-08-04">4 August 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-08-13">13 August 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1186,7 +1186,7 @@ observable<c- p>.</c->subscribe<c- p>({},</c-> <c- p>{</c->signal<c- o>:</c-> ou
    <p class="note" role="note"><span class="marker">Note:</span> The "union" of these types is to support both <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable①①">Observable</a></code>s created by JavaScript (that are
 always constructed with a <code class="idl"><a data-link-type="idl" href="#callbackdef-subscribecallback" id="ref-for-callbackdef-subscribecallback②">SubscribeCallback</a></code>), and natively-constructed <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable①②">Observable</a></code> objects
 (whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback">subscribe callback</a> could be an arbitrary set of native steps, not a JavaScript
-callback). The return value of <code class="idl"><a data-link-type="idl" href="#dom-eventtarget-on" id="ref-for-dom-eventtarget-on">on()</a></code> is an example of the latter.</p>
+callback). The return value of <code class="idl"><a data-link-type="idl" href="#dom-eventtarget-when" id="ref-for-dom-eventtarget-when">when()</a></code> is an example of the latter.</p>
    <div class="algorithm" data-algorithm="Observable(callback)" data-algorithm-for="Observable">
      The <dfn class="dfn-paneled idl-code" data-dfn-for="Observable" data-dfn-type="constructor" data-export data-lt="Observable(callback)|constructor(callback)" id="dom-observable-observable"><code>new
   Observable(<var>callback</var>)</code></dfn> constructor steps are: 
@@ -2296,11 +2296,11 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget①"><c- g>EventTarget</c-></a> {
-  <a data-link-type="idl-name" href="#observable" id="ref-for-observable④④"><c- n>Observable</c-></a> <a class="idl-code" data-link-type="method" href="#dom-eventtarget-on" id="ref-for-dom-eventtarget-on①"><c- g>on</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/on(type, options), EventTarget/on(type)" data-dfn-type="argument" data-export id="dom-eventtarget-on-type-options-type"><code><c- g>type</c-></code><a class="self-link" href="#dom-eventtarget-on-type-options-type"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions" id="ref-for-dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/on(type, options), EventTarget/on(type)" data-dfn-type="argument" data-export id="dom-eventtarget-on-type-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-eventtarget-on-type-options-options"></a></dfn> = {});
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable④④"><c- n>Observable</c-></a> <a class="idl-code" data-link-type="method" href="#dom-eventtarget-when" id="ref-for-dom-eventtarget-when①"><c- g>when</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/when(type, options), EventTarget/when(type)" data-dfn-type="argument" data-export id="dom-eventtarget-when-type-options-type"><code><c- g>type</c-></code><a class="self-link" href="#dom-eventtarget-when-type-options-type"></a></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions" id="ref-for-dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <dfn class="idl-code" data-dfn-for="EventTarget/when(type, options), EventTarget/when(type)" data-dfn-type="argument" data-export id="dom-eventtarget-when-type-options-options"><code><c- g>options</c-></code><a class="self-link" href="#dom-eventtarget-when-type-options-options"></a></dfn> = {});
 };
 </pre>
-   <div class="algorithm" data-algorithm="on(type, options)" data-algorithm-for="EventTarget">
-     The <dfn class="dfn-paneled idl-code" data-dfn-for="EventTarget" data-dfn-type="method" data-export data-lt="on(type, options)|on(type)" id="dom-eventtarget-on"><code>on(<var>type</var>, <var>options</var>)</code></dfn> method steps are: 
+   <div class="algorithm" data-algorithm="when(type, options)" data-algorithm-for="EventTarget">
+     The <dfn class="dfn-paneled idl-code" data-dfn-for="EventTarget" data-dfn-type="method" data-export data-lt="when(type, options)|when(type)" id="dom-eventtarget-when"><code>when(<var>type</var>, <var>options</var>)</code></dfn> method steps are: 
     <ol>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③⑦">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑥">relevant global object</a> is a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window⑥">Window</a></code> object, and its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window⑥">associated
@@ -2343,7 +2343,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <dt data-md><a data-link-type="dfn" href="https://dom.spec.whatwg.org#event-listener-signal" id="ref-for-event-listener-signal">signal</a>
            <dd data-md>
             <p>null</p>
-            <p class="note" role="note"><span class="marker">Note:</span> The <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑨">AbortSignal</a></code> for event listeners <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#add-an-event-listener" id="ref-for-add-an-event-listener①">added</a> by <code class="idl"><a data-link-type="idl" href="#dom-eventtarget-on" id="ref-for-dom-eventtarget-on②">on()</a></code> is managed by the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑥">Observable</a></code> itself. See <code class="idl"><a data-link-type="idl" href="#dom-observable-subscribe" id="ref-for-dom-observable-subscribe⑤">subscribe()</a></code> and <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions②⑤">SubscribeOptions</a></code>.</p>
+            <p class="note" role="note"><span class="marker">Note:</span> The <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑨">AbortSignal</a></code> for event listeners <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#add-an-event-listener" id="ref-for-add-an-event-listener①">added</a> by <code class="idl"><a data-link-type="idl" href="#dom-eventtarget-when" id="ref-for-dom-eventtarget-when②">when()</a></code> is managed by the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑥">Observable</a></code> itself. See <code class="idl"><a data-link-type="idl" href="#dom-observable-subscribe" id="ref-for-dom-observable-subscribe⑤">subscribe()</a></code> and <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions②⑤">SubscribeOptions</a></code>.</p>
           </dl>
         </ol>
       </dl>
@@ -2431,8 +2431,6 @@ possible.</p>
    <li><a href="#dictdef-observableeventlisteneroptions">ObservableEventListenerOptions</a><span>, in § 3</span>
    <li><a href="#callbackdef-observablesubscriptioncallback">ObservableSubscriptionCallback</a><span>, in § 2.2</span>
    <li><a href="#typedefdef-observerunion">ObserverUnion</a><span>, in § 2.2</span>
-   <li><a href="#dom-eventtarget-on">on(type)</a><span>, in § 3</span>
-   <li><a href="#dom-eventtarget-on">on(type, options)</a><span>, in § 3</span>
    <li><a href="#dom-observableeventlisteneroptions-passive">passive</a><span>, in § 3</span>
    <li><a href="#callbackdef-predicate">Predicate</a><span>, in § 2.2</span>
    <li><a href="#callbackdef-reducer">Reducer</a><span>, in § 2.2</span>
@@ -2465,6 +2463,8 @@ possible.</p>
    <li><a href="#dom-observable-toarray">toArray()</a><span>, in § 2.3.3</span>
    <li><a href="#dom-observable-toarray">toArray(options)</a><span>, in § 2.3.3</span>
    <li><a href="#callbackdef-visitor">Visitor</a><span>, in § 2.2</span>
+   <li><a href="#dom-eventtarget-when">when(type)</a><span>, in § 3</span>
+   <li><a href="#dom-eventtarget-when">when(type, options)</a><span>, in § 3</span>
   </ul>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
@@ -2642,7 +2642,7 @@ possible.</p>
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#eventtarget"><c- g>EventTarget</c-></a> {
-  <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a class="idl-code" data-link-type="method" href="#dom-eventtarget-on"><c- g>on</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-eventtarget-on-type-options-type"><code><c- g>type</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <a href="#dom-eventtarget-on-type-options-options"><code><c- g>options</c-></code></a> = {});
+  <a data-link-type="idl-name" href="#observable"><c- n>Observable</c-></a> <a class="idl-code" data-link-type="method" href="#dom-eventtarget-when"><c- g>when</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString"><c- b>DOMString</c-></a> <a href="#dom-eventtarget-when-type-options-type"><code><c- g>type</c-></code></a>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <a href="#dom-eventtarget-when-type-options-options"><code><c- g>options</c-></code></a> = {});
 };
 
 </pre>
@@ -3077,7 +3077,7 @@ window.dfnpanelData['dom-observable-reduce'] = {"dfnID": "dom-observable-reduce"
 window.dfnpanelData['dictdef-observableeventlisteneroptions'] = {"dfnID": "dictdef-observableeventlisteneroptions", "url": "#dictdef-observableeventlisteneroptions", "dfnText": "ObservableEventListenerOptions", "refSections": [{"refs": [{"id": "ref-for-dictdef-observableeventlisteneroptions"}], "title": "3. EventTarget integration"}], "external": false};
 window.dfnpanelData['dom-observableeventlisteneroptions-capture'] = {"dfnID": "dom-observableeventlisteneroptions-capture", "url": "#dom-observableeventlisteneroptions-capture", "dfnText": "capture", "refSections": [{"refs": [{"id": "ref-for-dom-observableeventlisteneroptions-capture"}], "title": "3. EventTarget integration"}], "external": false};
 window.dfnpanelData['dom-observableeventlisteneroptions-passive'] = {"dfnID": "dom-observableeventlisteneroptions-passive", "url": "#dom-observableeventlisteneroptions-passive", "dfnText": "passive", "refSections": [{"refs": [{"id": "ref-for-dom-observableeventlisteneroptions-passive"}], "title": "3. EventTarget integration"}], "external": false};
-window.dfnpanelData['dom-eventtarget-on'] = {"dfnID": "dom-eventtarget-on", "url": "#dom-eventtarget-on", "dfnText": "on(type, options)", "refSections": [{"refs": [{"id": "ref-for-dom-eventtarget-on"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-dom-eventtarget-on\u2460"}, {"id": "ref-for-dom-eventtarget-on\u2461"}], "title": "3. EventTarget integration"}], "external": false};
+window.dfnpanelData['dom-eventtarget-when'] = {"dfnID": "dom-eventtarget-when", "url": "#dom-eventtarget-when", "dfnText": "when(type, options)", "refSections": [{"refs": [{"id": "ref-for-dom-eventtarget-when"}], "title": "2.2. The Observable interface"}, {"refs": [{"id": "ref-for-dom-eventtarget-when\u2460"}, {"id": "ref-for-dom-eventtarget-when\u2461"}], "title": "3. EventTarget integration"}], "external": false};
 window.dfnpanelData['observable-event-listener-invoke-algorithm'] = {"dfnID": "observable-event-listener-invoke-algorithm", "url": "#observable-event-listener-invoke-algorithm", "dfnText": "observable event listener invoke algorithm", "refSections": [{"refs": [{"id": "ref-for-observable-event-listener-invoke-algorithm"}], "title": "3. EventTarget integration"}], "external": false};
 </script>
 <script>/* Boilerplate: script-dom-helper */
