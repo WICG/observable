@@ -7,7 +7,7 @@ composable event handling.
 
 ### `EventTarget` integration
 
-This proposal adds an `.when()` method to `EventTarget` that becomes a better
+This proposal adds aa `.when()` method to `EventTarget` that becomes a better
 `addEventListener()`; specifically it returns a [new
 `Observable`](#the-observable-api) that adds a new event listener to the target
 when its `subscribe()` method is called. The Observable calls the subscriber's
