@@ -688,6 +688,18 @@ discussion comments:
 - https://github.com/whatwg/dom/issues/544#issuecomment-351607779
 - https://github.com/whatwg/dom/issues/544#issuecomment-351718686
 
+## Standards issues
+
+This section bares a collection of web standards and standards positions issues
+used to track the Observable proposal's life outside of this repository.
+
+ - https://github.com/mozilla/standards-positions/issues/945
+ - https://github.com/WebKit/standards-positions/issues/292
+ - https://chromestatus.com/feature/5154593776599040
+ - https://github.com/wintercg/proposal-common-minimum-api/issues/72
+ - https://github.com/w3ctag/design-reviews/issues/902
+ - https://github.com/nodejs/standards-positions/issues/1
+
 ## User needs
 
 Observables are designed to make event handling more ergonomic and composable.
