@@ -37,7 +37,7 @@ urlPrefix: https://dom.spec.whatwg.org; spec: DOM
     for: AbortSignal
       text: dependent signals; url: abortsignal-dependent-signals
       text: signal abort; url:abortsignal-signal-abort
-      text: reason; url:abortsignal-abort-reason
+      text: abort reason; url:abortsignal-abort-reason
 </pre>
 
 <style>
@@ -531,13 +531,13 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
        1. If |options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then [=close a
           subscription|close=] |subscriber| given |options|'s {{SubscribeOptions/signal}}
-          [=AbortSignal/reason=].
+          [=AbortSignal/abort reason=].
 
        1. Otherwise, [=AbortSignal/add|add the following abort algorithm=] to |options|'s
           {{SubscribeOptions/signal}}:
 
           1. [=close a subscription|Close=] |subscriber| with |options|'s
-             {{SubscribeOptions/signal}} [=AbortSignal/reason=].
+             {{SubscribeOptions/signal}} [=AbortSignal/abort reason=].
 
     1. If [=this=]'s [=Observable/subscribe callback=] is a {{SubscribeCallback}}, [=invoke=] it
        with |subscriber|.
