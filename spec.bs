@@ -297,8 +297,6 @@ observable.subscribe({}, {signal: outerController.signal});
     1. [=AbortSignal/Signal abort=] |subscriber|'s [=Subscriber/subscription controller=]
        with |reason|, if it is given.
 
-       Issue: Abort with an appropriate abort reason if none given.
-
     1. [=list/For each=] |teardown| of |subscriber|'s [=Subscriber/teardown callbacks=] sorted in
        reverse insertion order:
 
