@@ -7,7 +7,7 @@ composable event handling.
 
 ### `EventTarget` integration
 
-This proposal adds an `.on()` method to `EventTarget` that becomes a better
+This proposal adds an `.when()` method to `EventTarget` that becomes a better
 `addEventListener()`; specifically it returns a [new
 `Observable`](#the-observable-api) that adds a new event listener to the target
 when its `subscribe()` method is called. The Observable calls the subscriber's
@@ -24,7 +24,7 @@ hard-to-follow callback chains.
 ```js
 // Filtering and mapping:
 element
-	.on('click')
+	.when('click')
 	.filter((e) => e.target.matches('.foo'))
 	.map((e) => ({ x: e.clientX, y: e.clientY }))
 	.subscribe({ next: handleClickAtPoint });
@@ -34,14 +34,14 @@ element
 
 ```js
 // Automatic, declarative unsubscription via the takeUntil method:
-element.on('mousemove')
-  .takeUntil(document.on('mouseup'))
+element.when('mousemove')
+  .takeUntil(document.when('mouseup'))
   .subscribe({next: e => … });
 
 // Since reduce and some other terminators return promises, they also play
 // well with async functions:
-await element.on('mousemove')
-  .takeUntil(element.on('mouseup'))
+await element.when('mousemove')
+  .takeUntil(element.when('mouseup'))
   .reduce((soFar, e) => …);
 ```
 
@@ -69,7 +69,7 @@ Tracking all link clicks within a container
 
 ```js
 container
-	.on('click')
+	.when('click')
 	.filter((e) => e.target.closest('a'))
 	.subscribe({
 		next: (e) => {
@@ -85,8 +85,8 @@ Find the maximum Y coordinate while the mouse is held down
 
 ```js
 const maxY = await element
-	.on('mousemove')
-	.takeUntil(element.on('mouseup'))
+	.when('mousemove')
+	.takeUntil(element.when('mouseup'))
 	.map((e) => e.clientY)
 	.reduce((soFar, y) => Math.max(soFar, y), 0);
 ```
@@ -102,15 +102,15 @@ const socket = new WebSocket('wss://example.com');
 function multiplex({ startMsg, stopMsg, match }) {
   if (socket.readyState !== WebSocket.OPEN) {
     return socket
-      .on('open')
+      .when('open')
       .flatMap(() => multiplex({ startMsg, stopMsg, match }));
   } else {
     socket.send(JSON.stringify(startMsg));
     return socket
-      .on('message')
+      .when('message')
       .filter(match)
-      .takeUntil(socket.on('close'))
-      .takeUntil(socket.on('error'))
+      .takeUntil(socket.when('close'))
+      .takeUntil(socket.when('error'))
       .map((e) => JSON.parse(e.data))
       .finally(() => {
         socket.send(JSON.stringify(stopMsg));
@@ -228,7 +228,7 @@ const pattern = [
   'Enter',
 ];
 
-const keys = document.on('keydown').map(e => e.key);
+const keys = document.when('keydown').map(e => e.key);
 
 keys
   .flatMap(firstKey => {
@@ -317,7 +317,7 @@ observable.subscribe({
 
 While custom Observables can be useful on their own, the primary use case they
 unlock is with event handling. Observables returned by the new
-`EventTarget#on()` method are created natively with an internal callback that
+`EventTarget#when()` method are created natively with an internal callback that
 uses the same [underlying
 mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) as
 `addEventListener()`. Therefore calling `subscribe()` essentially registers a
@@ -363,8 +363,8 @@ which always queue microtasks when invoking `.then()` handlers. Consider this
 [example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
 
 ```js
-el.on('click').subscribe({next: () => console.log('One')});
-el.on('click').find(() => {…}).then(() => console.log('Three'));
+el.when('click').subscribe({next: () => console.log('One')});
+el.when('click').find(() => {…}).then(() => console.log('Three'));
 el.click();
 console.log('Two');
 // Logs "One" "Two" "Three"
@@ -580,7 +580,7 @@ integration. Specifically, the following innocent-looking code would not _always
 
 ```js
 element
-	.on('click')
+	.when('click')
 	.first()
 	.then((e) => {
 		e.preventDefault();
@@ -629,7 +629,7 @@ case where your `e.preventDefault()` might run too late:
 
 ```js
 element
-	.on('click')
+	.when('click')
 	.map((e) => (e.preventDefault(), e))
 	.first();
 ```
@@ -638,7 +638,7 @@ element
 
 ```js
 element
-	.on('click')
+	.when('click')
 	.do((e) => e.preventDefault())
 	.first();
 ```
@@ -647,7 +647,7 @@ element
 `first()` to take a callback that produces a value that the returned Promise resolves to:
 
 ```js
-el.on('submit')
+el.when('submit')
 	.first((e) => e.preventDefault())
 	.then(doMoreStuff);
 ```
