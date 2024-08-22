@@ -329,16 +329,16 @@ dictionary SubscriptionObserver {
 callback ObservableInspectorAbortHandler = undefined (any value);
 
 dictionary ObservableInspector {
-  SubscriptionObserverCallback next;
-  SubscriptionObserverCallback error;
+  ObservableSubscriptionCallback next;
+  ObservableSubscriptionCallback error;
   VoidFunction complete;
 
   VoidFunction subscribe;
   ObservableInspectorAbortHandler abort;
 };
 
-typedef (SubscriptionObserverCallback or SubscriptionObserver) ObserverUnion;
-typedef (SubscriptionObserverCallback or ObservableInspector) ObservableInspectorUnion;
+typedef (ObservableSubscriptionCallback or SubscriptionObserver) ObserverUnion;
+typedef (ObservableSubscriptionCallback or ObservableInspector) ObservableInspectorUnion;
 
 dictionary SubscribeOptions {
   AbortSignal signal;
@@ -1103,9 +1103,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Let |subscribe callback| be a {{VoidFunction}}-or-null, initially null.
 
-    1. Let |next callback| be a {{SubscriptionObserverCallback}}-or-null, initially null.
+    1. Let |next callback| be a {{ObservableSubscriptionCallback}}-or-null, initially null.
 
-    1. Let |error callback| be a {{SubscriptionObserverCallback}}-or-null, initially null.
+    1. Let |error callback| be a {{ObservableSubscriptionCallback}}-or-null, initially null.
 
     1. Let |complete callback| be a {{VoidFunction}}-or-null, initially null.
 
@@ -1113,7 +1113,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Process |inspector_union| as follows:
          <dl class="switch">
-           <dt>If |inspector_union| is an {{SubscriptionObserverCallback}}</dt>
+           <dt>If |inspector_union| is an {{ObservableSubscriptionCallback}}</dt>
            <dd>
              1. Set |next callback| to |inspector_union|.
 
@@ -1153,7 +1153,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           [=AbortController/signal=]:
 
           1. [=Invoke=] |abort callback| with |subscriber|'s [=Subscriber/subscription
-             controller=]'s [=AbortController/signal=]'s [=AbortSignal/reason=].
+             controller=]'s [=AbortController/signal=]'s [=AbortSignal/abort reason=].
 
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
              [=report the exception=] |E|.
