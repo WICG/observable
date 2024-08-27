@@ -1628,17 +1628,19 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Let |idx| be an {{unsigned long long}}, initially 0.
 
-    1. Let |accumulator| be |initialValue| if it is given, and the string "<code>unset</code>" otherwise.
+    1. Let |accumulator| be |initialValue| if it is given, and the string "<code>unset</code>"
+       otherwise.
 
     1. Let |observer| be a new [=internal observer=], initialized as follows:
 
        : [=internal observer/next steps=]
-       :: 1. If |accumulator| is the string "<code>unset</code>", then set |accumulator| to the
-             passed in |value| and abort these steps.
+       ::
+          1. If |accumulator| is the string "<code>unset</code>", then set |accumulator| to the
+             passed in |value|, set |idx| to |idx| + 1, and abort these steps.
 
              Note: This means that |reducer| will not be called with the first |value| that [=this=]
              produces set as the {{Reducer/currentValue}}. Rather, when the *second* value is
-             eventually emitted, we will call |reducer| with *it* as the {[Reducer/currentValue}},
+             eventually emitted, we will call |reducer| with *it* as the {{Reducer/currentValue}},
              and the first value (that we're saving here) as the {{Reducer/accumulator}}.
 
           1. [=Invoke=] |reducer| with |accumulator| as {{Reducer/accumulator}}, the passed in
@@ -1648,15 +1650,17 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
              [=reject=] |p| with |E|, and [=AbortController/signal abort=] |controller| with |E|.
 
-         1. Set |idx| to |idx| + 1.
+          1. Set |idx| to |idx| + 1.
 
-         1. Set |accumulator| to |result|.
+          1. Set |accumulator| to |result|.
 
        : [=internal observer/error steps=]
        :: [=Reject=] |p| with the passed in <var ignore>error</var>.
 
        : [=internal observer/complete steps=]
-       :: [=Resolve=] |p| with false.
+       :: 1. If |accumulator| is not "<code>unset</code>", then [=resolve=] |p| with |accumulator|.
+
+          Otherwise, [=reject=] |p| with a {{TypeError}}.
 
     1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
        and |internal options|.
