@@ -1628,15 +1628,14 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Let |idx| be an {{unsigned long long}}, initially 0.
 
-    1. Let |accumulator| be |initialValue| if it is given, and the string "<code>unset</code>"
-       otherwise.
+    1. Let |accumulator| be |initialValue| if it is given, and uninitialized otherwise.
 
     1. Let |observer| be a new [=internal observer=], initialized as follows:
 
        : [=internal observer/next steps=]
        ::
-          1. If |accumulator| is the string "<code>unset</code>", then set |accumulator| to the
-             passed in |value|, set |idx| to |idx| + 1, and abort these steps.
+          1. If |accumulator| is uninitialized (meaning no |initialValue| was passed in), then set
+             |accumulator| to the passed in |value|, set |idx| to |idx| + 1, and abort these steps.
 
              Note: This means that |reducer| will not be called with the first |value| that [=this=]
              produces set as the {{Reducer/currentValue}}. Rather, when the *second* value is
