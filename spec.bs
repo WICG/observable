@@ -498,9 +498,6 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
     1. Let |asyncIteratorMethodRecord| be [=?=] [$GetMethod$](|value|, {{%Symbol.asyncIterator%}}).
 
-       Issue: TODO(dom or keith): This looks wrong. We certainly cannot return abrupt completions
-       from this method directly to JS.
-
     1. If |asyncIteratorMethodRecord|'s \[[Value]] is not undefined, then:
 
        Note: [$GetMethod$] might return a [=normal completion=] with an undefined value when the
@@ -553,8 +550,6 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
           Zalgo.
 
     1. Let |iteratorMethodRecord| be [=?=] [$GetMethod$](|value|, %Symbol.iterator%).
-
-       Issue: TODO(dom or keith): Same issue as above with abrupt (throw) completions.
 
     1. If |iteratorMethodRecord|'s \[[Value]] is not undefined, then:
 
