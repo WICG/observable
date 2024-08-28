@@ -351,6 +351,10 @@ callback Mapper = any (any value, unsigned long long index);
 // used to visit each element in a sequence, not transform it.
 callback Visitor = undefined (any value, unsigned long long index);
 
+// This callback returns an `any` that must convert into an `Observable`, via
+// the `Observable` conversion semantics.
+callback CatchCallback = any (any value);
+
 [Exposed=*]
 interface Observable {
   constructor(SubscribeCallback callback);
@@ -375,6 +379,7 @@ interface Observable {
   Observable flatMap(Mapper mapper);
   Observable switchMap(Mapper mapper);
   Observable inspect(optional ObservableInspectorUnion inspect_observer = {});
+  Observable catch(CatchCallback callback);
   Observable finally(VoidFunction callback);
 
   // Promise-returning operators.
@@ -1205,6 +1210,51 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
   <wpt>
     /dom/observable/tentative/observable-inspect.any.js
   </wpt>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>catch(|callback|)</code></dfn> method steps are:
+
+    1. Let |sourceObservable| be [=this=].
+
+    1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
+       algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+
+       1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
+
+          : [=internal observer/next steps=]
+          :: Run |subscriber|'s {{Subscriber/next()}} method, given the passed in <var
+             ignore>value</var>.
+
+          : [=internal observer/error steps=]
+          :: 
+             1. [=Invoke=] |callback| with the passed in <var ignore>value</var>. Let |result| be
+                the returned value.
+
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                run |subscriber|'s {{Subscriber/error()}} with |E|, and abort these steps.
+
+             1. Let |innerObservable| be the result of calling {{Observable/from()}} with |result|.
+
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
+
+                Issue: We shouldn't invoke {{Observable/from()}} directly. Rather, we should
+                call some internal algorithm that passes-back the exceptions for us to handle
+                properly here, since we want to pipe them to |subscriber|.
+
+             1. TODO(domfarolino): Subscribe to the inner Observable.
+
+          : [=internal observer/complete steps=]
+          :: Run |subscriber|'s {{Subscriber/complete()}} method.
+
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
+          |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
+
+       1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
+          given |sourceObserver| and |options|.
+
+    1. Return |observable|.
 </div>
 
 <div algorithm>
