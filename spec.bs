@@ -1260,8 +1260,15 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                 is |subscriber|'s [=Subscriber/subscription controller=]'s
                 [=AbortController/signal=].
 
-             1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable| given
-                |innerObserver| and |innerOptions|.
+             1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable|
+                given |innerObserver| and |innerOptions|.
+
+                Note: We're free to subscribe to |innerObservable| here without first
+                "unsubscribing" from |sourceObservable|, and without fear that |sourceObservable|
+                will keep emitting values, because all of this is happening inside of the [=internal
+                observer/error steps=] associated with |sourceObservable|. This means
+                |sourceObservable| has already completed its subscription and will no longer produce
+                any values, and we are free to safely switch our source of values to |innerObservable|.
 
           : [=internal observer/complete steps=]
           :: Run |subscriber|'s {{Subscriber/complete()}} method.
