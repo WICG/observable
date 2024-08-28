@@ -26,13 +26,15 @@ WPT Display: open
 urlPrefix: https://tc39.es/ecma262/#; spec: ECMASCRIPT
   type: dfn
     text: current realm
-    text: an Object; url: sec-object-type
-    text: IsPromise; url: sec-ispromise
-    text: GetMethod; url: sec-getmethod
+    text: Object; url: sec-object-type
     text: GetIteratorFromMethod; url: sec-getiteratorfrommethod
     text: IteratorStepValue; url: sec-iteratorstepvalue
     text: normal completion; url: sec-normalcompletion
     text: throw completion; url: sec-throwcompletion
+    url: sec-returnifabrupt-shorthands
+      text: ?
+  type: abstract-op
+    text: Type; url: sec-ecmascript-data-types-and-values
 urlPrefix: https://dom.spec.whatwg.org; spec: DOM
   type: dfn
     for: event listener
@@ -485,18 +487,24 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
   the iterable protocols to the object, will not take affect between the creation of the returned
   observable, and when it is subscribed to.
 
-    1. If |value| is not [=an Object=], throw a {{TypeError}}.
+    1. If [$Type$](|value|) is not [=Object=], [=exception/throw=] a {{TypeError}}.
 
-    Note: This prevents primitive types from being coerced into iterables (e.g. String).
+       Note: This prevents primitive types from being coerced into iterables (e.g., String).
 
-    1. If |value| is an {{Observable}}, then return |value|.
+       Issue: See if this is even the behavior we want. See <a
+       href=https://github.com/WICG/observable/issues/125>WICG/observable#125</a>
 
-    1. Let |asyncIteratorMethodRecord| be ? [=GetMethod=](|value|, %Symbol.asyncIterator%).
+    1. If |value|'s [=specific type=] is an {{Observable}}, then return |value|.
+
+    1. Let |asyncIteratorMethodRecord| be [=?=] [$GetMethod$](|value|, {{%Symbol.asyncIterator%}}).
+
+       Issue: TODO(dom or keith): This looks wrong. We certainly cannot return abrupt completions
+       from this method directly to JS.
 
     1. If |asyncIteratorMethodRecord|'s \[[Value]] is not undefined, then:
 
-       Note: [=GetMethod=] might return a [=normal completion=] with an undefined value when the
-       object simply has no asyncIterator method.
+       Note: [$GetMethod$] might return a [=normal completion=] with an undefined value when the
+       object simply has no {{%Symbol.asyncIterator%}} method.
 
        1. Let |nextAlgorithm| be the following steps, given |subscriber| and |iterator|:
 
@@ -514,7 +522,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
           1. Otherwise, set |nextPromise| to |nextRecord|'s \[[Value]].
 
-          1. React to |nextPromise|:
+          1. [=React=] to |nextPromise|:
 
              1. If |nextPromise| was fulfilled with value |v|, then:
 
@@ -528,11 +536,11 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
           algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-          1. Let |iteratorRecord| be [=GetIteratorFromMethod=](|value|, %Symbol.asyncIterator%).
+          1. Let |iteratorRecord| be [=GetIteratorFromMethod=](|value|, {{%Symbol.asyncIterator%}}).
 
           1. If |iteratorRecord| is a [=throw completion=] then:
 
-             1. [=queue a microtask=] to perform the following steps:
+             1. [=Queue a microtask=] to perform the following steps:
 
                 1. Run |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]].
 
@@ -544,11 +552,13 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
           coercing an AsyncIterable never stops the Subscription synchronously, thereby releasing
           Zalgo.
 
-    1. Let |iteratorMethodRecord| be ? [=GetMethod=](|value|, %Symbol.iterator%).
+    1. Let |iteratorMethodRecord| be [=?=] [$GetMethod$](|value|, %Symbol.iterator%).
+
+       Issue: TODO(dom or keith): Same issue as above with abrupt (throw) completions.
 
     1. If |iteratorMethodRecord|'s \[[Value]] is not undefined, then:
 
-       Note: [=GetMethod=] might return a [=normal completion=] with an undefined value when the
+       Note: [$GetMethod$] might return a [=normal completion=] with an undefined value when the
        object simply has no asyncIterator method.
 
        1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
@@ -580,12 +590,12 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
              1. Run |subscriber|'s {{Subscriber/next()}} given |nextRecord|'s \[[Value]].
 
-    1. If [=IsPromise=](|value|) is true, then:
+    1. If [$IsPromise$](|value|) is true, then:
 
-       1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
-          algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+       1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an algorithm
+          that takes a {{Subscriber}} |subscriber| and does the following:
 
-          1. React to |value|:
+          1. [=React=] to |value|:
 
              1. If |value| was fulfilled with value |v|, then:
 
@@ -596,8 +606,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
              1. If |value| was rejected with reason |r|, then run |subscriber|'s
                 {{Subscriber/error()}} method, given |r|.
 
-    1. Throw a {{TypeError}}.
-
+    1. [=exception/Throw=] a {{TypeError}}.
 </div>
 
 <div algorithm>
@@ -717,12 +726,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <h4 id=observable-from>{{Observable/from()}}</h4>
 
 <div algorithm>
-  The <dfn for=Observable method><code>from(|value|)</code></dfn> method steps
-  are:
+  The <dfn for=Observable method><code>from(|value|)</code></dfn> method steps are:
 
-    1. Return the result of <a for=Observable lt="convert to an Observable">
-       converting</a> |value| to an Observable.
-
+    1. Return the result of <a for=Observable lt="convert to an Observable">converting</a> |value|
+       to an {{Observable}}. Rethrow any exceptions.
 </div>
 
 <h4 id=observable-returning-operators>{{Observable}}-returning operators</h4>
