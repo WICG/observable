@@ -1228,7 +1228,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
           : [=internal observer/error steps=]
           :: 
-             1. [=Invoke=] |callback| with the passed in <var ignore>value</var>. Let |result| be
+             1. [=Invoke=] |callback| with the passed in <var ignore>error</var>. Let |result| be
                 the returned value.
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
@@ -1243,7 +1243,25 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                 call some internal algorithm that passes-back the exceptions for us to handle
                 properly here, since we want to pipe them to |subscriber|.
 
-             1. TODO(domfarolino): Subscribe to the inner Observable.
+             1. Let |innerObserver| be a new [=internal observer=], initialized as follows:
+
+                : [=internal observer/next steps=]
+                :: Run |subscriber|'s {{Subscriber/next()}} method, given the passed in <var
+                   ignore>value</var>.
+
+                : [=internal observer/error steps=]
+                :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+                   ignore>error</var>.
+
+                : [=internal observer/complete steps=]
+                :: Run |subscriber|'s {{Subscriber/complete()}} method.
+
+             1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}}
+                is |subscriber|'s [=Subscriber/subscription controller=]'s
+                [=AbortController/signal=].
+
+             1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable| given
+                |innerObserver| and |innerOptions|.
 
           : [=internal observer/complete steps=]
           :: Run |subscriber|'s {{Subscriber/complete()}} method.
