@@ -579,7 +579,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
           algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-          1. Let |iteratorRecord| be [=GetIteratorFromMethod=](|value|, %Symbol.iterator%).
+          1. Let |iteratorRecord| be [=GetIteratorFromMethod=](|value|, {{%Symbol.iterator%}}).
 
           1. If |iteratorRecord| is a [=throw completion=] then:
 
