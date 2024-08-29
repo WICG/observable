@@ -27,7 +27,6 @@ urlPrefix: https://tc39.es/ecma262/#; spec: ECMASCRIPT
   type: dfn
     text: current realm
     text: Object; url: sec-object-type
-    text: IteratorStepValue; url: sec-iteratorstepvalue
     text: normal completion; url: sec-normalcompletion
     text: throw completion; url: sec-throwcompletion
     url: sec-returnifabrupt-shorthands
@@ -519,7 +518,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
           
             1. Run |subscriber|'s {{Subscriber/complete()}} method and abort these steps.
 
-         1. Let |nextRecord| be [=IteratorStepValue=](|iterator|).
+         1. Let |nextRecord| be [$IteratorStepValue$](|iterator|).
 
          1. Let |nextPromise| be undefined.
 
@@ -574,33 +573,31 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        Otherwise, return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-         1. Let |iteratorRecord| be [$GetIteratorFromMethod$](|value|, {{%Symbol.iterator%}}).
+         1. Let |iteratorRecord| be [$GetIterator$](|value|, sync).
 
-         1. If |iteratorRecord| is a [=throw completion=] then:
+            Note: This re-invokes any method getters for the {{%Symbol.iterator%}} method on
+            |value|. Whether or not this is desirable is an extreme corner case, but this behavior
+            currently matches what is expected by tests. See <a
+            href=https://github.com/WICG/observable/issues/127>issue#127</a> for discussion.
 
-            1. Run |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s
-               \[[Value]].
-
-            1. Abort these steps.
+         1. If |iteratorRecord| is a [=throw completion=], then run |subscriber|'s
+            {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]], and abort these
+            steps.
 
          1. Let |iterator| be |iteratorRecord|'s \[[Value]].
 
-         1. Repeat:
+         1. [=iteration/While=] true:
 
-            1. If |iterator|'s \[[Done]] is true, then:
+            1. If |iterator|'s \[[Done]] is true, then run |subscriber|'s {{Subscriber/complete()}}
+               method, and [=iteration/break=].
 
-               1. Run |subscriber|'s {{Subscriber/complete()}} method and abort these steps.
+            1. Let |nextRecord| be [$IteratorStepValue$](|iterator|).
 
-            1. Let |nextRecord| be [=IteratorStepValue=](|iterator|).
+            1. If |nextRecord| is a [=throw completion=], then run |subscriber|'s
+               {{Subscriber/error()}} method, given |nextRecord|'s \[[Value]], and
+               [=iteration/break=].
 
-            1. If |nextRecord| is a [=throw completion=] then:
-
-               1. Run |subscriber|'s {{Subscriber/error()}} method, given |nextRecord|'s
-                  \[[Value]].
-
-               1. Abort these steps.
-
-            1. Run |subscriber|'s {{Subscriber/next()}} given |nextRecord|'s \[[Value]].
+               Otherwise, run |subscriber|'s {{Subscriber/next()}} given |nextRecord|'s \[[Value]].
 
     1. <i id=from-promise-conversion><b>From Promise</b></i>: If [$IsPromise$](|value|) is true,
        then:
