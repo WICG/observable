@@ -27,7 +27,6 @@ urlPrefix: https://tc39.es/ecma262/#; spec: ECMASCRIPT
   type: dfn
     text: current realm
     text: Object; url: sec-object-type
-    text: GetIteratorFromMethod; url: sec-getiteratorfrommethod
     text: IteratorStepValue; url: sec-iteratorstepvalue
     text: normal completion; url: sec-normalcompletion
     text: throw completion; url: sec-throwcompletion
@@ -494,11 +493,11 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        Issue: See if this is even the behavior we want. See <a
        href=https://github.com/WICG/observable/issues/125>WICG/observable#125</a>
 
-    1. <i id=from-observable-conversion>From Observable</i>: If |value|'s [=specific type=] is an
-       {{Observable}}, then return |value|.
+    1. <i id=from-observable-conversion><b>From Observable</b></i>: If |value|'s [=specific type=]
+       is an {{Observable}}, then return |value|.
 
-    1. <i id=from-async-iterable-conversion>From async iterator</i>: Let |asyncIteratorMethodRecord|
-       be [=?=] [$GetMethod$](|value|, {{%Symbol.asyncIterator%}}).
+    1. <i id=from-async-iterable-conversion><b>From async iterator</b></i>: Let
+       |asyncIteratorMethodRecord| be [=?=] [$GetMethod$](|value|, {{%Symbol.asyncIterator%}}).
 
        Note: We have to use [$GetMethod$] directly instead of [$GetIterator$], because
        [$GetIterator$] makes it impossible to distinguish between (a) the case where |value| simply
@@ -514,55 +513,53 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
     1. If [$IsCallable$](|asyncIteratorMethodRecord|'s \[[Value]]) is false, then
        [=exception/throw=] a {{TypeError}}.
 
-       Otherwise:
+       Otherwise, let |nextAlgorithm| be the following steps, given |subscriber| and |iterator|:
 
-       1. Let |nextAlgorithm| be the following steps, given |subscriber| and |iterator|:
-
-          1. If |iterator|'s \[[Done]] is true, then:
+         1. If |iterator|'s \[[Done]] is true, then:
           
-             1. Run |subscriber|'s {{Subscriber/complete()}} method and abort these steps.
+            1. Run |subscriber|'s {{Subscriber/complete()}} method and abort these steps.
 
-          1. Let |nextRecord| be [=IteratorStepValue=](|iterator|).
+         1. Let |nextRecord| be [=IteratorStepValue=](|iterator|).
 
-          1. Let |nextPromise| be undefined.
+         1. Let |nextPromise| be undefined.
 
-          1.  If |nextRecord| is a [=throw completion=] then:
+         1.  If |nextRecord| is a [=throw completion=] then:
 
-              1. Set |nextPromise| to [=a promise rejected with=] |nextRecord|'s \[[Value]].
+             1. Set |nextPromise| to [=a promise rejected with=] |nextRecord|'s \[[Value]].
 
-          1. Otherwise, set |nextPromise| to |nextRecord|'s \[[Value]].
+         1. Otherwise, set |nextPromise| to |nextRecord|'s \[[Value]].
 
-          1. [=React=] to |nextPromise|:
+         1. [=React=] to |nextPromise|:
 
-             1. If |nextPromise| was fulfilled with value |v|, then:
+            1. If |nextPromise| was fulfilled with value |v|, then:
 
-                1. Run |subscriber|'s {{Subscriber/next()}} method, given |v|.
+               1. Run |subscriber|'s {{Subscriber/next()}} method, given |v|.
 
-                1. Run |nextAlgorithm|, given |subscriber| and |iterator|.
+               1. Run |nextAlgorithm|, given |subscriber| and |iterator|.
 
-             1. If |nextPromise| was rejected with reason |r|, then run |subscriber|'s
-                {{Subscriber/error()}} method, given |r|.
+            1. If |nextPromise| was rejected with reason |r|, then run |subscriber|'s
+               {{Subscriber/error()}} method, given |r|.
 
-       1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
-          algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+    1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an algorithm that
+       takes a {{Subscriber}} |subscriber| and does the following:
 
-          1. Let |iteratorRecord| be [=GetIteratorFromMethod=](|value|, {{%Symbol.asyncIterator%}}).
+       1. Let |iteratorRecord| be [$GetIteratorFromMethod$](|value|, {{%Symbol.asyncIterator%}}).
 
-          1. If |iteratorRecord| is a [=throw completion=] then:
+       1. If |iteratorRecord| is a [=throw completion=] then:
 
-             1. [=Queue a microtask=] to perform the following steps:
+          1. [=Queue a microtask=] to perform the following steps:
 
-                1. Run |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]].
+             1. Run |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]].
 
-          1. Otherwise, [=queue a microtask=] to perform the following steps:
+       1. Otherwise, [=queue a microtask=] to perform the following steps:
 
-             1. Run |nextAlgorithm| given |subscriber| and |iteratorRecord|'s \[[Value]].
+          1. Run |nextAlgorithm| given |subscriber| and |iteratorRecord|'s \[[Value]].
 
-          Note: It is important to [=queue a microtask=] in both branches here to guarantee that
-          coercing an AsyncIterable never stops the Subscription synchronously, thereby releasing
-          Zalgo.
+       Note: It is important to [=queue a microtask=] in both branches here to guarantee that
+       coercing an AsyncIterable never stops the Subscription synchronously, thereby releasing
+       Zalgo.
 
-    1. <i id=from-iterable-conversion>From iterable</i>: Let |iteratorMethodRecord| be [=?=]
+    1. <i id=from-iterable-conversion><b>From iterable</b></i>: Let |iteratorMethodRecord| be [=?=]
        [$GetMethod$](|value|, {{%Symbol.iterator%}}).
 
        Note: This step is web-observable, and results in re-throwing any errors that the
@@ -574,40 +571,39 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
     1. If [$IsCallable$](|iteratorMethodRecord|'s \[[Value]]) is false, then [=exception/throw=] a
        {{TypeError}}.
 
-       Otherwise:
+       Otherwise, return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
+       algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-       1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
-          algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+         1. Let |iteratorRecord| be [$GetIteratorFromMethod$](|value|, {{%Symbol.iterator%}}).
 
-          1. Let |iteratorRecord| be [=GetIteratorFromMethod=](|value|, {{%Symbol.iterator%}}).
+         1. If |iteratorRecord| is a [=throw completion=] then:
 
-          1. If |iteratorRecord| is a [=throw completion=] then:
+            1. Run |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s
+               \[[Value]].
 
-             1. Run |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s
-                \[[Value]].
+            1. Abort these steps.
 
-             1. Abort these steps.
+         1. Let |iterator| be |iteratorRecord|'s \[[Value]].
 
-          1. Let |iterator| be |iteratorRecord|'s \[[Value]].
+         1. Repeat:
 
-          1. Repeat:
+            1. If |iterator|'s \[[Done]] is true, then:
 
-             1. If |iterator|'s \[[Done]] is true, then:
+               1. Run |subscriber|'s {{Subscriber/complete()}} method and abort these steps.
 
-                1. Run |subscriber|'s {{Subscriber/complete()}} method and abort these steps.
+            1. Let |nextRecord| be [=IteratorStepValue=](|iterator|).
 
-             1. Let |nextRecord| be [=IteratorStepValue=](|iterator|).
+            1. If |nextRecord| is a [=throw completion=] then:
 
-             1. If |nextRecord| is a [=throw completion=] then:
+               1. Run |subscriber|'s {{Subscriber/error()}} method, given |nextRecord|'s
+                  \[[Value]].
 
-                1. Run |subscriber|'s {{Subscriber/error()}} method, given |nextRecord|'s
-                   \[[Value]].
+               1. Abort these steps.
 
-                1. Abort these steps.
+            1. Run |subscriber|'s {{Subscriber/next()}} given |nextRecord|'s \[[Value]].
 
-             1. Run |subscriber|'s {{Subscriber/next()}} given |nextRecord|'s \[[Value]].
-
-    1. <i id=from-promise-conversion>From Promise</i>: If [$IsPromise$](|value|) is true, then:
+    1. <i id=from-promise-conversion><b>From Promise</b></i>: If [$IsPromise$](|value|) is true,
+       then:
 
        1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an algorithm
           that takes a {{Subscriber}} |subscriber| and does the following:
