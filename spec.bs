@@ -503,8 +503,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        doesn't implement any iterable protocol, and (b) the case where |value| implements one of the
        iterator protocols, and its method getter throws an exception.
 
-       Note: This step is web-observable, and results in re-throwing any errors that the
-       {{%Symbol.iterator%}} method *getter* might have thrown.
+       Note: This step is web-observable, and re-throws any errors that the {{%Symbol.iterator%}}
+       method *getter* might have thrown.
 
     1. If |asyncIteratorMethodRecord|'s \[[Value]] is undefined or null, then jump to the step
        labeled <a href=#from-iterable-conversion>From iterable</a>.
@@ -514,17 +514,15 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
        Otherwise, let |nextAlgorithm| be the following steps, given |subscriber| and |iterator|:
 
-         1. If |iterator|'s \[[Done]] is true, then:
-          
-            1. Run |subscriber|'s {{Subscriber/complete()}} method and abort these steps.
+         1. If |iterator|'s \[[Done]] is true, then: run |subscriber|'s {{Subscriber/complete()}}
+            method and abort these steps.
 
          1. Let |nextRecord| be [$IteratorStepValue$](|iterator|).
 
          1. Let |nextPromise| be undefined.
 
-         1.  If |nextRecord| is a [=throw completion=] then:
-
-             1. Set |nextPromise| to [=a promise rejected with=] |nextRecord|'s \[[Value]].
+         1.  If |nextRecord| is a [=throw completion=], then set |nextPromise| to [=a promise
+             rejected with=] |nextRecord|'s \[[Value]].
 
          1. Otherwise, set |nextPromise| to |nextRecord|'s \[[Value]].
 
@@ -544,15 +542,11 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
        1. Let |iteratorRecord| be [$GetIteratorFromMethod$](|value|, {{%Symbol.asyncIterator%}}).
 
-       1. If |iteratorRecord| is a [=throw completion=] then:
+       1. If |iteratorRecord| is a [=throw completion=], then [=queue a microtask=] to run
+          |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]].
 
-          1. [=Queue a microtask=] to perform the following steps:
-
-             1. Run |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]].
-
-       1. Otherwise, [=queue a microtask=] to perform the following steps:
-
-          1. Run |nextAlgorithm| given |subscriber| and |iteratorRecord|'s \[[Value]].
+       1. Otherwise, [=queue a microtask=] to run |nextAlgorithm| given |subscriber| and
+          |iteratorRecord|'s \[[Value]].
 
        Note: It is important to [=queue a microtask=] in both branches here to guarantee that
        coercing an AsyncIterable never stops the Subscription synchronously, thereby releasing
@@ -561,8 +555,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
     1. <i id=from-iterable-conversion><b>From iterable</b></i>: Let |iteratorMethodRecord| be [=?=]
        [$GetMethod$](|value|, {{%Symbol.iterator%}}).
 
-       Note: This step is web-observable, and results in re-throwing any errors that the
-       {{%Symbol.iterator%}} method *getter* might have thrown.
+       Note: This step is web-observable, and re-throws any errors that the {{%Symbol.iterator%}}
+       method *getter* might have thrown.
 
     1. If |iteratorMethodRecord|'s \[[Value]] is undefined or null, then jump to the step labeled <a
        href=#from-promise-conversion>From Promise</a>.
