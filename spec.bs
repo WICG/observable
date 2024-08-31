@@ -482,7 +482,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
   Note: The resolution of value to its descrete types happens before
   [=Observable/subscribe callback=] is called. This means mutations of values, such as adding
-  the iterable protocols to the object, will not take affect between the creation of the returned
+  the iterable protocols to the object, will not take effect between the creation of the returned
   observable, and when it is subscribed to.
 
     1. If [$Type$](|value|) is not [=Object=], [=exception/throw=] a {{TypeError}}.
