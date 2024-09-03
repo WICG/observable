@@ -477,8 +477,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
   To <dfn for=Observable>convert to an Observable</dfn> an {{any}} |value|, run these steps:
 
   Note: We split this algorithm out from the Web IDL {{Observable/from()}} method, so that
-  spec prose can <a for=Observable lt="convert to an observable">convert</a> an {{Observable}}
-  without going through the Web IDL bindings.
+  spec prose can <a for=Observable lt="convert to an observable">convert</a> values to without
+  going through the Web IDL bindings.
 
   Note: The resolution of value to its descrete types happens before
   [=Observable/subscribe callback=] is called. This means mutations of values, such as adding
