@@ -474,7 +474,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 </div>
 
 <div algorithm>
-  To <dfn for=Observable>convert to an Observable</dfn> given an {{any}} |value|, run these steps:
+  To <dfn for=Observable>convert to an Observable</dfn> an {{any}} |value|, run these steps:
 
   Note: We split this algorithm out from the Web IDL {{Observable/from()}} method, so that
   spec prose can <a for=Observable lt="convert to an observable">convert</a> an {{Observable}}
@@ -515,17 +515,32 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
     1. Let |nextAlgorithm| be the following steps, given a {{Subscriber}} |subscriber| and an
        Iterator Record |iteratorRecord|:
 
-         1. If |iteratorRecord|'s \[[Done]] is true, then: run |subscriber|'s
-            {{Subscriber/complete()}} method and abort these steps.
+         1. Let |nextPromise| be a {{Promise}}-or-undefined, initially undefined.
 
          1. Let |nextRecord| be [$IteratorStepValue$](|iteratorRecord|).
 
-         1. Let |nextPromise| be undefined.
+            Process |nextRecord| as follows:
 
-         1. If |nextRecord| is a [=throw completion=], then set |nextPromise| to [=a promise
-            rejected with=] |nextRecord|'s \[[Value]].
+            <dl class="switch">
+              <dt>If |nextRecord| is a [=throw completion=]</dt>
+              <dd>
+               <ol>
+                <li><p>[=Assert=]: |iteratorRecord|'s \[[Done]] is true.</p></li>
 
-            Otherwise, set |nextPromise| to |nextRecord|'s \[[Value]].
+                <li><p>Set |nextPromise| to [=a promise rejected with=] |nextRecord|'s \[[Value]].
+               </ol>
+              </dd>
+
+              <dt>If |nextRecord| is DONE</dt>
+              <dd>[=Queue a microtask=] to run |subscriber|'s {{Subscriber/complete()}} method, and
+              return from |nextAlgorithm|.
+
+              <dt>If |nextRecord| is [=normal completion=]</dt>
+              <dd>
+               <p>Set |nextPromise| to [=a promise resolved with=] |nextRecord|'s \[[Value]].</p>
+
+               Note: This is done in case |nextRecord|'s \[[Value]] is not *itself* already a {{Promise}}.
+            </dl>
 
          1. [=React=] to |nextPromise|:
 
@@ -543,21 +558,27 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
        1. Let |iteratorRecord| be [$GetIterator$](|value|, async).
 
+          Note: This re-invokes any method getters for the {{%Symbol.iterator%}} method on |value|.
+          Whether or not this is desirable is an extreme corner case, but this behavior currently
+          matches what is expected by tests. See <a
+          href=https://github.com/WICG/observable/issues/127>issue#127</a> for discussion.
+
+
        1. If |iteratorRecord| is a [=throw completion=], then [=queue a microtask=] to run
           |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]].
 
-          Otherwise, [=queue a microtask=] to run |nextAlgorithm| given |subscriber| and
-          |iteratorRecord|.
+       1. [=Assert=]: |iteratorRecord| is an Iterator Record.
 
-       Note: It is important to [=queue a microtask=] in both branches here to guarantee that
-       coercing an AsyncIterable never stops the Subscription synchronously, thereby releasing
-       Zalgo.
+       1. Run |nextAlgorithm| given |subscriber| and |iteratorRecord|.
+
+       Issue: In the error case immediately above, and in the DONE case in |nextAlgorithm|, we
+       [=queue a microtask=] to invoke relevant callbacks. This was done so that subscription to an
+       AsyncIterable-coerced {{Observable}} never invokes callbacks synchronously, "thereby
+       releasing Zalgo". But ordinary Observables are allowed to invoke callbacks synchronously
+       during subscription, so it is not clear if this is needed at all.
 
     1. <i id=from-iterable-conversion><b>From iterable</b></i>: Let |iteratorMethodRecord| be [=?=]
        [$GetMethod$](|value|, {{%Symbol.iterator%}}).
-
-       Note: This step is web-observable, and re-throws any errors that the {{%Symbol.iterator%}}
-       method *getter* might have thrown.
 
     1. If |iteratorMethodRecord|'s \[[Value]] is undefined or null, then jump to the step labeled <a
        href=#from-promise-conversion>From Promise</a>.
@@ -569,11 +590,6 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
          1. Let |iteratorRecord| be [$GetIterator$](|value|, sync).
-
-            Note: This re-invokes any method getters for the {{%Symbol.iterator%}} method on
-            |value|. Whether or not this is desirable is an extreme corner case, but this behavior
-            currently matches what is expected by tests. See <a
-            href=https://github.com/WICG/observable/issues/127>issue#127</a> for discussion.
 
          1. If |iteratorRecord| is a [=throw completion=], then run |subscriber|'s
             {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]], and abort these
