@@ -480,11 +480,6 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
   spec prose can <a for=Observable lt="convert to an observable">convert</a> values to without
   going through the Web IDL bindings.
 
-  Note: The resolution of value to its descrete types happens before
-  [=Observable/subscribe callback=] is called. This means mutations of values, such as adding
-  the iterable protocols to the object, will not take effect between the creation of the returned
-  observable, and when it is subscribed to.
-
     1. If [$Type$](|value|) is not [=Object=], [=exception/throw=] a {{TypeError}}.
 
        Note: This prevents primitive types from being coerced into iterables (e.g., String).
