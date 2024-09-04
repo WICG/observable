@@ -533,7 +533,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
                1. If [$Type$](|iteratorResult|) is not Object, then run |subscriber|'s
                   {{Subscriber/error()}} method with a {{TypeError}} and abort these steps.
 
-               1. Let |done| be [$IteratorComplete$](iteratorResult).
+               1. Let |done| be [$IteratorComplete$](|iteratorResult|).
 
                1. If |done| is a [=throw completion=], then run |subscriber|'s
                   {{Subscriber/error()}} method with a {{TypeError}} and abort these steps.
@@ -541,7 +541,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
                   Otherwise, if |done|'s \[[Value]] is true, then run |subscriber|'s
                   {{Subscriber/complete()}} and abort these steps.
 
-               1. Let |value| be [$IteratorValue$](|iteratorResult).
+               1. Let |value| be [$IteratorValue$](|iteratorResult|).
 
                1. If |value| is a [=throw completion=], then run |subscriber|'s
                   {{Subscriber/error()}} method with a {{TypeError}} and abort these steps.
