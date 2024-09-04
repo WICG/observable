@@ -512,36 +512,41 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
          1. Let |nextPromise| be a {{Promise}}-or-undefined, initially undefined.
 
-         1. Let |nextRecord| be [$IteratorStepValue$](|iteratorRecord|).
+         1. Let |nextRecord| be [$IteratorNext$](|iteratorRecord|), and process it as follows:
 
-            Process |nextRecord| as follows:
+         1. If |nextRecord| is a [=throw completion=], then:
 
-            <dl class="switch">
-              <dt>If |nextRecord| is a [=throw completion=]</dt>
-              <dd>
-               <ol>
-                <li><p>[=Assert=]: |iteratorRecord|'s \[[Done]] is true.</p></li>
+            1. [=Assert=]: |iteratorRecord|'s \[[Done]] is true.
 
-                <li><p>Set |nextPromise| to [=a promise rejected with=] |nextRecord|'s \[[Value]].
-               </ol>
-              </dd>
+            1. Set |nextPromise| to [=a promise rejected with=] |nextRecord|'s \[[Value]].
 
-              <dt>If |nextRecord| is DONE</dt>
-              <dd>[=Queue a microtask=] to run |subscriber|'s {{Subscriber/complete()}} method, and
-              return from |nextAlgorithm|.
+         1. Otherwise, if |nextRecord| is [=normal completion=], then set |nextPromise| to [=a
+            promise resolved with=] |nextRecord|'s \[[Value]].
 
-              <dt>If |nextRecord| is [=normal completion=]</dt>
-              <dd>
-               <p>Set |nextPromise| to [=a promise resolved with=] |nextRecord|'s \[[Value]].</p>
-
-               Note: This is done in case |nextRecord|'s \[[Value]] is not *itself* already a {{Promise}}.
-            </dl>
+            Note: This is done in case |nextRecord|'s \[[Value]] is not *itself* already a
+            {{Promise}}.
 
          1. [=React=] to |nextPromise|:
 
-            1. If |nextPromise| was fulfilled with value |v|, then:
+            1. If |nextPromise| was fulfilled with value |iteratorResult|, then:
 
-               1. Run |subscriber|'s {{Subscriber/next()}} method, given |v|.
+               1. If [$Type$](|iteratorResult|) is not Object, then run |subscriber|'s
+                  {{Subscriber/error()}} method with a {{TypeError}} and abort these steps.
+
+               1. Let |done| be [$IteratorComplete$](iteratorResult).
+
+               1. If |done| is a [=throw completion=], then run |subscriber|'s
+                  {{Subscriber/error()}} method with a {{TypeError}} and abort these steps.
+
+                  Otherwise, if |done|'s \[[Value]] is true, then run |subscriber|'s
+                  {{Subscriber/complete()}} and abort these steps.
+
+               1. Let |value| be [$IteratorValue$](|iteratorResult).
+
+               1. If |value| is a [=throw completion=], then run |subscriber|'s
+                  {{Subscriber/error()}} method with a {{TypeError}} and abort these steps.
+
+               1. Run |subscriber|'s {{Subscriber/next()}} method, given |value|'s \[[Value]].
 
                1. Run |nextAlgorithm|, given |subscriber| and |iteratorRecord|.
 
