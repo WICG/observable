@@ -563,19 +563,21 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
           matches what is expected by tests. See <a
           href=https://github.com/WICG/observable/issues/127>issue#127</a> for discussion.
 
+       1. If |iteratorRecord| is a [=throw completion=], then run |subscriber|'s
+          {{Subscriber/error()}} method with |iteratorRecord|'s \[[Value]].
 
-       1. If |iteratorRecord| is a [=throw completion=], then [=queue a microtask=] to run
-          |subscriber|'s {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]].
+          Note: This means we invoke the {{Subscriber/error()}} method synchronously with respect to
+          subscription, which is the only time this can happen for async iterables that are
+          converted to {{Observable}}s. In all other cases, errors are propagated to the observer
+          asynchronously, with microtask timing, by virtue of being wrapped in a rejected
+          {{Promise}} that |nextAlgorithm| [=reacts=] to. This synchronous-error-propagation
+          behavior is hopefully OK, since it is consistent with language constructs (i.e.,
+          **for-await of** loops) that invoke {{%Symbol.asyncIterator%}} and synchronously re-throw
+          exceptions to catch blocks outside the loop, before any [$Await$]ing takes place.
 
        1. [=Assert=]: |iteratorRecord| is an Iterator Record.
 
        1. Run |nextAlgorithm| given |subscriber| and |iteratorRecord|.
-
-       Issue: In the error case immediately above, and in the DONE case in |nextAlgorithm|, we
-       [=queue a microtask=] to invoke relevant callbacks. This was done so that subscription to an
-       AsyncIterable-coerced {{Observable}} never invokes callbacks synchronously, "thereby
-       releasing Zalgo". But ordinary Observables are allowed to invoke callbacks synchronously
-       during subscription, so it is not clear if this is needed at all.
 
     1. <i id=from-iterable-conversion><b>From iterable</b></i>: Let |iteratorMethodRecord| be [=?=]
        [$GetMethod$](|value|, {{%Symbol.iterator%}}).
