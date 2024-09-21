@@ -378,7 +378,7 @@ interface Observable {
   Observable drop(unsigned long long amount);
   Observable flatMap(Mapper mapper);
   Observable switchMap(Mapper mapper);
-  Observable inspect(optional ObservableInspectorUnion inspect_observer = {});
+  Observable inspect(optional ObservableInspectorUnion inspectorUnion = {});
   Observable catch(CatchCallback callback);
   Observable finally(VoidFunction callback);
 
@@ -1104,7 +1104,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 </div>
 
 <div algorithm>
-  The <dfn for=Observable method><code>inspect(|inspector_union|)</code></dfn> method steps are:
+  The <dfn for=Observable method><code>inspect(|inspectorUnion|)</code></dfn> method steps are:
 
     1. Let |subscribe callback| be a {{VoidFunction}}-or-null, initially null.
 
@@ -1116,27 +1116,27 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Let |abort callback| be a {{ObservableInspectorAbortHandler}}-or-null, initially null.
 
-    1. Process |inspector_union| as follows:
+    1. Process |inspectorUnion| as follows:
          <dl class="switch">
-           <dt>If |inspector_union| is an {{ObservableSubscriptionCallback}}</dt>
+           <dt>If |inspectorUnion| is an {{ObservableSubscriptionCallback}}</dt>
            <dd>
-             1. Set |next callback| to |inspector_union|.
+             1. Set |next callback| to |inspectorUnion|.
 
-           <dt>If |inspector_union| is an {{ObservableInspector}}</dt>
+           <dt>If |inspectorUnion| is an {{ObservableInspector}}</dt>
            <dd>
-             1. If {{ObservableInspector/subscribe}} [=map/exists=] in |inspector_union|, then set
+             1. If {{ObservableInspector/subscribe}} [=map/exists=] in |inspectorUnion|, then set
                 |subscribe callback| to it.
 
-             1. If {{ObservableInspector/next}} [=map/exists=] in |inspector_union|, then set
+             1. If {{ObservableInspector/next}} [=map/exists=] in |inspectorUnion|, then set
                 |next callback| to it.
 
-             1. If {{ObservableInspector/error}} [=map/exists=] in |inspector_union|, then set
+             1. If {{ObservableInspector/error}} [=map/exists=] in |inspectorUnion|, then set
                 |error callback| to it.
 
-             1. If {{ObservableInspector/complete}} [=map/exists=] in |inspector_union|, then set
+             1. If {{ObservableInspector/complete}} [=map/exists=] in |inspectorUnion|, then set
                 |complete callback| to it.
 
-             1. If {{ObservableInspector/abort}} [=map/exists=] in |inspector_union|, then set
+             1. If {{ObservableInspector/abort}} [=map/exists=] in |inspectorUnion|, then set
                 |abort callback| to it.
            </dd>
          </dl>
@@ -1185,19 +1185,35 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                      and just invoking |abort callback| when *it* aborts. The result is likely the
                      same, but needs investigation.
 
-                  1. Run |subscriber|'s {{Subscriber/error()}} method, given |E|, and return.
+                  1. Run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
+                     steps.
 
              1. Run |subscriber|'s {{Subscriber/next()}} method with the passed in |value|.
 
           : [=internal observer/error steps=]
-          :: [=AbortSignal/Remove=] |abort callback| from |subscriber|'s [=Subscriber/subscription
-             controller=]'s [=AbortController/signal=], and run |subscriber|'s
-             {{Subscriber/error()}} method, given the passed in <var ignore>error</var>.
+          :: 1. [=AbortSignal/Remove=] |abort callback| from |subscriber|'s
+                [=Subscriber/subscription controller=]'s [=AbortController/signal=].
+
+             1. If |error callback| is not null, then [=invoke=] |error callback| given the passed
+                in |error|.
+
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
+                steps.
+
+             1. Run |subscriber|'s {{Subscriber/error()}} method, given the passed in |error|.
 
           : [=internal observer/complete steps=]
-          :: [=AbortSignal/Remove=] |abort callback| from |subscriber|'s [=Subscriber/subscription
-             controller=]'s [=AbortController/signal=], and run |subscriber|'s
-             {{Subscriber/complete()}} method.
+          :: 1. [=AbortSignal/Remove=] |abort callback| from |subscriber|'s
+                [=Subscriber/subscription controller=]'s [=AbortController/signal=].
+
+             1. If |complete callback| is not null, then [=invoke=] |complete callback|.
+
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
+                steps.
+
+             1. Run |subscriber|'s {{Subscriber/complete()}} method.
 
        1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
