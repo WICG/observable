@@ -1523,7 +1523,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        :: [=Reject=] |p| with the passed in <var ignore>error</var>.
 
        : [=internal observer/complete steps=]
-       :: [=Reject=] |p| with a new {{RangeError}}, and message of "No values in Observable".
+       :: [=Reject=] |p| with a new {{RangeError}}.
 
           Note: This is only reached when the source {{Observable}} completes *before* it emits a
           single value.
