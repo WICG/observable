@@ -1243,7 +1243,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
              ignore>value</var>.
 
           : [=internal observer/error steps=]
-          :: 
+          ::
              1. [=Invoke=] |callback| with the passed in <var ignore>error</var>. Let |result| be
                 the returned value.
 
@@ -1572,7 +1572,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        : [=internal observer/complete steps=]
        :: 1. If |hasLastValue| is true, [=resolve=] |p| with |lastValue|.
 
-          1. Otherwise, [=resolve=] |p| with {{undefined}}.
+          1. Otherwise, [=reject=] |p| with a new {{RangeError}}.
 
              Note: See the note in {{Observable/first()}}.
 
