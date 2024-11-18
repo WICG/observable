@@ -130,8 +130,8 @@ const googTrades = streamStock('GOOG');
 const nflxTrades = streamStock('NFLX');
 
 const googController = new AbortController();
-const googSubscription = googTrades.subscribe({next: updateView}, {signal: googController.signal});
-const nflxSubscription = nflxTrades.subscribe({next: updateView, ...});
+googTrades.subscribe({next: updateView}, {signal: googController.signal});
+nflxTrades.subscribe({next: updateView, ...});
 
 // And the stream can disconnect later, which
 // automatically sends the unsubscription message
