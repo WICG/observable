@@ -1747,7 +1747,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        : [=internal observer/complete steps=]
        :: 1. If |accumulator| is not "<code>unset</code>", then [=resolve=] |p| with |accumulator|.
 
-          Otherwise, [=reject=] |p| with a {{TypeError}}.
+          Otherwise, [=reject=] |p| with a {{RangeError}}.
+
+          Note: This is only reached when the source {{Observable}} completes *before* it emits a
+          single value and no |initialValue| was passed in.
 
     1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
        and |internal options|.
