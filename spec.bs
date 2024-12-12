@@ -1811,11 +1811,11 @@ partial interface EventTarget {
                :: false
 
                : [=event listener/signal=]
-               :: null
+               :: |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=]
 
-                  Note: The {{AbortSignal}} for event listeners [=add an event listener|added=] by
-                  {{EventTarget/when()}} is managed by the {{Observable}} itself. See
-                  {{Observable/subscribe()}} and {{SubscribeOptions}}.
+                  Note: This ensures that the [=event listener=] is cleaned up when
+                  [=Subscriber/subscription controller=]'s [=AbortController/signal=] is [=AbortSignal/aborted=],
+                  regardless of an engine's ownership model.
 
     1. Return |observable|.
 </div>
