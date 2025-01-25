@@ -31,6 +31,7 @@ urlPrefix: https://tc39.es/ecma262/#; spec: ECMASCRIPT
     text: throw completion; url: sec-throwcompletion
     url: sec-returnifabrupt-shorthands
       text: ?
+      text: !
   type: abstract-op
     text: Type; url: sec-ecmascript-data-types-and-values
 urlPrefix: https://dom.spec.whatwg.org; spec: DOM
@@ -482,135 +483,50 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
     1. If [$Type$](|value|) is not [=Object=], [=exception/throw=] a {{TypeError}}.
 
-       Note: This prevents primitive types from being coerced into iterables (e.g., String).
-
-       Issue: See if this is even the behavior we want. See <a
-       href=https://github.com/WICG/observable/issues/125>WICG/observable#125</a>
+       Note: This prevents primitive types from being coerced into iterables (e.g., String). See
+       discussion in <a href=https://github.com/WICG/observable/issues/125>WICG/observable#125</a>.
 
     1. <i id=from-observable-conversion><b>From Observable</b></i>: If |value|'s [=specific type=]
        is an {{Observable}}, then return |value|.
 
-    1. <i id=from-async-iterable-conversion><b>From async iterator</b></i>: Let
-       |asyncIteratorMethodRecord| be [=?=] [$GetMethod$](|value|, {{%Symbol.asyncIterator%}}).
+    1. Issue: Spec the <i><b>From async iterable</b></i> conversion steps which take place before
+       the iterable conversion steps.
 
-       Note: We have to use [$GetMethod$] directly instead of [$GetIterator$], because
-       [$GetIterator$] makes it impossible to distinguish between (a) the case where |value| simply
-       doesn't implement any iterable protocol, and (b) the case where |value| implements one of the
-       iterator protocols, and its method getter throws an exception.
-
-       Note: This step is web-observable, and re-throws any errors that the {{%Symbol.iterator%}}
-       method *getter* might have thrown.
-
-    1. If |asyncIteratorMethodRecord|'s \[[Value]] is undefined or null, then jump to the step
-       labeled <a href=#from-iterable-conversion>From iterable</a>.
-
-    1. If [$IsCallable$](|asyncIteratorMethodRecord|'s \[[Value]]) is false, then
-       [=exception/throw=] a {{TypeError}}.
-
-    1. Let |nextAlgorithm| be the following steps, given a {{Subscriber}} |subscriber| and an
-       Iterator Record |iteratorRecord|:
-
-         1. Let |nextPromise| be a {{Promise}}-or-undefined, initially undefined.
-
-         1. Let |nextRecord| be [$IteratorNext$](|iteratorRecord|), and process it as follows:
-
-         1. If |nextRecord| is a [=throw completion=], then:
-
-            1. [=Assert=]: |iteratorRecord|'s \[[Done]] is true.
-
-            1. Set |nextPromise| to [=a promise rejected with=] |nextRecord|'s \[[Value]].
-
-         1. Otherwise, if |nextRecord| is [=normal completion=], then set |nextPromise| to [=a
-            promise resolved with=] |nextRecord|'s \[[Value]].
-
-            Note: This is done in case |nextRecord|'s \[[Value]] is not *itself* already a
-            {{Promise}}.
-
-         1. [=React=] to |nextPromise|:
-
-            1. If |nextPromise| was fulfilled with value |iteratorResult|, then:
-
-               1. If [$Type$](|iteratorResult|) is not Object, then run |subscriber|'s
-                  {{Subscriber/error()}} method with a {{TypeError}} and abort these steps.
-
-               1. Let |done| be [$IteratorComplete$](|iteratorResult|).
-
-               1. If |done| is a [=throw completion=], then run |subscriber|'s
-                  {{Subscriber/error()}} method with |done|'s \[[Value]] and abort these steps.
-
-                  Otherwise, if |done|'s \[[Value]] is true, then run |subscriber|'s
-                  {{Subscriber/complete()}} and abort these steps.
-
-               1. Let |value| be [$IteratorValue$](|iteratorResult|).
-
-               1. If |value| is a [=throw completion=], then run |subscriber|'s
-                  {{Subscriber/error()}} method with |value|'s \[[Value]] and abort these steps.
-
-               1. Run |subscriber|'s {{Subscriber/next()}} method, given |value|'s \[[Value]].
-
-               1. Run |nextAlgorithm|, given |subscriber| and |iteratorRecord|.
-
-            1. If |nextPromise| was rejected with reason |r|, then run |subscriber|'s
-               {{Subscriber/error()}} method, given |r|.
-
-    1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an algorithm that
-       takes a {{Subscriber}} |subscriber| and does the following:
-
-       1. Let |iteratorRecord| be [$GetIterator$](|value|, async).
-
-          Note: This re-invokes any method getters for the {{%Symbol.iterator%}} method on |value|.
-          Whether or not this is desirable is an extreme corner case, but this behavior currently
-          matches what is expected by tests. See <a
-          href=https://github.com/WICG/observable/issues/127>issue#127</a> for discussion.
-
-       1. If |iteratorRecord| is a [=throw completion=], then run |subscriber|'s
-          {{Subscriber/error()}} method with |iteratorRecord|'s \[[Value]].
-
-          Note: This means we invoke the {{Subscriber/error()}} method synchronously with respect to
-          subscription, which is the only time this can happen for async iterables that are
-          converted to {{Observable}}s. In all other cases, errors are propagated to the observer
-          asynchronously, with microtask timing, by virtue of being wrapped in a rejected
-          {{Promise}} that |nextAlgorithm| [=reacts=] to. This synchronous-error-propagation
-          behavior is hopefully OK, since it is consistent with language constructs (i.e.,
-          **for-await of** loops) that invoke {{%Symbol.asyncIterator%}} and synchronously re-throw
-          exceptions to catch blocks outside the loop, before any [$Await$]ing takes place.
-
-       1. [=Assert=]: |iteratorRecord| is an Iterator Record.
-
-       1. Run |nextAlgorithm| given |subscriber| and |iteratorRecord|.
-
-    1. <i id=from-iterable-conversion><b>From iterable</b></i>: Let |iteratorMethodRecord| be [=?=]
+    1. <i id=from-iterable-conversion><b>From iterable</b></i>: Let |iteratorMethod| be [=?=]
        [$GetMethod$](|value|, {{%Symbol.iterator%}}).
 
-    1. If |iteratorMethodRecord|'s \[[Value]] is undefined or null, then jump to the step labeled <a
+    1. If |iteratorMethod| is undefined, then jump to the step labeled <a
        href=#from-promise-conversion>From Promise</a>.
-
-    1. If [$IsCallable$](|iteratorMethodRecord|'s \[[Value]]) is false, then [=exception/throw=] a
-       {{TypeError}}.
 
        Otherwise, return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-         1. Let |iteratorRecord| be [$GetIterator$](|value|, sync).
+         1. Let |iteratorRecordCompletion| be [$GetIterator$](|value|, sync).
 
-         1. If |iteratorRecord| is a [=throw completion=], then run |subscriber|'s
-            {{Subscriber/error()}} method, given |iteratorRecord|'s \[[Value]], and abort these
-            steps.
+         1. If |iteratorRecordCompletion| is a [=throw completion=], then run |subscriber|'s
+            {{Subscriber/error()}} method, given |iteratorRecordCompletion|'s \[[Value]], and abort
+            these steps.
 
-         1. Let |iterator| be |iteratorRecord|'s \[[Value]].
+         1. Let |iteratorRecord| be [=!=] |iteratorRecordCompletion|.
 
          1. [=iteration/While=] true:
 
-            1. If |iterator|'s \[[Done]] is true, then run |subscriber|'s {{Subscriber/complete()}}
-               method, and [=iteration/break=].
+            1. Let |next| be [$IteratorStepValue$](|iteratorRecord|).
 
-            1. Let |nextRecord| be [$IteratorStepValue$](|iterator|).
+            1. If |next| is a [=throw completion=], then run |subscriber|'s {{Subscriber/error()}}
+               method, given |next|'s \[[Value]], and [=iteration/break=].
 
-            1. If |nextRecord| is a [=throw completion=], then run |subscriber|'s
-               {{Subscriber/error()}} method, given |nextRecord|'s \[[Value]], and
-               [=iteration/break=].
+            1. Set |next| to [=!=] to |next|.
 
-               Otherwise, run |subscriber|'s {{Subscriber/next()}} given |nextRecord|'s \[[Value]].
+            1. If |next| is done, then:
+
+               1. [=Assert=]: |iteratorRecord|'s \[[Done]] is true.
+
+               2. Run |subscriber|'s {{Subscriber/complete()}}.
+
+               3. Return.
+
+            1. Run |subscriber|'s {{Subscriber/next()}} given |next|.
 
     1. <i id=from-promise-conversion><b>From Promise</b></i>: If [$IsPromise$](|value|) is true,
        then:
