@@ -26,6 +26,14 @@ WPT Display: open
 urlPrefix: https://tc39.es/ecma262/#; spec: ECMASCRIPT
   type: dfn
     text: current realm
+    text: Object; url: sec-object-type
+    text: normal completion; url: sec-normalcompletion
+    text: throw completion; url: sec-throwcompletion
+    url: sec-returnifabrupt-shorthands
+      text: ?
+      text: !
+  type: abstract-op
+    text: Type; url: sec-ecmascript-data-types-and-values
 urlPrefix: https://dom.spec.whatwg.org; spec: DOM
   type: dfn
     for: event listener
@@ -38,6 +46,11 @@ urlPrefix: https://dom.spec.whatwg.org; spec: DOM
       text: dependent signals; url: abortsignal-dependent-signals
       text: signal abort; url:abortsignal-signal-abort
       text: abort reason; url:abortsignal-abort-reason
+urlPrefix: https://webidl.spec.whatwg.org; spec: WEBIDL
+  type: dfn
+    text: a promise rejected with
+  type: dfn
+    text: react
 </pre>
 
 <style>
@@ -371,7 +384,7 @@ interface Observable {
   //
   // takeUntil() can consume promises, iterables, async iterables, and other
   // observables.
-  Observable takeUntil(any notifier);
+  Observable takeUntil(any value);
   Observable map(Mapper mapper);
   Observable filter(Predicate predicate);
   Observable take(unsigned long long amount);
@@ -459,6 +472,80 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
   Observable">subscribes</a> to an {{Observable}}, these "steps" are arbitrary spec algorithms that
   are not provided via an {{ObserverUnion}} packed with Web IDL [=callback functions=]. See the
   [[#promise-returning-operators]] that make use of this, for example.</p>
+</div>
+
+<div algorithm>
+  To <dfn for=Observable>convert to an Observable</dfn> an {{any}} |value|, run these steps:
+
+  Note: We split this algorithm out from the Web IDL {{Observable/from()}} method, so that
+  spec prose can <a for=Observable lt="convert to an observable">convert</a> values to without
+  going through the Web IDL bindings.
+
+    1. If [$Type$](|value|) is not [=Object=], [=exception/throw=] a {{TypeError}}.
+
+       Note: This prevents primitive types from being coerced into iterables (e.g., String). See
+       discussion in <a href=https://github.com/WICG/observable/issues/125>WICG/observable#125</a>.
+
+    1. <i id=from-observable-conversion><b>From Observable</b></i>: If |value|'s [=specific type=]
+       is an {{Observable}}, then return |value|.
+
+    1. Issue: Spec the <i><b>From async iterable</b></i> conversion steps which take place before
+       the iterable conversion steps.
+
+    1. <i id=from-iterable-conversion><b>From iterable</b></i>: Let |iteratorMethod| be [=?=]
+       [$GetMethod$](|value|, {{%Symbol.iterator%}}).
+
+    1. If |iteratorMethod| is undefined, then jump to the step labeled <a
+       href=#from-promise-conversion>From Promise</a>.
+
+       Otherwise, return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
+       algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+
+         1. Let |iteratorRecordCompletion| be [$GetIterator$](|value|, sync).
+
+         1. If |iteratorRecordCompletion| is a [=throw completion=], then run |subscriber|'s
+            {{Subscriber/error()}} method, given |iteratorRecordCompletion|'s \[[Value]], and abort
+            these steps.
+
+         1. Let |iteratorRecord| be [=!=] |iteratorRecordCompletion|.
+
+         1. [=iteration/While=] true:
+
+            1. Let |next| be [$IteratorStepValue$](|iteratorRecord|).
+
+            1. If |next| is a [=throw completion=], then run |subscriber|'s {{Subscriber/error()}}
+               method, given |next|'s \[[Value]], and [=iteration/break=].
+
+            1. Set |next| to [=!=] to |next|.
+
+            1. If |next| is done, then:
+
+               1. [=Assert=]: |iteratorRecord|'s \[[Done]] is true.
+
+               2. Run |subscriber|'s {{Subscriber/complete()}}.
+
+               3. Return.
+
+            1. Run |subscriber|'s {{Subscriber/next()}} given |next|.
+
+    1. <i id=from-promise-conversion><b>From Promise</b></i>: If [$IsPromise$](|value|) is true,
+       then:
+
+       1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an algorithm
+          that takes a {{Subscriber}} |subscriber| and does the following:
+
+          1. [=React=] to |value|:
+
+             1. If |value| was fulfilled with value |v|, then:
+
+                1. Run |subscriber|'s {{Subscriber/next()}} method, given |v|.
+
+                1. Run |subscriber|'s {{Subscriber/complete()}} method.
+
+             1. If |value| was rejected with reason |r|, then run |subscriber|'s
+                {{Subscriber/error()}} method, given |r|.
+
+    1. [=exception/Throw=] a {{TypeError}}.
 </div>
 
 <div algorithm>
@@ -577,14 +664,22 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
 <h4 id=observable-from>{{Observable/from()}}</h4>
 
-<p class=XXX>Spec the exact semantics of {{Observable/from()}} conversion.</p>
+<div algorithm>
+  The <dfn for=Observable method><code>from(|value|)</code></dfn> method steps are:
+
+    1. Return the result of <a for=Observable lt="convert to an Observable">converting</a> |value|
+       to an {{Observable}}. Rethrow any exceptions.
+</div>
 
 <h4 id=observable-returning-operators>{{Observable}}-returning operators</h4>
 
 <div algorithm>
-  The <dfn for=Observable method><code>takeUntil(|notifier|)</code></dfn> method steps are:
+  The <dfn for=Observable method><code>takeUntil(|value|)</code></dfn> method steps are:
 
     1. Let |sourceObservable| be [=this=].
+
+    1. Let |notifier| be the result of <a for=Observable lt="convert to an Observable">
+       converting</a> |value| to an Observable.
 
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
