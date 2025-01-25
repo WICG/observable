@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version c67c745b1, updated Fri Jan 17 14:27:28 2025 -0800" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="a89d7c5553005d2a8e88231b7397d817c82438c8" name="revision">
+  <meta content="2538ee1743ccd8dd5fb616dc9655e6e513cf68e7" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -1327,8 +1327,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p><i id="from-observable-conversion"><b>From Observable</b></i>: If <var>value</var>’s <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-specific-type" id="ref-for-dfn-specific-type">specific type</a> is an <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable①⑧">Observable</a></code>, then return <var>value</var>.</p>
      <li data-md>
-      <p class="issue" id="issue-7a05c06a"><a class="self-link" href="#issue-7a05c06a"></a> Spec the <i><b>From async iterable</b></i> conversion steps which take place before
- the iterable conversion steps.</p>
+      <p class="issue" id="issue-0b094475"><a class="self-link" href="#issue-0b094475"></a> Spec the <i><b>From async iterable</b></i> conversion steps which take place before
+ the iterable conversion steps. See <a href="https://github.com/WICG/observable/issues/191">issue #191</a>.</p>
      <li data-md>
       <p><i id="from-iterable-conversion"><b>From iterable</b></i>: Let <var>iteratorMethod</var> be <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands">?</a> <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getmethod" id="ref-for-sec-getmethod">GetMethod</a>(<var>value</var>, <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols" id="ref-for-sec-well-known-symbols">%Symbol.iterator%</a></code>).</p>
      <li data-md>
@@ -1393,6 +1393,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw①">Throw</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror①">TypeError</a></code>.</p>
     </ol>
+    <details class="wpt-tests-block" dir="ltr" lang="en" open>
+     <summary>Tests</summary>
+     <ul class="wpt-tests-list">
+      <li class="wpt-test"><a class="wpt-name" href="https://wpt.fyi/results/dom/observable/tentative/observable-from.any.js" title="dom/observable/tentative/observable-from.any.js">observable-from.any.js</a> <a class="wpt-live" href="http://wpt.live/dom/observable/tentative/observable-from.any.js"><small>(live test)</small></a> <a class="wpt-source" href="https://github.com/web-platform-tests/wpt/blob/master/dom/observable/tentative/observable-from.any.js"><small>(source)</small></a>
+     </ul>
+    </details>
    </div>
    <div class="algorithm" data-algorithm="subscribe to an Observable" data-algorithm-for="Observable">
      To <dfn class="dfn-paneled" data-dfn-for="Observable" data-dfn-type="dfn" data-noexport id="observable-subscribe-to-an-observable">subscribe to an <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②①">Observable</a></code></dfn> given an <code class="idl"><a data-link-type="idl" href="#typedefdef-observerunion" id="ref-for-typedefdef-observerunion②">ObserverUnion</a></code>-or-<a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer①">internal observer</a> <var>observer</var>, and a <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions⑨">SubscribeOptions</a></code> <var>options</var>, run
@@ -1513,12 +1519,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>sourceObservable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②①">this</a>.</p>
      <li data-md>
-      <p>Let <var>notifier</var> be the result of <a data-link-type="dfn" href="#observable-convert-to-an-observable" id="ref-for-observable-convert-to-an-observable②"> converting</a> <var>value</var> to an Observable.</p>
+      <p>Let <var>notifier</var> be the result of <a data-link-type="dfn" href="#observable-convert-to-an-observable" id="ref-for-observable-convert-to-an-observable②"> converting</a> <var>value</var> to an <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑤">Observable</a></code>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new③">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑤">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback⑥">subscribe callback</a> is an
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new③">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑥">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback⑥">subscribe callback</a> is an
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①④">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <div class="note" role="note">
-        Note that this method involves <a data-link-type="dfn" href="#observable-subscribe-to-an-observable" id="ref-for-observable-subscribe-to-an-observable④">Subscribing</a> to two <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑥">Observable</a></code>s: (1) <var>notifier</var>, and (2) <var>sourceObservable</var>. We "unsubscribe" from <strong>both</strong> of them in the following situations: 
+        Note that this method involves <a data-link-type="dfn" href="#observable-subscribe-to-an-observable" id="ref-for-observable-subscribe-to-an-observable④">Subscribing</a> to two <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑦">Observable</a></code>s: (1) <var>notifier</var>, and (2) <var>sourceObservable</var>. We "unsubscribe" from <strong>both</strong> of them in the following situations: 
        <ol>
         <li data-md>
          <p><var>notifier</var> starts emitting values (either "next" or "error"). In this case, we
@@ -1549,7 +1555,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <dd data-md>
           <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete⑥">complete()</a></code> method.</p>
         </dl>
-        <p class="note" role="note"><span class="marker">Note:</span> We do not specify <a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps③">complete steps</a>, because if the <var>notifier</var> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑦">Observable</a></code> completes itself, we do not need to complete the <var>subscriber</var> associated
+        <p class="note" role="note"><span class="marker">Note:</span> We do not specify <a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps③">complete steps</a>, because if the <var>notifier</var> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑧">Observable</a></code> completes itself, we do not need to complete the <var>subscriber</var> associated
   with the <var>observable</var> returned from this method. Rather, the <var>observable</var> will continue to
   mirror <var>sourceObservable</var> uninterrupted.</p>
        <li data-md>
@@ -1574,7 +1580,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <dd data-md>
           <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete⑦">complete()</a></code> method.</p>
         </dl>
-        <p class="note" role="note"><span class="marker">Note:</span> <var>sourceObserver</var> is mostly a pass-through, mirroring everything that <var>sourceObservable</var> emits, with the exception of having the ability to unsubscribe from the <var>notifier</var> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑧">Observable</a></code> in the case where <var>sourceObservable</var> is exhausted before <var>notifier</var> emits anything.</p>
+        <p class="note" role="note"><span class="marker">Note:</span> <var>sourceObserver</var> is mostly a pass-through, mirroring everything that <var>sourceObservable</var> emits, with the exception of having the ability to unsubscribe from the <var>notifier</var> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑨">Observable</a></code> in the case where <var>sourceObservable</var> is exhausted before <var>notifier</var> emits anything.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="#observable-subscribe-to-an-observable" id="ref-for-observable-subscribe-to-an-observable⑥">Subscribe</a> to <var>sourceObservable</var> given <var>sourceObserver</var> and <var>options</var>.</p>
       </ol>
@@ -1595,7 +1601,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>sourceObservable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②②">this</a>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new④">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⑨">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback⑧">subscribe callback</a> is an
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new④">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⓪">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback⑧">subscribe callback</a> is an
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①⑤">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
@@ -1645,7 +1651,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>sourceObservable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②③">this</a>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑤">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⓪">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback⑨">subscribe callback</a> is an
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑤">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③①">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback⑨">subscribe callback</a> is an
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①⑥">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
@@ -1695,7 +1701,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>sourceObservable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②④">this</a>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑥">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③①">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①⓪">subscribe callback</a> is an
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑥">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③②">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①⓪">subscribe callback</a> is an
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①⑦">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
@@ -1744,7 +1750,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>sourceObservable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑤">this</a>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑦">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③②">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①①">subscribe callback</a> is an
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑦">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③③">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①①">subscribe callback</a> is an
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①⑧">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
@@ -1790,7 +1796,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>sourceObservable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑥">this</a>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑧">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③③">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①②">subscribe callback</a> is an
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑧">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③④">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①②">subscribe callback</a> is an
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①⑨">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
@@ -1799,8 +1805,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
         <p>Let <var>outerSubscriptionHasCompleted</var> to a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#boolean" id="ref-for-boolean">boolean</a>, initially false.</p>
        <li data-md>
         <p>Let <var>queue</var> be a new <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②⑨">any</a></code> values, initially empty.</p>
-        <p class="note" role="note"><span class="marker">Note:</span> This <var>queue</var> is used to store any <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③④">Observable</a></code>s emitted by <var>sourceObservable</var>,
-  while <var>observable</var> is currently subscribed to an <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑤">Observable</a></code> emitted earlier by <var>sourceObservable</var> that has not yet been exhausted.</p>
+        <p class="note" role="note"><span class="marker">Note:</span> This <var>queue</var> is used to store any <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑤">Observable</a></code>s emitted by <var>sourceObservable</var>,
+  while <var>observable</var> is currently subscribed to an <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑥">Observable</a></code> emitted earlier by <var>sourceObservable</var> that has not yet been exhausted.</p>
        <li data-md>
         <p>Let <var>activeInnerSubscription</var> be a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#boolean" id="ref-for-boolean①">boolean</a>, initially false.</p>
        <li data-md>
@@ -1814,7 +1820,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <ol>
              <li data-md>
               <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①">Append</a> <var>value</var> to <var>queue</var>.</p>
-              <p class="note" role="note"><span class="marker">Note:</span> This <var>value</var> will eventually be processed once the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑥">Observable</a></code> that is
+              <p class="note" role="note"><span class="marker">Note:</span> This <var>value</var> will eventually be processed once the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑦">Observable</a></code> that is
  currently subscribed-to (as indicated by <var>activeInnerSubscription</var>) is exhausted.</p>
             </ol>
            <li data-md>
@@ -1825,9 +1831,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
              <li data-md>
               <p>Run the <a data-link-type="dfn" href="#flatmap-process-next-value-steps" id="ref-for-flatmap-process-next-value-steps">flatmap process next value steps</a> with <var>value</var>, <var>subscriber</var>, <var>mapper</var>, and <b>references</b> to all of the following: <var>queue</var>, <var>activeInnerSubscription</var>, <var>outerSubscriptionHasCompleted</var>, and <var>idx</var>.</p>
               <div class="note" role="note">
-               <p>Note: This <a data-link-type="dfn" href="#flatmap-process-next-value-steps" id="ref-for-flatmap-process-next-value-steps①">flatmap process next value steps</a> will subscribe to the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑦">Observable</a></code> derived from <var>value</var> (if one such can be derived) and keep
+               <p>Note: This <a data-link-type="dfn" href="#flatmap-process-next-value-steps" id="ref-for-flatmap-process-next-value-steps①">flatmap process next value steps</a> will subscribe to the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑧">Observable</a></code> derived from <var>value</var> (if one such can be derived) and keep
    processing values from it until its subscription becomes inactive (either by
-   error or completion). If this "inner" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑧">Observable</a></code> completes, then the
+   error or completion). If this "inner" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑨">Observable</a></code> completes, then the
    processing steps will recursively invoke themselves with the next <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any③⓪">any</a></code> in <var>queue</var>.</p>
                <p>If no such value <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">exists</a>, then the processing steps will terminate, <b>unsetting</b> <var>activeInnerSubscription</var>, so that future values emitted from <var>sourceObservable</var> are processed correctly.</p>
               </div>
@@ -1898,12 +1904,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p>Set <var>activeInnerSubscription</var> to false.</p>
             <p class="note" role="note"><span class="marker">Note:</span> Because <var>activeInnerSubscription</var> is a reference, this has the effect of
- ensuring that all subsequent values emitted from the "outer" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable③⑨">Observable</a></code> (called <var>sourceObservable</var>.</p>
+ ensuring that all subsequent values emitted from the "outer" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⓪">Observable</a></code> (called <var>sourceObservable</var>.</p>
            <li data-md>
             <p>If <var>outerSubscriptionHasCompleted</var> is true, run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete①⑤">complete()</a></code> method.</p>
-            <p class="note" role="note"><span class="marker">Note:</span> This means the "outer" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⓪">Observable</a></code> has already completed, but did not
+            <p class="note" role="note"><span class="marker">Note:</span> This means the "outer" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④①">Observable</a></code> has already completed, but did not
  proceed to complete <var>subscriber</var> yet because there was at least one more pending
- "inner" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④①">Observable</a></code> (i.e., <var>innerObservable</var>) that had already been queued and
+ "inner" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④②">Observable</a></code> (i.e., <var>innerObservable</var>) that had already been queued and
  had not yet completed. Until right now!</p>
           </ol>
         </ol>
@@ -1920,7 +1926,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>sourceObservable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑦">this</a>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑨">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④②">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①③">subscribe callback</a> is an
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new⑨">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④③">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①③">subscribe callback</a> is an
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber②①">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
@@ -1931,7 +1937,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
         <p>Let <var>activeInnerAbortController</var> be an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller①">AbortController</a></code>-or-null, initially null.</p>
         <p class="note" role="note"><span class="marker">Note:</span> This <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller②">AbortController</a></code> is assigned to a new <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller③">AbortController</a></code> only by this
   algorithm’s <a href="#switchmap-next-steps">next steps</a> (below), and only assigned to
-  null by the <a data-link-type="dfn" href="#switchmap-process-next-value-steps" id="ref-for-switchmap-process-next-value-steps">switchmap process next value steps</a>, when the "inner" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④③">Observable</a></code> either
+  null by the <a data-link-type="dfn" href="#switchmap-process-next-value-steps" id="ref-for-switchmap-process-next-value-steps">switchmap process next value steps</a>, when the "inner" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④④">Observable</a></code> either
   completes or errors. This variable is used as a marker for whether there is currently an
   active "inner" subscription. The <a href="#switchmap-complete-steps">complete steps</a> below care about this, because if <var>sourceObservable</var> completes while there is an active
   "inner" subscription, we do not immediately complete <var>subscriber</var>. In that case, <var>subscriber</var>’s completion becomes blocked on the "inner" subscription’s completion.</p>
@@ -1944,16 +1950,16 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
           <ol>
            <li data-md>
             <p>If <var>activeInnerAbortController</var> is not null, then <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal-abort" id="ref-for-abortcontroller-signal-abort">signal abort</a> <var>activeInnerAbortController</var>.</p>
-            <p class="note" role="note"><span class="marker">Note:</span> This "unsubscribes" from the "inner" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④④">Observable</a></code> that was derived from the
+            <p class="note" role="note"><span class="marker">Note:</span> This "unsubscribes" from the "inner" <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑤">Observable</a></code> that was derived from the
   value that was <i>last</i> pushed from <var>sourceObservable</var>. Then we immediately
-  subscribe to the <i>new</i> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑤">Observable</a></code> that we’re about to derive from <var>value</var>,
+  subscribe to the <i>new</i> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑥">Observable</a></code> that we’re about to derive from <var>value</var>,
   i.e., the <i>most-recently</i> pushed value from <var>sourceObservable</var>.</p>
            <li data-md>
             <p>Set <var>activeInnerAbortController</var> to a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①⓪">new</a> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller④">AbortController</a></code>.</p>
            <li data-md>
             <p>Run the <a data-link-type="dfn" href="#switchmap-process-next-value-steps" id="ref-for-switchmap-process-next-value-steps①">switchmap process next value steps</a> with <var>value</var>, <var>subscriber</var>, <var>mapper</var>,
   and <b>references</b> to all of the following: <var>activeInnerAbortController</var>, <var>outerSubscriptionHasCompleted</var>, and <var>idx</var>.</p>
-            <p class="note" role="note"><span class="marker">Note:</span> The <a data-link-type="dfn" href="#switchmap-process-next-value-steps" id="ref-for-switchmap-process-next-value-steps②">switchmap process next value steps</a> will subscribe to the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑥">Observable</a></code> derived from <var>value</var> (if one such can be derived) and keep processing
+            <p class="note" role="note"><span class="marker">Note:</span> The <a data-link-type="dfn" href="#switchmap-process-next-value-steps" id="ref-for-switchmap-process-next-value-steps②">switchmap process next value steps</a> will subscribe to the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑦">Observable</a></code> derived from <var>value</var> (if one such can be derived) and keep processing
   values from it until either (1) its subscription becomes inactive (either by error or
   completion), or (2) <var>activeInnerAbortController</var> <a href="#switchmap-next-steps">gets
   aborted</a>, due to <var>sourceObservable</var> pushing another <i>newer</i> value that will
@@ -2067,7 +2073,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>sourceObservable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑧">this</a>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①①">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑦">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①④">subscribe callback</a> is an
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①①">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑧">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①④">subscribe callback</a> is an
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber②③">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
@@ -2156,7 +2162,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>sourceObservable</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑨">this</a>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①②">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑧">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①⑤">subscribe callback</a> is an
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①②">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑨">Observable</a></code> whose <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①⑤">subscribe callback</a> is an
  algorithm that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber②④">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
       <ol>
        <li data-md>
@@ -2244,7 +2250,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <li data-md>
           <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①">Reject</a> <var>p</var> with <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal②②">signal</a></code>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org#abortsignal-abort-reason" id="ref-for-abortsignal-abort-reason④">abort reason</a>.</p>
         </ol>
-        <p class="note" role="note"><span class="marker">Note:</span> All we have to do here is <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject②">reject</a> <var>p</var>. Note that the subscription to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③⓪">this</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑨">Observable</a></code> will also be closed automatically, since the "inner" Subscriber gets <a data-link-type="dfn" href="#close-a-subscription" id="ref-for-close-a-subscription⑤">closed</a> in response to <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal②③">signal</a></code> getting <a data-link-type="dfn" href="https://dom.spec.whatwg.org#abortsignal-signal-abort" id="ref-for-abortsignal-signal-abort②">signal abort</a>.</p>
+        <p class="note" role="note"><span class="marker">Note:</span> All we have to do here is <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject②">reject</a> <var>p</var>. Note that the subscription to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③⓪">this</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤⓪">Observable</a></code> will also be closed automatically, since the "inner" Subscriber gets <a data-link-type="dfn" href="#close-a-subscription" id="ref-for-close-a-subscription⑤">closed</a> in response to <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal②③">signal</a></code> getting <a data-link-type="dfn" href="https://dom.spec.whatwg.org#abortsignal-signal-abort" id="ref-for-abortsignal-signal-abort②">signal abort</a>.</p>
       </ol>
      <li data-md>
       <p>Let <var>values</var> be a new <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>.</p>
@@ -2286,7 +2292,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
  «<var>visitor callback controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal②⓪">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal②⑤">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal③">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>.</p>
       <div class="note" role="note">
        <p>Many trivial <a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer①⑧">internal observers</a> act as pass-throughs, and do not control the
-   subscription to the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤⓪">Observable</a></code> that they represent; that is, their <a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①⑨">error steps</a> and <a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①⑦">complete steps</a> are called when the
+   subscription to the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤①">Observable</a></code> that they represent; that is, their <a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①⑨">error steps</a> and <a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①⑦">complete steps</a> are called when the
    subscription is terminated, and their <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①⑧">next steps</a> simply pass some
    version of the given value along the chain.</p>
        <p>For this operator, however, the below <var>observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①⑨">next steps</a> are
@@ -2439,7 +2445,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
        <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps②⓪">complete steps</a>
        <dd data-md>
         <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject①⑤">Reject</a> <var>p</var> with a new <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-rangeerror" id="ref-for-exceptiondef-rangeerror">RangeError</a></code>.</p>
-        <p class="note" role="note"><span class="marker">Note:</span> This is only reached when the source <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤①">Observable</a></code> completes <em>before</em> it emits a
+        <p class="note" role="note"><span class="marker">Note:</span> This is only reached when the source <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤②">Observable</a></code> completes <em>before</em> it emits a
   single value.</p>
       </dl>
      <li data-md>
@@ -2690,7 +2696,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
 };
 
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget①"><c- g>EventTarget</c-></a> {
-  <a data-link-type="idl-name" href="#observable" id="ref-for-observable⑤②"><c- n>Observable</c-></a> <a class="idl-code" data-link-type="method" href="#dom-eventtarget-when" id="ref-for-dom-eventtarget-when①"><c- g>when</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="EventTarget/when(type, options), EventTarget/when(type)" data-dfn-type="argument" data-export id="dom-eventtarget-when-type-options-type"><code><c- g>type</c-></code></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions" id="ref-for-dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="EventTarget/when(type, options), EventTarget/when(type)" data-dfn-type="argument" data-export id="dom-eventtarget-when-type-options-options"><code><c- g>options</c-></code></dfn> = {});
+  <a data-link-type="idl-name" href="#observable" id="ref-for-observable⑤③"><c- n>Observable</c-></a> <a class="idl-code" data-link-type="method" href="#dom-eventtarget-when" id="ref-for-dom-eventtarget-when①"><c- g>when</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="EventTarget/when(type, options), EventTarget/when(type)" data-dfn-type="argument" data-export id="dom-eventtarget-when-type-options-type"><code><c- g>type</c-></code></dfn>, <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-observableeventlisteneroptions" id="ref-for-dictdef-observableeventlisteneroptions"><c- n>ObservableEventListenerOptions</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="EventTarget/when(type, options), EventTarget/when(type)" data-dfn-type="argument" data-export id="dom-eventtarget-when-type-options-options"><code><c- g>options</c-></code></dfn> = {});
 };
 </pre>
    <div class="algorithm" data-algorithm="when(type, options)" data-algorithm-for="EventTarget">
@@ -2701,7 +2707,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>event target</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this④②">this</a>.</p>
      <li data-md>
-      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①⑨">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤③">Observable</a></code>, initialized as follows:</p>
+      <p>Let <var>observable</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①⑨">new</a> <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤④">Observable</a></code>, initialized as follows:</p>
       <dl>
        <dt data-md><a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback①⑥">subscribe callback</a>
        <dd data-md>
@@ -2769,7 +2775,7 @@ you can consult the following resources:</p>
    </ul>
    <h2 class="heading settled" data-level="5" id="acks"><span class="secno">5. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acks"></a></h2>
    <p>A special thanks to <a href="https://benlesh.com/">Ben Lesh</a> for much of the design
-input for the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤④">Observable</a></code> API, and his many years of work maintaining
+input for the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤⑤">Observable</a></code> API, and his many years of work maintaining
 userland Observable code that made this contribution to the web platform
 possible.</p>
   </main>
@@ -3104,7 +3110,7 @@ possible.</p>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
    <div class="issue"> Spec the <i><b>From async iterable</b></i> conversion steps which take place before
- the iterable conversion steps. <a class="issue-return" href="#issue-7a05c06a" title="Jump to section">↵</a></div>
+ the iterable conversion steps. See <a href="https://github.com/WICG/observable/issues/191">issue #191</a>. <a class="issue-return" href="#issue-0b094475" title="Jump to section">↵</a></div>
    <div class="issue"> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from">from()</a></code> directly. Rather, we should
  call some internal algorithm that passes-back the exceptions for us to handle
  properly here, since we want to pipe them to <var>subscriber</var>. <a class="issue-return" href="#issue-4eb2abb1" title="Jump to section">↵</a></div>
@@ -3494,7 +3500,7 @@ let dfnPanelData = {
 "internal-observer-complete-steps": {"dfnID":"internal-observer-complete-steps","dfnText":"complete steps","external":false,"refSections":[{"refs":[{"id":"ref-for-internal-observer-complete-steps"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-internal-observer-complete-steps\u2460"},{"id":"ref-for-internal-observer-complete-steps\u2461"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-internal-observer-complete-steps\u2462"},{"id":"ref-for-internal-observer-complete-steps\u2463"},{"id":"ref-for-internal-observer-complete-steps\u2464"},{"id":"ref-for-internal-observer-complete-steps\u2465"},{"id":"ref-for-internal-observer-complete-steps\u2466"},{"id":"ref-for-internal-observer-complete-steps\u2467"},{"id":"ref-for-internal-observer-complete-steps\u2468"},{"id":"ref-for-internal-observer-complete-steps\u2460\u24ea"},{"id":"ref-for-internal-observer-complete-steps\u2460\u2460"},{"id":"ref-for-internal-observer-complete-steps\u2460\u2461"},{"id":"ref-for-internal-observer-complete-steps\u2460\u2462"},{"id":"ref-for-internal-observer-complete-steps\u2460\u2463"},{"id":"ref-for-internal-observer-complete-steps\u2460\u2464"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-internal-observer-complete-steps\u2460\u2465"},{"id":"ref-for-internal-observer-complete-steps\u2460\u2466"},{"id":"ref-for-internal-observer-complete-steps\u2460\u2467"},{"id":"ref-for-internal-observer-complete-steps\u2460\u2468"},{"id":"ref-for-internal-observer-complete-steps\u2461\u24ea"},{"id":"ref-for-internal-observer-complete-steps\u2461\u2460"},{"id":"ref-for-internal-observer-complete-steps\u2461\u2461"},{"id":"ref-for-internal-observer-complete-steps\u2461\u2462"},{"id":"ref-for-internal-observer-complete-steps\u2461\u2463"}],"title":"2.3.3. Promise-returning operators"}],"url":"#internal-observer-complete-steps"},
 "internal-observer-error-steps": {"dfnID":"internal-observer-error-steps","dfnText":"error steps","external":false,"refSections":[{"refs":[{"id":"ref-for-internal-observer-error-steps"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-internal-observer-error-steps\u2460"},{"id":"ref-for-internal-observer-error-steps\u2461"},{"id":"ref-for-internal-observer-error-steps\u2462"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-internal-observer-error-steps\u2463"},{"id":"ref-for-internal-observer-error-steps\u2464"},{"id":"ref-for-internal-observer-error-steps\u2465"},{"id":"ref-for-internal-observer-error-steps\u2466"},{"id":"ref-for-internal-observer-error-steps\u2467"},{"id":"ref-for-internal-observer-error-steps\u2468"},{"id":"ref-for-internal-observer-error-steps\u2460\u24ea"},{"id":"ref-for-internal-observer-error-steps\u2460\u2460"},{"id":"ref-for-internal-observer-error-steps\u2460\u2461"},{"id":"ref-for-internal-observer-error-steps\u2460\u2462"},{"id":"ref-for-internal-observer-error-steps\u2460\u2463"},{"id":"ref-for-internal-observer-error-steps\u2460\u2464"},{"id":"ref-for-internal-observer-error-steps\u2460\u2465"},{"id":"ref-for-internal-observer-error-steps\u2460\u2466"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-internal-observer-error-steps\u2460\u2467"},{"id":"ref-for-internal-observer-error-steps\u2460\u2468"},{"id":"ref-for-internal-observer-error-steps\u2461\u24ea"},{"id":"ref-for-internal-observer-error-steps\u2461\u2460"},{"id":"ref-for-internal-observer-error-steps\u2461\u2461"},{"id":"ref-for-internal-observer-error-steps\u2461\u2462"},{"id":"ref-for-internal-observer-error-steps\u2461\u2463"},{"id":"ref-for-internal-observer-error-steps\u2461\u2464"},{"id":"ref-for-internal-observer-error-steps\u2461\u2465"}],"title":"2.3.3. Promise-returning operators"}],"url":"#internal-observer-error-steps"},
 "internal-observer-next-steps": {"dfnID":"internal-observer-next-steps","dfnText":"next steps","external":false,"refSections":[{"refs":[{"id":"ref-for-internal-observer-next-steps"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-internal-observer-next-steps\u2460"},{"id":"ref-for-internal-observer-next-steps\u2461"},{"id":"ref-for-internal-observer-next-steps\u2462"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-internal-observer-next-steps\u2463"},{"id":"ref-for-internal-observer-next-steps\u2464"},{"id":"ref-for-internal-observer-next-steps\u2465"},{"id":"ref-for-internal-observer-next-steps\u2466"},{"id":"ref-for-internal-observer-next-steps\u2467"},{"id":"ref-for-internal-observer-next-steps\u2468"},{"id":"ref-for-internal-observer-next-steps\u2460\u24ea"},{"id":"ref-for-internal-observer-next-steps\u2460\u2460"},{"id":"ref-for-internal-observer-next-steps\u2460\u2461"},{"id":"ref-for-internal-observer-next-steps\u2460\u2462"},{"id":"ref-for-internal-observer-next-steps\u2460\u2463"},{"id":"ref-for-internal-observer-next-steps\u2460\u2464"},{"id":"ref-for-internal-observer-next-steps\u2460\u2465"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-internal-observer-next-steps\u2460\u2466"},{"id":"ref-for-internal-observer-next-steps\u2460\u2467"},{"id":"ref-for-internal-observer-next-steps\u2460\u2468"},{"id":"ref-for-internal-observer-next-steps\u2461\u24ea"},{"id":"ref-for-internal-observer-next-steps\u2461\u2460"},{"id":"ref-for-internal-observer-next-steps\u2461\u2461"},{"id":"ref-for-internal-observer-next-steps\u2461\u2462"},{"id":"ref-for-internal-observer-next-steps\u2461\u2463"},{"id":"ref-for-internal-observer-next-steps\u2461\u2464"},{"id":"ref-for-internal-observer-next-steps\u2461\u2465"},{"id":"ref-for-internal-observer-next-steps\u2461\u2466"}],"title":"2.3.3. Promise-returning operators"}],"url":"#internal-observer-next-steps"},
-"observable": {"dfnID":"observable","dfnText":"Observable","external":false,"refSections":[{"refs":[{"id":"ref-for-observable"},{"id":"ref-for-observable\u2460"},{"id":"ref-for-observable\u2461"},{"id":"ref-for-observable\u2462"},{"id":"ref-for-observable\u2463"},{"id":"ref-for-observable\u2464"},{"id":"ref-for-observable\u2465"},{"id":"ref-for-observable\u2466"},{"id":"ref-for-observable\u2467"},{"id":"ref-for-observable\u2468"},{"id":"ref-for-observable\u2460\u24ea"},{"id":"ref-for-observable\u2460\u2460"},{"id":"ref-for-observable\u2460\u2461"},{"id":"ref-for-observable\u2460\u2462"},{"id":"ref-for-observable\u2460\u2463"}],"title":"2.2. The Observable interface"},{"refs":[{"id":"ref-for-observable\u2460\u2464"},{"id":"ref-for-observable\u2460\u2465"},{"id":"ref-for-observable\u2460\u2466"},{"id":"ref-for-observable\u2460\u2467"},{"id":"ref-for-observable\u2460\u2468"},{"id":"ref-for-observable\u2461\u24ea"},{"id":"ref-for-observable\u2461\u2460"},{"id":"ref-for-observable\u2461\u2461"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-observable\u2461\u2462"}],"title":"2.3.1. from()"},{"refs":[{"id":"ref-for-observable\u2461\u2463"},{"id":"ref-for-observable\u2461\u2464"},{"id":"ref-for-observable\u2461\u2465"},{"id":"ref-for-observable\u2461\u2466"},{"id":"ref-for-observable\u2461\u2467"},{"id":"ref-for-observable\u2461\u2468"},{"id":"ref-for-observable\u2462\u24ea"},{"id":"ref-for-observable\u2462\u2460"},{"id":"ref-for-observable\u2462\u2461"},{"id":"ref-for-observable\u2462\u2462"},{"id":"ref-for-observable\u2462\u2463"},{"id":"ref-for-observable\u2462\u2464"},{"id":"ref-for-observable\u2462\u2465"},{"id":"ref-for-observable\u2462\u2466"},{"id":"ref-for-observable\u2462\u2467"},{"id":"ref-for-observable\u2462\u2468"},{"id":"ref-for-observable\u2463\u24ea"},{"id":"ref-for-observable\u2463\u2460"},{"id":"ref-for-observable\u2463\u2461"},{"id":"ref-for-observable\u2463\u2462"},{"id":"ref-for-observable\u2463\u2463"},{"id":"ref-for-observable\u2463\u2464"},{"id":"ref-for-observable\u2463\u2465"},{"id":"ref-for-observable\u2463\u2466"},{"id":"ref-for-observable\u2463\u2467"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-observable\u2463\u2468"},{"id":"ref-for-observable\u2464\u24ea"},{"id":"ref-for-observable\u2464\u2460"}],"title":"2.3.3. Promise-returning operators"},{"refs":[{"id":"ref-for-observable\u2464\u2461"},{"id":"ref-for-observable\u2464\u2462"}],"title":"3. EventTarget integration"},{"refs":[{"id":"ref-for-observable\u2464\u2463"}],"title":"5. Acknowledgements"}],"url":"#observable"},
+"observable": {"dfnID":"observable","dfnText":"Observable","external":false,"refSections":[{"refs":[{"id":"ref-for-observable"},{"id":"ref-for-observable\u2460"},{"id":"ref-for-observable\u2461"},{"id":"ref-for-observable\u2462"},{"id":"ref-for-observable\u2463"},{"id":"ref-for-observable\u2464"},{"id":"ref-for-observable\u2465"},{"id":"ref-for-observable\u2466"},{"id":"ref-for-observable\u2467"},{"id":"ref-for-observable\u2468"},{"id":"ref-for-observable\u2460\u24ea"},{"id":"ref-for-observable\u2460\u2460"},{"id":"ref-for-observable\u2460\u2461"},{"id":"ref-for-observable\u2460\u2462"},{"id":"ref-for-observable\u2460\u2463"}],"title":"2.2. The Observable interface"},{"refs":[{"id":"ref-for-observable\u2460\u2464"},{"id":"ref-for-observable\u2460\u2465"},{"id":"ref-for-observable\u2460\u2466"},{"id":"ref-for-observable\u2460\u2467"},{"id":"ref-for-observable\u2460\u2468"},{"id":"ref-for-observable\u2461\u24ea"},{"id":"ref-for-observable\u2461\u2460"},{"id":"ref-for-observable\u2461\u2461"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-observable\u2461\u2462"}],"title":"2.3.1. from()"},{"refs":[{"id":"ref-for-observable\u2461\u2463"},{"id":"ref-for-observable\u2461\u2464"},{"id":"ref-for-observable\u2461\u2465"},{"id":"ref-for-observable\u2461\u2466"},{"id":"ref-for-observable\u2461\u2467"},{"id":"ref-for-observable\u2461\u2468"},{"id":"ref-for-observable\u2462\u24ea"},{"id":"ref-for-observable\u2462\u2460"},{"id":"ref-for-observable\u2462\u2461"},{"id":"ref-for-observable\u2462\u2462"},{"id":"ref-for-observable\u2462\u2463"},{"id":"ref-for-observable\u2462\u2464"},{"id":"ref-for-observable\u2462\u2465"},{"id":"ref-for-observable\u2462\u2466"},{"id":"ref-for-observable\u2462\u2467"},{"id":"ref-for-observable\u2462\u2468"},{"id":"ref-for-observable\u2463\u24ea"},{"id":"ref-for-observable\u2463\u2460"},{"id":"ref-for-observable\u2463\u2461"},{"id":"ref-for-observable\u2463\u2462"},{"id":"ref-for-observable\u2463\u2463"},{"id":"ref-for-observable\u2463\u2464"},{"id":"ref-for-observable\u2463\u2465"},{"id":"ref-for-observable\u2463\u2466"},{"id":"ref-for-observable\u2463\u2467"},{"id":"ref-for-observable\u2463\u2468"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-observable\u2464\u24ea"},{"id":"ref-for-observable\u2464\u2460"},{"id":"ref-for-observable\u2464\u2461"}],"title":"2.3.3. Promise-returning operators"},{"refs":[{"id":"ref-for-observable\u2464\u2462"},{"id":"ref-for-observable\u2464\u2463"}],"title":"3. EventTarget integration"},{"refs":[{"id":"ref-for-observable\u2464\u2464"}],"title":"5. Acknowledgements"}],"url":"#observable"},
 "observable-convert-to-an-observable": {"dfnID":"observable-convert-to-an-observable","dfnText":"convert to an Observable","external":false,"refSections":[{"refs":[{"id":"ref-for-observable-convert-to-an-observable"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-observable-convert-to-an-observable\u2460"}],"title":"2.3.1. from()"},{"refs":[{"id":"ref-for-observable-convert-to-an-observable\u2461"}],"title":"2.3.2. Observable-returning operators"}],"url":"#observable-convert-to-an-observable"},
 "observable-event-listener-invoke-algorithm": {"dfnID":"observable-event-listener-invoke-algorithm","dfnText":"observable event listener invoke algorithm","external":false,"refSections":[{"refs":[{"id":"ref-for-observable-event-listener-invoke-algorithm"}],"title":"3. EventTarget integration"}],"url":"#observable-event-listener-invoke-algorithm"},
 "observable-subscribe-callback": {"dfnID":"observable-subscribe-callback","dfnText":"subscribe callback","external":false,"refSections":[{"refs":[{"id":"ref-for-observable-subscribe-callback"},{"id":"ref-for-observable-subscribe-callback\u2460"}],"title":"2.2. The Observable interface"},{"refs":[{"id":"ref-for-observable-subscribe-callback\u2461"},{"id":"ref-for-observable-subscribe-callback\u2462"},{"id":"ref-for-observable-subscribe-callback\u2463"},{"id":"ref-for-observable-subscribe-callback\u2464"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-observable-subscribe-callback\u2465"},{"id":"ref-for-observable-subscribe-callback\u2466"},{"id":"ref-for-observable-subscribe-callback\u2467"},{"id":"ref-for-observable-subscribe-callback\u2468"},{"id":"ref-for-observable-subscribe-callback\u2460\u24ea"},{"id":"ref-for-observable-subscribe-callback\u2460\u2460"},{"id":"ref-for-observable-subscribe-callback\u2460\u2461"},{"id":"ref-for-observable-subscribe-callback\u2460\u2462"},{"id":"ref-for-observable-subscribe-callback\u2460\u2463"},{"id":"ref-for-observable-subscribe-callback\u2460\u2464"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-observable-subscribe-callback\u2460\u2465"}],"title":"3. EventTarget integration"}],"url":"#observable-subscribe-callback"},
