@@ -27,8 +27,9 @@ urlPrefix: https://tc39.es/ecma262/#; spec: ECMASCRIPT
   type: dfn
     text: current realm
     text: Object; url: sec-object-type
-    text: normal completion; url: sec-normalcompletion
-    text: throw completion; url: sec-throwcompletion
+    text: normal completion; url: sec-completion-record-specification-type
+    text: NormalCompletion; url: sec-normalcompletion
+    text: throw completion; url: sec-completion-record-specification-type
     url: sec-returnifabrupt-shorthands
       text: ?
       text: !
@@ -510,6 +511,14 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
          1. Let |iteratorRecord| be [=!=] |iteratorRecordCompletion|.
 
+         1. If |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=] is
+            [=AbortSignal/aborted=], then return.
+
+         1. [=AbortSignal/add|Add the following abort algorithm=] to |subscriber|'s
+            [=Subscriber/subscription controller=]'s [=AbortController/signal=]:
+
+            1. Run [$IteratorClose$](|iteratorRecord|, [=NormalCompletion=](UNUSED)).
+
          1. [=iteration/While=] true:
 
             1. Let |next| be [$IteratorStepValue$](|iteratorRecord|).
@@ -528,6 +537,9 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
                3. Return.
 
             1. Run |subscriber|'s {{Subscriber/next()}} given |next|.
+
+            1. If |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=]
+               is [=AbortSignal/aborted=], then [=iteration/break=].
 
     1. <i id=from-promise-conversion><b>From Promise</b></i>: If [$IsPromise$](|value|) is true,
        then:
