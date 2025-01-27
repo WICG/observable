@@ -513,6 +513,12 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
          1. Let |nextCompletion| be [$IteratorNext$](|iteratorRecord|).
 
+            Note: We use [$IteratorNext$] here instead of [$IteratorStepValue$], because
+            [$IteratorStepValue$] expects the iterator's `next()` method to return an object that
+            can immediately be inspected for a value, whereas in the async iterator case, `next()`
+            is expected to return a Promise/thenable (which we wrap in a Promise and react to to get
+            that value).
+
          1. If |nextCompletion| is a [=throw completion=], then:
 
             1. [=Assert=]: |iteratorRecord|'s \[[Done]] is true.
