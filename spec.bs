@@ -503,6 +503,9 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        Otherwise, return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
+         1. If |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=] is
+            [=AbortSignal/aborted=], then return.
+
          1. Let |iteratorRecordCompletion| be [$GetIterator$](|value|, sync).
 
          1. If |iteratorRecordCompletion| is a [=throw completion=], then run |subscriber|'s
