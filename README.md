@@ -51,13 +51,17 @@ await element.when('mousemove')
 ```js
 // Imperative
 const controller = new AbortController();
-element.addEventListener('mousemove', e => {
-  console.log(e);
+element.addEventListener(
+	'mousemove',
+	(e) => {
+		console.log(e);
 
-  element.addEventListener('mouseup', e => {
-    controller.abort();
-  });
-}, { signal: controller.signal });
+		element.addEventListener('mouseup', (e) => {
+			controller.abort();
+		});
+	},
+	{ signal: controller.signal },
+);
 ```
 
 </details>
@@ -213,33 +217,33 @@ keys the user might hit while using an app:
 
 ```js
 const pattern = [
-  'ArrowUp',
-  'ArrowUp',
-  'ArrowDown',
-  'ArrowDown',
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowLeft',
-  'ArrowRight',
-  'b',
-  'a',
-  'b',
-  'a',
-  'Enter',
+	'ArrowUp',
+	'ArrowUp',
+	'ArrowDown',
+	'ArrowDown',
+	'ArrowLeft',
+	'ArrowRight',
+	'ArrowLeft',
+	'ArrowRight',
+	'b',
+	'a',
+	'b',
+	'a',
+	'Enter',
 ];
 
-const keys = document.when('keydown').map(e => e.key);
+const keys = document.when('keydown').map((e) => e.key);
 
 keys
-  .flatMap(firstKey => {
-    if (firstKey === pattern[0]) {
-      return keys
-        .take(pattern.length - 1)
-        .every((k, i) => k === pattern[i + 1]);
-    }
-  })
-  .filter(matched => matched)
-  .subscribe(() => console.log('Secret code matched!'));
+	.flatMap((firstKey) => {
+		if (firstKey === pattern[0]) {
+			return keys
+				.take(pattern.length - 1)
+				.every((k, i) => k === pattern[i + 1]);
+		}
+	})
+	.filter((matched) => matched)
+	.subscribe(() => console.log('Secret code matched!'));
 ```
 
 <details>
@@ -693,14 +697,14 @@ discussion comments:
 This section bares a collection of web standards and standards positions issues
 used to track the Observable proposal's life outside of this repository.
 
- - [Mozilla standards
-   position](https://github.com/mozilla/standards-positions/issues/945)
- - [WebKit standards
-   position](https://github.com/WebKit/standards-positions/issues/292)
- - [Chrome Status](https://chromestatus.com/feature/5154593776599040)
- - [WinterCG](https://github.com/wintercg/proposal-common-minimum-api/issues/72)
- - [Node.js](https://github.com/nodejs/standards-positions/issues/1)
- - [W3C TAG review](https://github.com/w3ctag/design-reviews/issues/902)
+- [Mozilla standards
+  position](https://github.com/mozilla/standards-positions/issues/945)
+- [WebKit standards
+  position](https://github.com/WebKit/standards-positions/issues/292)
+- [Chrome Status](https://chromestatus.com/feature/5154593776599040)
+- [WinterCG](https://github.com/wintercg/proposal-common-minimum-api/issues/72)
+- [Node.js](https://github.com/nodejs/standards-positions/issues/1)
+- [W3C TAG review](https://github.com/w3ctag/design-reviews/issues/902)
 
 ## User needs
 
@@ -720,6 +724,46 @@ Additionally, as an API like `EventTarget`, `AbortController`, and one related
 to `Promise`s, it enables developers to build less-complicated event handling
 flows by constructing them declaratively, which may enable them to build more
 sound user experiences on the Web.
+
+## Why not AsyncIterable/AsyncIterator?
+
+Many may point out that async iteration already exists in the platform as a JavaScript
+language feature. While it does provide similar features, it's not a great fit for
+events and event coordination.
+
+While Observable is a straightforward push-based primitive where the producer pushes
+values to the consumer as soon as they're ready, AsyncIterable uses a more complex
+pull-then-push model. In this model, the consumer first pulls a promise from the
+producer, then the producer pushes the value (or completion) to the consumer by
+resolving that promise.
+
+This leads to several problems when modeling events on EventTarget:
+
+1. **Unbounded buffering of values**: If the producer generates values faster than
+   the consumer can async iterate them, values must be buffered. This buffer would
+   need to be unbounded and could result in memory pressure.
+
+2. **Unbounded buffering of promises**: If the consumer pulls faster than the producer
+   can generate values (less likely but possible), we would need to allocate N promises
+   and wait for the producer to generate N values - again creating an unbounded buffer.
+
+3. **No clean cancellation**: AsyncIterable lacks direct cancellation support, making
+   event listener teardown unergonomic. Observable subscriptions can be cleanly torn
+   down by calling `abort()` on a supplied `AbortSignal`. With async iteration, there
+   are two suboptimal approaches:
+
+   - Wait for iteration to stop (via `return` or `break`), which means not calling
+     `next()` again. However, this delays teardown until the producer's next value.
+
+   - Supply an `AbortSignal` when we create an `AsyncIterator`, then call `abort()`.
+     However, this requires rejecting any in-flight promises (or they'll be leaked)
+     and forces consumers to handle these rejections separately from normal rejection
+     handling.
+
+## Authors:
+
+- [Dominic Farolino](https://github.com/domfarolino)
+- [Ben Lesh](https://github.com/benlesh)
 
 ## Authors:
 
