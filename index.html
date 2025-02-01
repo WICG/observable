@@ -4,9 +4,9 @@
   <title>Observable</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version c67c745b1, updated Fri Jan 17 14:27:28 2025 -0800" name="generator">
+  <meta content="Bikeshed version c2797e6ab, updated Thu Jan 30 16:24:26 2025 -0800" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="6e0bbcdd7af1804a678103fd83ff8028009ad0f5" name="revision">
+  <meta content="9bd160fe20098a1cba9d847f885e9e8749f765f2" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -970,7 +970,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-01-27">27 January 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-01">1 February 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1358,7 +1358,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
         <p>Otherwise, if <var>nextRecord</var> is <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-completion-record-specification-type" id="ref-for-sec-completion-record-specification-type①">normal completion</a>, then set <var>nextPromise</var> to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-resolved-with" id="ref-for-a-promise-resolved-with">a promise resolved with</a> <var>nextRecord</var>’s [[Value]].</p>
         <p class="note" role="note"><span class="marker">Note:</span> This is done in case <var>nextRecord</var>’s [[Value]] is not <em>itself</em> already a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise⑨">Promise</a></code>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org#react" id="ref-for-react">React</a> to <var>nextPromise</var>:</p>
+        <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled" id="ref-for-dfn-perform-steps-once-promise-is-settled">React</a> to <var>nextPromise</var>:</p>
         <ul>
          <li data-md>
           <p>If <var>nextPromise</var> was fulfilled with value <var>iteratorResult</var>, then:</p>
@@ -1396,7 +1396,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
         <p class="note" role="note"><span class="marker">Note:</span> This means we invoke the <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑤">error()</a></code> method synchronously with respect to
   subscription, which is the only time this can happen for async iterables that are
   converted to <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②⓪">Observable</a></code>s. In all other cases, errors are propagated to the observer
-  asynchronously, with microtask timing, by virtue of being wrapped in a rejected <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise①⓪">Promise</a></code> that <var>nextAlgorithm</var> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org#react" id="ref-for-react①">reacts</a> to. This synchronous-error-propagation
+  asynchronously, with microtask timing, by virtue of being wrapped in a rejected <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise①⓪">Promise</a></code> that <var>nextAlgorithm</var> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled" id="ref-for-dfn-perform-steps-once-promise-is-settled①">reacts</a> to. This synchronous-error-propagation
   behavior is consistent with language constructs, i.e., <strong>for-await of</strong> loops that invoke <code class="idl"><a data-link-type="idl" href="https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols" id="ref-for-sec-well-known-symbols②">%Symbol.asyncIterator%</a></code> and synchronously re-throw exceptions to catch blocks outside
   the loop, before any <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/control-abstraction-objects.html#await" id="ref-for-await">Awaiting</a> takes place.</p>
        <li data-md>
@@ -1472,7 +1472,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
   that takes a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber①④">Subscriber</a></code> <var>subscriber</var> and does the following:</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org#react" id="ref-for-react②">React</a> to <var>value</var>:</p>
+          <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled" id="ref-for-dfn-perform-steps-once-promise-is-settled②">React</a> to <var>value</var>:</p>
           <ol>
            <li data-md>
             <p>If <var>value</var> was fulfilled with value <var>v</var>, then:</p>
@@ -3086,7 +3086,7 @@ possible.</p>
      <li><span class="dfn-paneled" id="3ab7bf79">callback function</span>
      <li><span class="dfn-paneled" id="10ce5f6f">invoke</span>
      <li><span class="dfn-paneled" id="56f81a8e">new</span>
-     <li><span class="dfn-paneled" id="9b6c05db">react</span>
+     <li><span class="dfn-paneled" id="750a2f08">react</span>
      <li><span class="dfn-paneled" id="b262501e">reject</span>
      <li><span class="dfn-paneled" id="3b90bdcd">resolve</span>
      <li><span class="dfn-paneled" id="9cce47fd">sequence</span>
@@ -3475,6 +3475,7 @@ let dfnPanelData = {
 "7004c2a7": {"dfnID":"7004c2a7","dfnText":"VoidFunction","external":true,"refSections":[{"refs":[{"id":"ref-for-VoidFunction"},{"id":"ref-for-VoidFunction\u2460"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-VoidFunction\u2461"},{"id":"ref-for-VoidFunction\u2462"},{"id":"ref-for-VoidFunction\u2463"},{"id":"ref-for-VoidFunction\u2464"}],"title":"2.2. The Observable interface"},{"refs":[{"id":"ref-for-VoidFunction\u2465"},{"id":"ref-for-VoidFunction\u2466"}],"title":"2.3.2. Observable-returning operators"}],"url":"https://webidl.spec.whatwg.org/#VoidFunction"},
 "711357e0": {"dfnID":"711357e0","dfnText":"abort","external":true,"refSections":[{"refs":[{"id":"ref-for-eventdef-abortsignal-abort"}],"title":"2.3.3. Promise-returning operators"}],"url":"https://dom.spec.whatwg.org/#eventdef-abortsignal-abort"},
 "72f4451c": {"dfnID":"72f4451c","dfnText":"Await","external":true,"refSections":[{"refs":[{"id":"ref-for-await"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/multipage/control-abstraction-objects.html#await"},
+"750a2f08": {"dfnID":"750a2f08","dfnText":"react","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-perform-steps-once-promise-is-settled"},{"id":"ref-for-dfn-perform-steps-once-promise-is-settled\u2460"},{"id":"ref-for-dfn-perform-steps-once-promise-is-settled\u2461"}],"title":"2.2.1. Supporting concepts"}],"url":"https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled"},
 "75264195": {"dfnID":"75264195","dfnText":"passive","external":true,"refSections":[{"refs":[{"id":"ref-for-event-listener-passive"}],"title":"3. EventTarget integration"}],"url":"https://dom.spec.whatwg.org#event-listener-passive"},
 "75393c04": {"dfnID":"75393c04","dfnText":"exist (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"}],"title":"2.3.2. Observable-returning operators"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
 "77b4c09a": {"dfnID":"77b4c09a","dfnText":"assert","external":true,"refSections":[{"refs":[{"id":"ref-for-assert"},{"id":"ref-for-assert\u2460"},{"id":"ref-for-assert\u2461"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-assert\u2462"},{"id":"ref-for-assert\u2463"},{"id":"ref-for-assert\u2464"},{"id":"ref-for-assert\u2465"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-assert\u2466"}],"title":"2.3.2. Observable-returning operators"}],"url":"https://infra.spec.whatwg.org/#assert"},
@@ -3491,7 +3492,6 @@ let dfnPanelData = {
 "971914e6": {"dfnID":"971914e6","dfnText":"%Symbol.iterator%","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-well-known-symbols"},{"id":"ref-for-sec-well-known-symbols\u2460"},{"id":"ref-for-sec-well-known-symbols\u2461"},{"id":"ref-for-sec-well-known-symbols\u2462"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols"},
 "984221ca": {"dfnID":"984221ca","dfnText":"struct","external":true,"refSections":[{"refs":[{"id":"ref-for-struct"},{"id":"ref-for-struct\u2460"}],"title":"2.2.1. Supporting concepts"}],"url":"https://infra.spec.whatwg.org/#struct"},
 "99c988d6": {"dfnID":"99c988d6","dfnText":"remove","external":true,"refSections":[{"refs":[{"id":"ref-for-list-remove"}],"title":"2.3.2. Observable-returning operators"}],"url":"https://infra.spec.whatwg.org/#list-remove"},
-"9b6c05db": {"dfnID":"9b6c05db","dfnText":"react","external":true,"refSections":[{"refs":[{"id":"ref-for-react"},{"id":"ref-for-react\u2460"},{"id":"ref-for-react\u2461"}],"title":"2.2.1. Supporting concepts"}],"url":"https://webidl.spec.whatwg.org#react"},
 "9cce47fd": {"dfnID":"9cce47fd","dfnText":"sequence","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-sequence"}],"title":"2.2. The Observable interface"}],"url":"https://webidl.spec.whatwg.org/#idl-sequence"},
 "b262501e": {"dfnID":"b262501e","dfnText":"reject","external":true,"refSections":[{"refs":[{"id":"ref-for-reject"},{"id":"ref-for-reject\u2460"},{"id":"ref-for-reject\u2461"},{"id":"ref-for-reject\u2462"},{"id":"ref-for-reject\u2463"},{"id":"ref-for-reject\u2464"},{"id":"ref-for-reject\u2465"},{"id":"ref-for-reject\u2466"},{"id":"ref-for-reject\u2467"},{"id":"ref-for-reject\u2468"},{"id":"ref-for-reject\u2460\u24ea"},{"id":"ref-for-reject\u2460\u2460"},{"id":"ref-for-reject\u2460\u2461"},{"id":"ref-for-reject\u2460\u2462"},{"id":"ref-for-reject\u2460\u2463"},{"id":"ref-for-reject\u2460\u2464"},{"id":"ref-for-reject\u2460\u2465"},{"id":"ref-for-reject\u2460\u2466"},{"id":"ref-for-reject\u2460\u2467"},{"id":"ref-for-reject\u2460\u2468"},{"id":"ref-for-reject\u2461\u24ea"},{"id":"ref-for-reject\u2461\u2460"},{"id":"ref-for-reject\u2461\u2461"},{"id":"ref-for-reject\u2461\u2462"},{"id":"ref-for-reject\u2461\u2463"},{"id":"ref-for-reject\u2461\u2464"},{"id":"ref-for-reject\u2461\u2465"},{"id":"ref-for-reject\u2461\u2466"},{"id":"ref-for-reject\u2461\u2467"},{"id":"ref-for-reject\u2461\u2468"},{"id":"ref-for-reject\u2462\u24ea"},{"id":"ref-for-reject\u2462\u2460"},{"id":"ref-for-reject\u2462\u2461"}],"title":"2.3.3. Promise-returning operators"}],"url":"https://webidl.spec.whatwg.org/#reject"},
 "b4cfa5ce": {"dfnID":"b4cfa5ce","dfnText":"throw","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-throw"},{"id":"ref-for-dfn-throw\u2460"}],"title":"2.2.1. Supporting concepts"}],"url":"https://webidl.spec.whatwg.org/#dfn-throw"},
@@ -4157,12 +4157,12 @@ let refsData = {
 "https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-ispromise": {"displayText":"IsPromise","export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"IsPromise","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-ispromise"},
 "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols": {"displayText":"%Symbol.asyncIterator%","export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"%Symbol.asyncIterator%","type":"interface","url":"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols"},
 "https://webidl.spec.whatwg.org#a-promise-rejected-with": {"displayText":"a promise rejected with","export":true,"for_":[],"level":"","normative":true,"shortname":"webidl","spec":"webidl","status":"anchor-block","text":"a promise rejected with","type":"dfn","url":"https://webidl.spec.whatwg.org#a-promise-rejected-with"},
-"https://webidl.spec.whatwg.org#react": {"displayText":"react","export":true,"for_":[],"level":"","normative":true,"shortname":"webidl","spec":"webidl","status":"anchor-block","text":"react","type":"dfn","url":"https://webidl.spec.whatwg.org#react"},
 "https://webidl.spec.whatwg.org/#VoidFunction": {"displayText":"VoidFunction","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"VoidFunction","type":"callback","url":"https://webidl.spec.whatwg.org/#VoidFunction"},
 "https://webidl.spec.whatwg.org/#a-new-promise": {"displayText":"a new promise","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"a new promise","type":"dfn","url":"https://webidl.spec.whatwg.org/#a-new-promise"},
 "https://webidl.spec.whatwg.org/#a-promise-resolved-with": {"displayText":"a promise resolved with","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"a promise resolved with","type":"dfn","url":"https://webidl.spec.whatwg.org/#a-promise-resolved-with"},
 "https://webidl.spec.whatwg.org/#an-exception-was-thrown": {"displayText":"an exception was thrown","export":false,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"an exception was thrown","type":"dfn","url":"https://webidl.spec.whatwg.org/#an-exception-was-thrown"},
 "https://webidl.spec.whatwg.org/#dfn-callback-function": {"displayText":"callback function","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"callback function","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-callback-function"},
+"https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled": {"displayText":"react","export":true,"for_":["promise"],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"react","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled"},
 "https://webidl.spec.whatwg.org/#dfn-specific-type": {"displayText":"specific type","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"specific type","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-specific-type"},
 "https://webidl.spec.whatwg.org/#dfn-throw": {"displayText":"throw","export":true,"for_":["exception"],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"throw","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-throw"},
 "https://webidl.spec.whatwg.org/#exceptiondef-rangeerror": {"displayText":"RangeError","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"RangeError","type":"exception","url":"https://webidl.spec.whatwg.org/#exceptiondef-rangeerror"},
