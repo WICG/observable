@@ -51,8 +51,6 @@ urlPrefix: https://dom.spec.whatwg.org; spec: DOM
 urlPrefix: https://webidl.spec.whatwg.org; spec: WEBIDL
   type: dfn
     text: a promise rejected with
-  type: dfn
-    text: react
 </pre>
 
 <style>
@@ -531,7 +529,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
             Note: This is done in case |nextRecord|'s \[[Value]] is not *itself* already a
             {{Promise}}.
 
-         1. [=React=] to |nextPromise|:
+         1. [=promise/React=] to |nextPromise|:
 
              * If |nextPromise| was fulfilled with value |iteratorResult|, then:
 
@@ -572,7 +570,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
           subscription, which is the only time this can happen for async iterables that are
           converted to {{Observable}}s. In all other cases, errors are propagated to the observer
           asynchronously, with microtask timing, by virtue of being wrapped in a rejected
-          {{Promise}} that |nextAlgorithm| [=reacts=] to. This synchronous-error-propagation
+          {{Promise}} that |nextAlgorithm| [=promise/reacts=] to. This synchronous-error-propagation
           behavior is consistent with language constructs, i.e., **for-await of** loops that invoke
           {{%Symbol.asyncIterator%}} and synchronously re-throw exceptions to catch blocks outside
           the loop, before any [$Await|Awaiting$] takes place.
@@ -648,7 +646,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an algorithm
           that takes a {{Subscriber}} |subscriber| and does the following:
 
-          1. [=React=] to |value|:
+          1. [=promise/React=] to |value|:
 
              1. If |value| was fulfilled with value |v|, then:
 
