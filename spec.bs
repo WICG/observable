@@ -177,7 +177,8 @@ interface Subscriber {
 };
 </xmp>
 
-Each {{Subscriber}} has an [=ordered set=] of <dfn for=Subscriber>internal observers</dfn>, initially empty.
+Each {{Subscriber}} has an [=ordered set=] of <dfn for=Subscriber>internal observers</dfn>,
+initially empty.
 
 Each {{Subscriber}} has a <dfn for=Subscriber>teardown callbacks</dfn>, which is a [=list=] of
 {{VoidFunction}}s, initially empty.
@@ -187,7 +188,8 @@ Each {{Subscriber}} has a <dfn for=Subscriber>subscription controller</dfn>, whi
 
 Each {{Subscriber}} has a <dfn for=Subscriber>active</dfn> boolean, initially true.
 
-Each {{Subscriber}} has an <dfn for=Subscriber>owning Observable</dfn>, an {{Observable}}, which is initialized during construction.
+Each {{Subscriber}} has an <dfn for=Subscriber>owning Observable</dfn>, an {{Observable}}, which is
+initialized during construction.
 
 Note: This is a bookkeeping variable to ensure that a {{Subscriber}} never calls any of the
 callbacks it owns after it has been [=close a subscription|closed=].
@@ -215,12 +217,12 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
           <div class=note>
             <p>Note: No exception can be thrown here because in the case where the
             [=Subscriber/internal observer=]'s [=internal observer/next steps=] is just a wrapper
-            around a script-provided callback, the <a href=#process-observer>process observer</a> steps
-            take care to wrap these callbacks in logic that, when invoking them, catches any
+            around a script-provided callback, the <a href=#process-observer>process observer</a>
+            steps take care to wrap these callbacks in logic that, when invoking them, catches any
             exceptions, and reports them to the global.</p>
 
-            <p>When the [=internal observer/next steps=] is a spec algorithm, those steps take care to
-            not throw any exceptions outside of itself, to appease this assert.</p>
+            <p>When the [=internal observer/next steps=] is a spec algorithm, those steps take care
+            to not throw any exceptions outside of itself, to appease this assert.</p>
           </div>
 </div>
 
@@ -414,7 +416,8 @@ interface Observable {
 Each {{Observable}} has a <dfn for=Observable>subscribe callback</dfn>, which is a
 {{SubscribeCallback}} or a set of steps that take in a {{Subscriber}}.
 
-Each {{Observable}} has a <dfn for=Observable>active subscriber</dfn>, which is a {{Subscriber}}-or-null, initially null.
+Each {{Observable}} has a <dfn for=Observable>active subscriber</dfn>, which is a
+{{Subscriber}}-or-null, initially null.
 
 Note: The "union" of these types is to support both {{Observable}}s created by JavaScript (that are
 always constructed with a {{SubscribeCallback}}), and natively-constructed {{Observable}} objects
@@ -741,8 +744,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        error algorithm=], or an algorithm that [=invokes=] the provided
        {{SubscriptionObserver/error}} [=callback function=].
 
-    1. If [=this=]'s [=Observable/active subscriber=] is not null and [=this=]'s
-       [=Observable/active subscriber=]'s [=Subscriber/active=] is true:
+    1. If [=this=]'s [=Observable/active subscriber=] is not null and [=this=]'s [=Observable/active
+       subscriber=]'s [=Subscriber/active=] is true:
 
        1. Let |subscriber| be [=this=]'s [=Observable/active subscriber=].
 
@@ -758,7 +761,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
              1. If |subscriber|'s [=Subscriber/active=] is false, then abort these steps.
 
-             1. [=set/Remove=] |internal observer| from |subscriber|'s [=Subscriber/internal observers=].
+             1. [=set/Remove=] |internal observer| from |subscriber|'s [=Subscriber/internal
+                observers=].
 
              1. If |subscriber|'s [=Subscriber/internal observers=] is [=set/empty=], then [=close a
                 subscription|close=] |subscriber| with |options|'s {{SubscribeOptions/signal}}'s
@@ -766,10 +770,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
        1. Return.
 
-    1. Let |subscriber| be a [=new=] {{Subscriber}}, initialized as follows:
-
-       : [=Subscriber/owning Observable=]
-       :: [=this=]
+    1. Let |subscriber| be a [=new=] {{Subscriber}}, initialized with [=Subscriber/owning
+       Observable=] [=this=].
 
     1. [=set/Append=] |internal observer| to |subscriber|'s [=Subscriber/internal observers=].
 
@@ -786,7 +788,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
           1. If |subscriber|'s [=Subscriber/active=] is false, then abort these steps.
 
-          1. [=set/Remove=] |internal observer| from |subscriber|'s [=Subscriber/internal observers=].
+          1. [=set/Remove=] |internal observer| from |subscriber|'s [=Subscriber/internal
+             observers=].
 
           1. If |subscriber|'s [=Subscriber/internal observers=] is [=set/empty=], then [=close a
              subscription|close=] |subscriber| with |options|'s {{SubscribeOptions/signal}}'s
