@@ -177,14 +177,8 @@ interface Subscriber {
 };
 </xmp>
 
-Each {{Subscriber}} has a <dfn for=Subscriber>next algorithm</dfn>, which is a [=internal
-observer/next steps=].
-
-Each {{Subscriber}} has a <dfn for=Subscriber>error algorithm</dfn>, which is an [=internal
-observer/error steps=].
-
-Each {{Subscriber}} has a <dfn for=Subscriber>complete algorithm</dfn>, which is a [=internal
-observer/complete steps=].
+Each {{Subscriber}} has a <dfn for=Subscriber>internal observer</dfn>, which is an [=internal
+observer=].
 
 Each {{Subscriber}} has a <dfn for=Subscriber>teardown callbacks</dfn>, which is a [=list=] of
 {{VoidFunction}}s, initially empty.
@@ -211,17 +205,18 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
 
-    1. Run [=this=]'s [=Subscriber/next algorithm=] given |value|.
+    1. Run [=this=]'s [=Subscriber/internal observer=]'s [=internal observer/next steps=] given |value|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
        <div class=note>
-         <p>Note: No exception can be thrown here because in the case where [=Subscriber/next
-         algorithm=] is just a wrapper around a script-provided callback, the <a
-         href=#process-observer>process observer</a> steps take care to wrap these callbacks in
-         logic that, when invoking them, catches any exceptions, and reports them to the global.</p>
+         <p>Note: No exception can be thrown here because in the case where the
+         [=Subscriber/internal observer=]'s [=internal observer/next steps is just a wrapper around
+         a script-provided callback, the <a href=#process-observer>process observer</a> steps take
+         care to wrap these callbacks in logic that, when invoking them, catches any exceptions, and
+         reports them to the global.</p>
 
-         <p>When the [=Subscriber/next algorithm=] is a spec algorithm, those steps take care to not
+         <p>When the [=internal observer/next steps=] is a spec algorithm, those steps take care to not
          throw any exceptions outside of itself, to appease this assert.</p>
        </div>
 </div>
@@ -236,7 +231,7 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. [=close a subscription|Close=] [=this=].
 
-    1. Run [=this=]'s [=Subscriber/error algorithm=] given |error|.
+    1. Run [=this=]'s [=Subscriber/internal observer=]'s [=internal observer/error steps=] given |error|.
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
@@ -253,7 +248,7 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. [=close a subscription|Close=] [=this=].
 
-    1. Run [=this=]'s [=Subscriber/complete algorithm=].
+    1. Run [=this=]'s [=Subscriber/internal observer=]'s [=internal observer/complete steps=].
 
        [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
@@ -735,16 +730,9 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        error algorithm=], or an algorithm that [=invokes=] the provided {{SubscriptionObserver/error}}
        [=callback function=].
 
-    1. Let |subscriber| be a [=new=] {{Subscriber}}, initialized as:
+    1. Let |subscriber| be a [=new=] {{Subscriber}}.
 
-      : [=Subscriber/next algorithm=]
-      :: |internal observer|'s [=internal observer/next steps=]
-
-      : [=Subscriber/error algorithm=]
-      :: |internal observer|'s [=internal observer/error steps=]
-
-      : [=Subscriber/complete algorithm=]
-      :: |internal observer|'s [=internal observer/complete steps=]
+    1. Set |subscriber|'s [=Subscriber/internal observer=] to |internal observer|.
 
     1. If |options|'s {{SubscribeOptions/signal}} [=map/exists=], then:
 
