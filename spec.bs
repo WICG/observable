@@ -212,10 +212,10 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
        <div class=note>
          <p>Note: No exception can be thrown here because in the case where the
-         [=Subscriber/internal observer=]'s [=internal observer/next steps=] is just a wrapper around
-         a script-provided callback, the <a href=#process-observer>process observer</a> steps take
-         care to wrap these callbacks in logic that, when invoking them, catches any exceptions, and
-         reports them to the global.</p>
+         [=Subscriber/internal observer=]'s [=internal observer/next steps=] is just a wrapper
+         around a script-provided callback, the <a href=#process-observer>process observer</a> steps
+         take care to wrap these callbacks in logic that, when invoking them, catches any
+         exceptions, and reports them to the global.</p>
 
          <p>When the [=internal observer/next steps=] is a spec algorithm, those steps take care to
          not throw any exceptions outside of itself, to appease this assert.</p>
