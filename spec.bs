@@ -771,7 +771,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        1. Return.
 
     1. Let |subscriber| be a [=new=] {{Subscriber}}, initialized with [=Subscriber/owning
-       Observable=] [=this=].
+       Observable=] as [=this=].
 
     1. [=set/Append=] |internal observer| to |subscriber|'s [=Subscriber/internal observers=].
 
