@@ -304,8 +304,8 @@ observable.subscribe({}, {signal: outerController.signal});
 
     1. Set |subscriber|'s [=Subscriber/active=] boolean to false.
 
-    1. [=AbortSignal/Signal abort=] |subscriber|'s [=Subscriber/subscription controller=]
-       with |reason|, if it is given.
+    1. [=AbortSignal/Signal abort=] |subscriber|'s [=Subscriber/subscription controller=] with
+       |reason|, if it is given.
 
     1. [=list/For each=] |teardown| of |subscriber|'s [=Subscriber/teardown callbacks=] sorted in
        reverse insertion order:
@@ -496,7 +496,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        throws. [$GetMethod$] lets us ONLY throw in the latter case.
 
     1. If |asyncIteratorMethod|'s is undefined or null, then jump to the step labeled <a
-    href=#from-iterable-conversion>From iterable</a>.
+       href=#from-iterable-conversion>From iterable</a>.
 
     1. Let |nextAlgorithm| be the following steps, given a {{Subscriber}} |subscriber| and an
        [=Iterator Record=] |iteratorRecord|:
@@ -685,7 +685,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
            <dl class="switch">
              <dt>If |observer| is an {{ObservableSubscriptionCallback}}</dt>
              <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take
-                 an {{any}} |value|:
+             an {{any}} |value|:
 
                  1. [=Invoke=] |observer| with |value|.
 
@@ -695,18 +695,18 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
              <dt>If |observer| is a {{SubscriptionObserver}}</dt>
              <dd>
-               1. If |observer|'s {{SubscriptionObserver/next}} [=map/exists=], then set
-                  |internal observer|'s [=internal observer/next steps=] to these steps that take an
-                  {{any}} |value|:
+               1. If |observer|'s {{SubscriptionObserver/next}} [=map/exists=], then set |internal
+                  observer|'s [=internal observer/next steps=] to these steps that take an {{any}}
+                  |value|:
 
                   1. [=Invoke=] |observer|'s {{SubscriptionObserver/next}} with |value|.
 
                      If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
                      then [=report the exception=] |E|.
 
-               1. If |observer|'s {{SubscriptionObserver/error}} [=map/exists=], then set
-                  |internal observer|'s [=internal observer/error steps=] to these steps that take
-                  an {{any}} |error|:
+               1. If |observer|'s {{SubscriptionObserver/error}} [=map/exists=], then set |internal
+                  observer|'s [=internal observer/error steps=] to these steps that take an {{any}}
+                  |error|:
 
                   1. [=Invoke=] |observer|'s {{SubscriptionObserver/error}} with |error|.
 
@@ -1329,17 +1329,17 @@ For now, see
              1. If {{ObservableInspector/subscribe}} [=map/exists=] in |inspectorUnion|, then set
                 |subscribe callback| to it.
 
-             1. If {{ObservableInspector/next}} [=map/exists=] in |inspectorUnion|, then set
-                |next callback| to it.
+             1. If {{ObservableInspector/next}} [=map/exists=] in |inspectorUnion|, then set |next
+                callback| to it.
 
-             1. If {{ObservableInspector/error}} [=map/exists=] in |inspectorUnion|, then set
-                |error callback| to it.
+             1. If {{ObservableInspector/error}} [=map/exists=] in |inspectorUnion|, then set |error
+                callback| to it.
 
              1. If {{ObservableInspector/complete}} [=map/exists=] in |inspectorUnion|, then set
                 |complete callback| to it.
 
-             1. If {{ObservableInspector/abort}} [=map/exists=] in |inspectorUnion|, then set
-                |abort callback| to it.
+             1. If {{ObservableInspector/abort}} [=map/exists=] in |inspectorUnion|, then set |abort
+                callback| to it.
            </dd>
          </dl>
 
@@ -1589,8 +1589,8 @@ For now, see
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
-       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s
-          [=AbortSignal/abort reason=].
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
 
        1. Return |p|.
 
@@ -1650,8 +1650,8 @@ For now, see
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
-       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s
-          [=AbortSignal/abort reason=].
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
 
        1. Return |p|.
 
@@ -1703,8 +1703,8 @@ For now, see
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
-       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s
-          [=AbortSignal/abort reason=].
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
 
        1. Return |p|.
 
@@ -1798,8 +1798,8 @@ For now, see
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
-       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s
-          [=AbortSignal/abort reason=].
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
 
        1. Return |p|.
 
@@ -1851,8 +1851,8 @@ For now, see
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
-       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s
-          [=AbortSignal/abort reason=].
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
 
        1. Return |p|.
 
@@ -1905,8 +1905,8 @@ For now, see
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
-       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s
-          [=AbortSignal/abort reason=].
+       1. [=Reject=] |p| with |internal options|'s {{SubscribeOptions/signal}}'s [=AbortSignal/abort
+          reason=].
 
        1. Return |p|.
 
@@ -2041,7 +2041,8 @@ partial interface EventTarget {
 This material is being upstreamed from our explainer into this specification, and in the meantime
 you can consult the following resources:
 
- * [TAG Security/Privacy Questionnaire](https://github.com/WICG/observable/blob/master/security-privacy-questionnaire.md)
+ * [TAG Security/Privacy
+   Questionnaire](https://github.com/WICG/observable/blob/master/security-privacy-questionnaire.md)
 
 <h2 id=acks>Acknowledgements</h2>
 
