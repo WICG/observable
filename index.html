@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 97a1608be, updated Mon Feb 3 16:09:34 2025 -0800" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="8b19764bce1850ac1fcf8f4f36cf913c9390da43" name="revision">
+  <meta content="df571e8894ac113e1d26b3248baa0e2771c53439" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -1516,7 +1516,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <dt>If <var>observer</var> is an <code class="idl"><a data-link-type="idl" href="#callbackdef-observablesubscriptioncallback" id="ref-for-callbackdef-observablesubscriptioncallback⑥">ObservableSubscriptionCallback</a></code>
          <dd>
           Set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps③">next steps</a> to these steps that take
-           an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②⑥">any</a></code> <var>value</var>: 
+       an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②⑥">any</a></code> <var>value</var>: 
           <ol>
            <li data-md>
             <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function③">Invoke</a> <var>observer</var> with <var>value</var>.</p>
@@ -1527,7 +1527,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <dd>
           <ol>
            <li data-md>
-            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-next" id="ref-for-dom-subscriptionobserver-next②">next</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exists</a>, then set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps④">next steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②⑦">any</a></code> <var>value</var>:</p>
+            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-next" id="ref-for-dom-subscriptionobserver-next②">next</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exists</a>, then set <var>internal
+  observer</var>’s <a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps④">next steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②⑦">any</a></code> <var>value</var>:</p>
             <ol>
              <li data-md>
               <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function④">Invoke</a> <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-next" id="ref-for-dom-subscriptionobserver-next③">next</a></code> with <var>value</var>.</p>
@@ -1535,8 +1536,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
  then <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#report-the-exception" id="ref-for-report-the-exception⑤">report the exception</a> <var>E</var>.</p>
             </ol>
            <li data-md>
-            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-error" id="ref-for-dom-subscriptionobserver-error②">error</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a>, then set <var>internal observer</var>’s <a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①">error steps</a> to these steps that take
-  an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②⑧">any</a></code> <var>error</var>:</p>
+            <p>If <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-error" id="ref-for-dom-subscriptionobserver-error②">error</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a>, then set <var>internal
+  observer</var>’s <a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①">error steps</a> to these steps that take an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②⑧">any</a></code> <var>error</var>:</p>
             <ol>
              <li data-md>
               <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function⑤">Invoke</a> <var>observer</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriptionobserver-error" id="ref-for-dom-subscriptionobserver-error③">error</a></code> with <var>error</var>.</p>
@@ -2147,13 +2148,16 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <li data-md>
           <p>If <code class="idl"><a data-link-type="idl" href="#dom-observableinspector-subscribe" id="ref-for-dom-observableinspector-subscribe">subscribe</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exists</a> in <var>inspectorUnion</var>, then set <var>subscribe callback</var> to it.</p>
          <li data-md>
-          <p>If <code class="idl"><a data-link-type="idl" href="#dom-observableinspector-next" id="ref-for-dom-observableinspector-next">next</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a> in <var>inspectorUnion</var>, then set <var>next callback</var> to it.</p>
+          <p>If <code class="idl"><a data-link-type="idl" href="#dom-observableinspector-next" id="ref-for-dom-observableinspector-next">next</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a> in <var>inspectorUnion</var>, then set <var>next
+  callback</var> to it.</p>
          <li data-md>
-          <p>If <code class="idl"><a data-link-type="idl" href="#dom-observableinspector-error" id="ref-for-dom-observableinspector-error">error</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exists</a> in <var>inspectorUnion</var>, then set <var>error callback</var> to it.</p>
+          <p>If <code class="idl"><a data-link-type="idl" href="#dom-observableinspector-error" id="ref-for-dom-observableinspector-error">error</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exists</a> in <var>inspectorUnion</var>, then set <var>error
+  callback</var> to it.</p>
          <li data-md>
           <p>If <code class="idl"><a data-link-type="idl" href="#dom-observableinspector-complete" id="ref-for-dom-observableinspector-complete">complete</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑦">exists</a> in <var>inspectorUnion</var>, then set <var>complete callback</var> to it.</p>
          <li data-md>
-          <p>If <code class="idl"><a data-link-type="idl" href="#dom-observableinspector-abort" id="ref-for-dom-observableinspector-abort">abort</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exists</a> in <var>inspectorUnion</var>, then set <var>abort callback</var> to it.</p>
+          <p>If <code class="idl"><a data-link-type="idl" href="#dom-observableinspector-abort" id="ref-for-dom-observableinspector-abort">abort</a></code> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exists</a> in <var>inspectorUnion</var>, then set <var>abort
+  callback</var> to it.</p>
         </ol>
       </dl>
      <li data-md>
@@ -2854,7 +2858,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
 you can consult the following resources:</p>
    <ul>
     <li data-md>
-     <p><a href="https://github.com/WICG/observable/blob/master/security-privacy-questionnaire.md">TAG Security/Privacy Questionnaire</a></p>
+     <p><a href="https://github.com/WICG/observable/blob/master/security-privacy-questionnaire.md">TAG Security/Privacy
+ Questionnaire</a></p>
    </ul>
    <h2 class="heading settled" data-level="5" id="acks"><span class="secno">5. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acks"></a></h2>
    <p>A special thanks to <a href="https://benlesh.com/">Ben Lesh</a> for much of the design input for the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤⑦">Observable</a></code> API, and his many years of work maintaining userland Observable code that made this
