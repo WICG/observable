@@ -754,7 +754,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        1. If |options|'s {{SubscribeOptions/signal}} [=map/exists=], then:
 
           1. If |options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then
-             [=set/remove=] |internal observer| from |subscriber|'s [=Subscriber/internal observers=].
+             [=set/remove=] |internal observer| from |subscriber|'s [=Subscriber/internal
+             observers=].
 
           1. Otherwise, [=AbortSignal/add|add the following abort algorithm=] to |options|'s
              {{SubscribeOptions/signal}}:
