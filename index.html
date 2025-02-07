@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 97a1608be, updated Mon Feb 3 16:09:34 2025 -0800" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="d729ef2d21dc11ef883191f0e6131a909013692f" name="revision">
+  <meta content="8b19764bce1850ac1fcf8f4f36cf913c9390da43" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -970,7 +970,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-06">6 February 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-07">7 February 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1137,8 +1137,7 @@ callbacks it owns after it has been <a data-link-type="dfn" href="#close-a-subsc
     </ol>
    </div>
    <div class="algorithm" data-algorithm="close a subscription">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="close-a-subscription">close a subscription</dfn> given a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber⑥">Subscriber</a></code> <var>subscriber</var>, and
-  an optional <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②">any</a></code> <var>reason</var>, run these steps: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="close-a-subscription">close a subscription</dfn> given a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber⑥">Subscriber</a></code> <var>subscriber</var>, and an optional <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②">any</a></code> <var>reason</var>, run these steps: 
     <ol>
      <li data-md>
       <p>If <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-active" id="ref-for-subscriber-active⑤">active</a> is false, then return.</p>
@@ -1316,9 +1315,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
    </div>
    <div class="algorithm" data-algorithm="convert to an Observable" data-algorithm-for="Observable">
      To <dfn class="dfn-paneled" data-dfn-for="Observable" data-dfn-type="dfn" data-noexport id="observable-convert-to-an-observable">convert to an Observable</dfn> an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any②⑤">any</a></code> <var>value</var>, run these steps: 
-    <p class="note" role="note"><span class="marker">Note:</span> We split this algorithm out from the Web IDL <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from①">from()</a></code> method, so that
-  spec prose can <a data-link-type="dfn" href="#observable-convert-to-an-observable" id="ref-for-observable-convert-to-an-observable">convert</a> values to without
-  going through the Web IDL bindings.</p>
+    <p class="note" role="note"><span class="marker">Note:</span> We split this algorithm out from the Web IDL <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from①">from()</a></code> method, so that spec
+  prose can <a data-link-type="dfn" href="#observable-convert-to-an-observable" id="ref-for-observable-convert-to-an-observable">convert</a> values to without going
+  through the Web IDL bindings.</p>
     <ol>
      <li data-md>
       <p>If <a data-link-type="abstract-op" href="https://tc39.es/ecma262/#sec-ecmascript-data-types-and-values" id="ref-for-sec-ecmascript-data-types-and-values">Type</a>(<var>value</var>) is not <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-object-type" id="ref-for-sec-object-type">Object</a>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-throw" id="ref-for-dfn-throw">throw</a> a <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#exceptiondef-typeerror" id="ref-for-exceptiondef-typeerror">TypeError</a></code>.</p>
@@ -1500,8 +1499,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
    <div class="algorithm" data-algorithm="subscribe to an Observable" data-algorithm-for="Observable">
      To <dfn class="dfn-paneled" data-dfn-for="Observable" data-dfn-type="dfn" data-noexport id="observable-subscribe-to-an-observable">subscribe to an <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②③">Observable</a></code></dfn> given an <code class="idl"><a data-link-type="idl" href="#typedefdef-observerunion" id="ref-for-typedefdef-observerunion②">ObserverUnion</a></code>-or-<a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer②">internal observer</a> <var>observer</var>, and a <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions⑨">SubscribeOptions</a></code> <var>options</var>, run
   these steps: 
-    <p class="note" role="note"><span class="marker">Note:</span> We split this algorithm out from the Web IDL <code class="idl"><a data-link-type="idl" href="#dom-observable-subscribe" id="ref-for-dom-observable-subscribe④">subscribe()</a></code> method, so that
-  spec prose can <a data-link-type="dfn" href="#observable-subscribe-to-an-observable" id="ref-for-observable-subscribe-to-an-observable③">subscribe</a> to an <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②④">Observable</a></code> without going through the Web IDL bindings. See <a href="https://github.com/w3c/IntersectionObserver/issues/464">w3c/IntersectionObserver#464</a> for
+    <p class="note" role="note"><span class="marker">Note:</span> We split this algorithm out from the Web IDL <code class="idl"><a data-link-type="idl" href="#dom-observable-subscribe" id="ref-for-dom-observable-subscribe④">subscribe()</a></code> method, so that spec
+  prose can <a data-link-type="dfn" href="#observable-subscribe-to-an-observable" id="ref-for-observable-subscribe-to-an-observable③">subscribe</a> to an <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②④">Observable</a></code> without going through the Web IDL bindings. See <a href="https://github.com/w3c/IntersectionObserver/issues/464">w3c/IntersectionObserver#464</a> for
   similar context, where "internal" prose <span class="allow-2119">must</span> not go through Web IDL
   bindings on objects whose properties could be mutated by JavaScript. See <a href="#promise-returning-operators">§ 2.3.3 Promise-returning operators</a> for usage of this.</p>
     <ol>
@@ -1616,16 +1615,16 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
        <ol>
         <li data-md>
          <p><var>notifier</var> starts emitting values (either "next" or "error"). In this case, we
-  unsubscribe from <var>notifier</var> since we got all we need from it, and no longer need it
-  to keep producing values. We also unsubscribe from <var>sourceObservable</var>, because it
-  no longer needs to produce values that get plumbed through this method’s returned <var>observable</var>, because we’re manually ending the subscription to <var>observable</var>, since <var>notifier</var> finally produced a value.</p>
+  unsubscribe from <var>notifier</var> since we got all we need from it, and no longer need it to
+  keep producing values. We also unsubscribe from <var>sourceObservable</var>, because it no
+  longer needs to produce values that get plumbed through this method’s returned <var>observable</var>, because we’re manually ending the subscription to <var>observable</var>, since <var>notifier</var> finally produced a value.</p>
         <li data-md>
          <p><var>sourceObservable</var> either <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⓪">error()</a></code>s or <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete④">complete()</a></code>s
-  itself. In this case, we unsubscribe from <var>notifier</var> since we no longer need to
-  listen for values it emits in order to determine when <var>observable</var> can stop
-  mirroring values from <var>sourceObservable</var> (since <var>sourceObservable</var> ran to
-  completion by itself). Unsubscribing from <var>sourceObservable</var> isn’t necessary, since
-  its subscription has been exhausted by itself.</p>
+  itself. In this case, we unsubscribe from <var>notifier</var> since we no longer need to listen
+  for values it emits in order to determine when <var>observable</var> can stop mirroring values
+  from <var>sourceObservable</var> (since <var>sourceObservable</var> ran to completion by itself).
+  Unsubscribing from <var>sourceObservable</var> isn’t necessary, since its subscription has been
+  exhausted by itself.</p>
        </ol>
       </div>
       <ol>
@@ -1702,9 +1701,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
           <ol>
            <li data-md>
             <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function⑨">Invoke</a> <var>mapper</var> with the passed in <var>value</var>, and <var>idx</var>, and let <var>mappedValue</var> be the returned value.</p>
-            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⓪">an exception <var>E</var> was thrown</a>,
-  then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①②">error()</a></code> method, given <var>E</var>, and abort these
-  steps.</p>
+            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⓪">an exception <var>E</var> was thrown</a>, then
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①②">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
            <li data-md>
             <p>Increment <var>idx</var>.</p>
            <li data-md>
@@ -1753,9 +1751,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①⓪">Invoke</a> <var>predicate</var> with the passed in <var>value</var> and <var>idx</var>, and let <var>matches</var> be
   the returned value.</p>
-            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①①">an exception <var>E</var> was thrown</a>,
-  then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①④">error()</a></code> method, given <var>E</var>, and abort these
-  steps.</p>
+            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①①">an exception <var>E</var> was thrown</a>, then
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①④">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
            <li data-md>
             <p>Set <var>idx</var> to <var>idx</var> + 1.</p>
            <li data-md>
@@ -1962,9 +1959,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>innerObservable</var> be the result of calling <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from③">from()</a></code> with <var>mappedResult</var>.</p>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①③">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⓪">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
-      <p class="issue" id="issue-4eb2abb1"><a class="self-link" href="#issue-4eb2abb1"></a> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from④">from()</a></code> directly. Rather, we should
- call some internal algorithm that passes-back the exceptions for us to handle
- properly here, since we want to pipe them to <var>subscriber</var>.</p>
+      <p class="issue" id="issue-4eb2abb1"><a class="self-link" href="#issue-4eb2abb1"></a> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from④">from()</a></code> directly. Rather, we should call some
+ internal algorithm that passes-back the exceptions for us to handle properly here, since we
+ want to pipe them to <var>subscriber</var>.</p>
      <li data-md>
       <p>Let <var>innerObserver</var> be a new <a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer①②">internal observer</a>, initialized as follows:</p>
       <dl>
@@ -2048,10 +2045,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <p>Run the <a data-link-type="dfn" href="#switchmap-process-next-value-steps" id="ref-for-switchmap-process-next-value-steps①">switchmap process next value steps</a> with <var>value</var>, <var>subscriber</var>, <var>mapper</var>,
   and <b>references</b> to all of the following: <var>activeInnerAbortController</var>, <var>outerSubscriptionHasCompleted</var>, and <var>idx</var>.</p>
             <p class="note" role="note"><span class="marker">Note:</span> The <a data-link-type="dfn" href="#switchmap-process-next-value-steps" id="ref-for-switchmap-process-next-value-steps②">switchmap process next value steps</a> will subscribe to the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable④⑨">Observable</a></code> derived from <var>value</var> (if one such can be derived) and keep processing
-  values from it until either (1) its subscription becomes inactive (either by error or
-  completion), or (2) <var>activeInnerAbortController</var> <a href="#switchmap-next-steps">gets
-  aborted</a>, due to <var>sourceObservable</var> pushing another <i>newer</i> value that will
-  replace the current "inner" subscription.</p>
+  values from it until either (1) its subscription becomes inactive (either by error
+  or completion), or (2) <var>activeInnerAbortController</var> <a href="#switchmap-next-steps">gets aborted</a>, due to <var>sourceObservable</var> pushing
+  another <i>newer</i> value that will replace the current "inner" subscription.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①①">error steps</a>
          <dd data-md>
@@ -2079,7 +2075,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
     </ol>
    </div>
    <div class="algorithm" data-algorithm="switchmap process next value steps">
-     The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="switchmap-process-next-value-steps">switchmap process next value steps</dfn>, given an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any③③">any</a></code> <var>value</var>, a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber②②">Subscriber</a></code> <var>subscriber</var>, a <code class="idl"><a data-link-type="idl" href="#callbackdef-mapper" id="ref-for-callbackdef-mapper④">Mapper</a></code> <var>mapper</var>, and <b>references</b> to all of the following: an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller⑤">AbortController</a></code> <var>activeInnerAbortController</var>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#boolean" id="ref-for-boolean⑤">boolean</a> <var>outerSubscriptionHasCompleted</var>, and an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long①①">unsigned long long</a></code> <var>idx</var> are to run these steps: 
+     The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="switchmap-process-next-value-steps">switchmap process next value steps</dfn>, given an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any③③">any</a></code> <var>value</var>, a <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber②②">Subscriber</a></code> <var>subscriber</var>, a <code class="idl"><a data-link-type="idl" href="#callbackdef-mapper" id="ref-for-callbackdef-mapper④">Mapper</a></code> <var>mapper</var>, and <b>references</b> to all of the following: an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller⑤">AbortController</a></code> <var>activeInnerAbortController</var>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#boolean" id="ref-for-boolean⑤">boolean</a> <var>outerSubscriptionHasCompleted</var>,
+  and an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long①①">unsigned long long</a></code> <var>idx</var> are to run these steps: 
     <ol>
      <li data-md>
       <p>Let <var>mappedResult</var> be the result of <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①②">invoking</a> <var>mapper</var> with <var>value</var> and <var>idx</var>.</p>
@@ -2116,7 +2113,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>Let <var>innerOptions</var> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions①⑧">SubscribeOptions</a></code> whose <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal①③">signal</a></code> is the
   result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal">creating a dependent abort signal</a> from the list
-  «<var>activeInnerAbortController</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal①⑧">signal</a>, <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller②⓪">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal①⑨">signal</a>», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal②">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm">current realm</a>.</p>
+  «<var>activeInnerAbortController</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal①⑧">signal</a>, <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller②⓪">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal①⑨">signal</a>», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal②">AbortSignal</a></code>,
+  and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm">current realm</a>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="#observable-subscribe-to-an-observable" id="ref-for-observable-subscribe-to-an-observable①④">Subscribe</a> to <var>innerObservable</var> given <var>innerObserver</var> and <var>innerOptions</var>.</p>
     </ol>
@@ -2184,13 +2182,15 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
           <ol>
            <li data-md>
             <p>If <var>next callback</var> is not null, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①⑤">invoke</a> <var>next callback</var> with the passed in <var>value</var>.</p>
-            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⑧">an exception <var>E</var> was thrown</a>, then:</p>
+            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⑧">an exception <var>E</var> was thrown</a>,
+  then:</p>
             <ol>
              <li data-md>
               <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-remove" id="ref-for-abortsignal-remove">Remove</a> <var>abort callback</var> from <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller②③">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal②②">signal</a>.</p>
               <p class="note" role="note"><span class="marker">Note:</span> This step is important, because the <var>abort callback</var> is only meant to be
  called for <em>consumer-initiated</em> unsubscriptions. When the producer terminates
- the subscription (via <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑧">error()</a></code> or <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete①⑨">complete()</a></code> methods) like below, we have to ensure that <var>abort callback</var> is not run.</p>
+ the subscription (via <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑧">error()</a></code> or <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete①⑨">complete()</a></code> methods) like below, we have to ensure that <var>abort
+ callback</var> is not run.</p>
               <p class="issue" id="issue-bfe2caf4"><a class="self-link" href="#issue-bfe2caf4"></a> This matches Chromium’s implementation, but consider holding a reference
  to the originally-passed-in <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions①⑨">SubscribeOptions</a></code>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal①④">signal</a></code> and just invoking <var>abort callback</var> when <em>it</em> aborts. The result is likely the
  same, but needs investigation.</p>
@@ -2209,9 +2209,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p>If <var>error callback</var> is not null, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①⑥">invoke</a> <var>error callback</var> given the passed
   in <var>error</var>.</p>
-            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⑨">an exception <var>E</var> was thrown</a>,
-  then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③⓪">error()</a></code> method, given <var>E</var>, and abort these
-  steps.</p>
+            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⑨">an exception <var>E</var> was thrown</a>, then
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③⓪">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
            <li data-md>
             <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③①">error()</a></code> method, given the passed in <var>error</var>.</p>
           </ol>
@@ -2222,9 +2221,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-remove" id="ref-for-abortsignal-remove②">Remove</a> <var>abort callback</var> from <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller②⑤">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal②④">signal</a>.</p>
            <li data-md>
             <p>If <var>complete callback</var> is not null, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①⑦">invoke</a> <var>complete callback</var>.</p>
-            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown②⓪">an exception <var>E</var> was thrown</a>,
-  then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③②">error()</a></code> method, given <var>E</var>, and abort these
-  steps.</p>
+            <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown②⓪">an exception <var>E</var> was thrown</a>, then
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③②">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
            <li data-md>
             <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete②⓪">complete()</a></code> method.</p>
           </ol>
@@ -2271,9 +2269,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <p>Let <var>innerObservable</var> be the result of calling <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from⑥">from()</a></code> with <var>result</var>.</p>
             <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown②②">an exception <var>E</var> was thrown</a>, then
   run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③④">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
-            <p class="issue" id="issue-4eb2abb1①"><a class="self-link" href="#issue-4eb2abb1①"></a> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from⑦">from()</a></code> directly. Rather, we should
-  call some internal algorithm that passes-back the exceptions for us to handle
-  properly here, since we want to pipe them to <var>subscriber</var>.</p>
+            <p class="issue" id="issue-4eb2abb1①"><a class="self-link" href="#issue-4eb2abb1①"></a> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from⑦">from()</a></code> directly. Rather, we should call
+  some internal algorithm that passes-back the exceptions for us to handle properly
+  here, since we want to pipe them to <var>subscriber</var>.</p>
            <li data-md>
             <p>Let <var>innerObserver</var> be a new <a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer①⑦">internal observer</a>, initialized as follows:</p>
             <dl>
@@ -2376,8 +2374,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <p>Let <var>visitor callback controller</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①④">new</a> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller⑥">AbortController</a></code>.</p>
      <li data-md>
       <p>Let <var>internal options</var> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions②③">SubscribeOptions</a></code> whose <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal②④">signal</a></code> is the
- result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal①">creating a dependent abort signal</a> from the list
- «<var>visitor callback controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal②⑧">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal②⑤">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal③">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>.</p>
+ result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal①">creating a dependent abort signal</a> from the list «<var>visitor callback
+ controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal②⑧">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal②⑤">signal</a></code> if
+ non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal③">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm①">current realm</a>.</p>
       <div class="note" role="note">
        <p>Many trivial <a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer①⑨">internal observers</a> act as pass-throughs, and do not control the
    subscription to the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤③">Observable</a></code> that they represent; that is, their <a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①⑧">error steps</a> and <a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①⑥">complete steps</a> are called when the
@@ -2401,8 +2400,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
        <li data-md>
         <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑤">Reject</a> <var>p</var> with <var>internal options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal③①">signal</a></code>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org#abortsignal-abort-reason" id="ref-for-abortsignal-abort-reason⑦">abort reason</a>.</p>
         <p class="note" role="note"><span class="marker">Note:</span> The fact that rejection of <var>p</var> is tied to <var>internal options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal③②">signal</a></code>, and not <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal③③">signal</a></code> means, that
-  any <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#microtask" id="ref-for-microtask">microtasks</a> <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-microtask" id="ref-for-queue-a-microtask">queued</a> during the firing of <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal③④">signal</a></code>’s <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventdef-abortsignal-abort" id="ref-for-eventdef-abortsignal-abort">abort</a></code> event will run before <var>p</var>’s
-  rejection handler runs.</p>
+  any <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#microtask" id="ref-for-microtask">microtasks</a> <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-microtask" id="ref-for-queue-a-microtask">queued</a> during the firing of <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal③④">signal</a></code>’s <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventdef-abortsignal-abort" id="ref-for-eventdef-abortsignal-abort">abort</a></code> event will run before <var>p</var>’s rejection
+  handler runs.</p>
       </ol>
      <li data-md>
       <p>Let <var>idx</var> be an <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long①②">unsigned long long</a></code>, initially 0.</p>
@@ -2415,7 +2414,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <li data-md>
           <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①⑨">Invoke</a> <var>callback</var> with the passed in <var>value</var>, and <var>idx</var>.</p>
           <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown②③">an exception <var>E</var> was thrown</a>, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject⑥">reject</a> <var>p</var> with <var>E</var>, and <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal-abort" id="ref-for-abortcontroller-signal-abort②">signal abort</a> <var>visitor callback
-   controller</var> with <var>E</var>.</p>
+ controller</var> with <var>E</var>.</p>
          <li data-md>
           <p>Increment <var>idx</var>.</p>
         </ol>
@@ -2447,8 +2446,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <p>Let <var>controller</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①⑤">new</a> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller⑧">AbortController</a></code>.</p>
      <li data-md>
       <p>Let <var>internal options</var> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions②⑤">SubscribeOptions</a></code> whose <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal③⑤">signal</a></code> is the
- result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal③">creating a dependent abort signal</a> from the list
- «<var>controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal②⑨">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal③⑥">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑤">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm②">current realm</a>.</p>
+ result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal③">creating a dependent abort signal</a> from the list «<var>controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal②⑨">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal③⑥">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑤">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm②">current realm</a>.</p>
      <li data-md>
       <p>If <var>internal options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal③⑦">signal</a></code> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted" id="ref-for-abortsignal-aborted⑨">aborted</a>, then:</p>
       <ol>
@@ -2611,8 +2609,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <p>Let <var>controller</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①⑦">new</a> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller①⓪">AbortController</a></code>.</p>
      <li data-md>
       <p>Let <var>internal options</var> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions②⑦">SubscribeOptions</a></code> whose <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑤②">signal</a></code> is the
- result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal⑤">creating a dependent abort signal</a> from the list
- «<var>controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③①">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑤③">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑦">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm④">current realm</a>.</p>
+ result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal⑤">creating a dependent abort signal</a> from the list «<var>controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③①">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑤③">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑦">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm④">current realm</a>.</p>
      <li data-md>
       <p>If <var>internal options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑤④">signal</a></code> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted" id="ref-for-abortsignal-aborted①②">aborted</a>, then:</p>
       <ol>
@@ -2666,8 +2663,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <p>Let <var>controller</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①⑧">new</a> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller①①">AbortController</a></code>.</p>
      <li data-md>
       <p>Let <var>internal options</var> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions②⑧">SubscribeOptions</a></code> whose <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑤⑧">signal</a></code> is the
- result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal⑥">creating a dependent abort signal</a> from the list
- «<var>controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③②">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑤⑨">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑧">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm⑤">current realm</a>.</p>
+ result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal⑥">creating a dependent abort signal</a> from the list «<var>controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③②">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑤⑨">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑧">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm⑤">current realm</a>.</p>
      <li data-md>
       <p>If <var>internal options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑥⓪">signal</a></code> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted" id="ref-for-abortsignal-aborted①③">aborted</a>, then:</p>
       <ol>
@@ -2720,8 +2716,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <p>Let <var>controller</var> be a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#new" id="ref-for-new①⑨">new</a> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortcontroller" id="ref-for-abortcontroller①②">AbortController</a></code>.</p>
      <li data-md>
       <p>Let <var>internal options</var> be a new <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions②⑨">SubscribeOptions</a></code> whose <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑥④">signal</a></code> is the
- result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal⑦">creating a dependent abort signal</a> from the list
- «<var>controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③③">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑥⑤">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑨">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm⑥">current realm</a>.</p>
+ result of <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#create-a-dependent-abort-signal" id="ref-for-create-a-dependent-abort-signal⑦">creating a dependent abort signal</a> from the list «<var>controller</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③③">signal</a>, <var>options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑥⑤">signal</a></code> if non-null», using <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#abortsignal" id="ref-for-abortsignal⑨">AbortSignal</a></code>, and the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm⑥">current realm</a>.</p>
      <li data-md>
       <p>If <var>internal options</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal⑥⑥">signal</a></code> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted" id="ref-for-abortsignal-aborted①④">aborted</a>, then:</p>
       <ol>
@@ -2808,7 +2803,8 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <li data-md>
           <p>If <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller②⑨">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③④">signal</a> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted" id="ref-for-abortsignal-aborted①⑤">aborted</a>, abort these steps.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#add-an-event-listener" id="ref-for-add-an-event-listener">Add an event listener</a> with <var>event target</var> and an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-listener" id="ref-for-concept-event-listener">event listener</a> defined as follows:</p>
+          <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#add-an-event-listener" id="ref-for-add-an-event-listener">Add an event listener</a> with <var>event target</var> and an <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-listener" id="ref-for-concept-event-listener">event listener</a> defined as
+ follows:</p>
           <dl>
            <dt data-md><a data-link-type="dfn" href="https://dom.spec.whatwg.org#event-listener-type" id="ref-for-event-listener-type">type</a>
            <dd data-md>
@@ -2830,8 +2826,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <dt data-md><a data-link-type="dfn" href="https://dom.spec.whatwg.org#event-listener-signal" id="ref-for-event-listener-signal">signal</a>
            <dd data-md>
             <p><var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller③⓪">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③⑤">signal</a></p>
-            <p class="note" role="note"><span class="marker">Note:</span> This ensures that the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-listener" id="ref-for-concept-event-listener①">event listener</a> is cleaned up when <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller③①">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③⑥">signal</a> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted" id="ref-for-abortsignal-aborted①⑥">aborted</a>,
-  regardless of an engine’s ownership model.</p>
+            <p class="note" role="note"><span class="marker">Note:</span> This ensures that the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-listener" id="ref-for-concept-event-listener①">event listener</a> is cleaned up when <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller③①">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal③⑥">signal</a> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted" id="ref-for-abortsignal-aborted①⑥">aborted</a>, regardless of an engine’s ownership model.</p>
           </dl>
         </ol>
       </dl>
@@ -2862,10 +2857,8 @@ you can consult the following resources:</p>
      <p><a href="https://github.com/WICG/observable/blob/master/security-privacy-questionnaire.md">TAG Security/Privacy Questionnaire</a></p>
    </ul>
    <h2 class="heading settled" data-level="5" id="acks"><span class="secno">5. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acks"></a></h2>
-   <p>A special thanks to <a href="https://benlesh.com/">Ben Lesh</a> for much of the design
-input for the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤⑦">Observable</a></code> API, and his many years of work maintaining
-userland Observable code that made this contribution to the web platform
-possible.</p>
+   <p>A special thanks to <a href="https://benlesh.com/">Ben Lesh</a> for much of the design input for the <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable⑤⑦">Observable</a></code> API, and his many years of work maintaining userland Observable code that made this
+contribution to the web platform possible.</p>
   </main>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
@@ -3210,15 +3203,15 @@ possible.</p>
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue"> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from">from()</a></code> directly. Rather, we should
- call some internal algorithm that passes-back the exceptions for us to handle
- properly here, since we want to pipe them to <var>subscriber</var>. <a class="issue-return" href="#issue-4eb2abb1" title="Jump to section">↵</a></div>
+   <div class="issue"> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from">from()</a></code> directly. Rather, we should call some
+ internal algorithm that passes-back the exceptions for us to handle properly here, since we
+ want to pipe them to <var>subscriber</var>. <a class="issue-return" href="#issue-4eb2abb1" title="Jump to section">↵</a></div>
    <div class="issue"> This matches Chromium’s implementation, but consider holding a reference
  to the originally-passed-in <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions">SubscribeOptions</a></code>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal">signal</a></code> and just invoking <var>abort callback</var> when <em>it</em> aborts. The result is likely the
  same, but needs investigation. <a class="issue-return" href="#issue-bfe2caf4" title="Jump to section">↵</a></div>
-   <div class="issue"> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from">from()</a></code> directly. Rather, we should
-  call some internal algorithm that passes-back the exceptions for us to handle
-  properly here, since we want to pipe them to <var>subscriber</var>. <a class="issue-return" href="#issue-4eb2abb1①" title="Jump to section">↵</a></div>
+   <div class="issue"> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from">from()</a></code> directly. Rather, we should call
+  some internal algorithm that passes-back the exceptions for us to handle properly
+  here, since we want to pipe them to <var>subscriber</var>. <a class="issue-return" href="#issue-4eb2abb1①" title="Jump to section">↵</a></div>
   </div>
 <script>/* Boilerplate: script-dom-helper */
 "use strict";
