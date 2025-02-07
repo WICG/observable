@@ -273,8 +273,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 </div>
 
 <div algorithm>
-  To <dfn>close a subscription</dfn> given a {{Subscriber}} |subscriber|, and
-  an optional {{any}} |reason|, run these steps:
+  To <dfn>close a subscription</dfn> given a {{Subscriber}} |subscriber|, and an optional {{any}}
+  |reason|, run these steps:
 
     1. If |subscriber|'s [=Subscriber/active=] is false, then return.
 
@@ -318,8 +318,8 @@ observable.subscribe({}, {signal: outerController.signal});
 
        1. [=Invoke=] |teardown|.
 
-          If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
-          the exception=] |E|.
+          If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+          [=report the exception=] |E|.
 </div>
 
 <h3 id=observable-api>The {{Observable}} interface</h3>
@@ -474,9 +474,9 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 <div algorithm>
   To <dfn for=Observable>convert to an Observable</dfn> an {{any}} |value|, run these steps:
 
-  Note: We split this algorithm out from the Web IDL {{Observable/from()}} method, so that
-  spec prose can <a for=Observable lt="convert to an observable">convert</a> values to without
-  going through the Web IDL bindings.
+  Note: We split this algorithm out from the Web IDL {{Observable/from()}} method, so that spec
+  prose can <a for=Observable lt="convert to an observable">convert</a> values to without going
+  through the Web IDL bindings.
 
     1. If [$Type$](|value|) is not [=Object=], [=exception/throw=] a {{TypeError}}.
 
@@ -666,9 +666,9 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
   {{ObserverUnion}}-or-[=internal observer=] |observer|, and a {{SubscribeOptions}} |options|, run
   these steps:
 
-  Note: We split this algorithm out from the Web IDL {{Observable/subscribe()}} method, so that
-  spec prose can <a for=Observable lt="subscribe to an Observable">subscribe</a> to an
-  {{Observable}} without going through the Web IDL bindings. See <a
+  Note: We split this algorithm out from the Web IDL {{Observable/subscribe()}} method, so that spec
+  prose can <a for=Observable lt="subscribe to an Observable">subscribe</a> to an {{Observable}}
+  without going through the Web IDL bindings. See <a
   href=https://github.com/w3c/IntersectionObserver/issues/464>w3c/IntersectionObserver#464</a> for
   similar context, where "internal" prose <span class=allow-2119>must</span> not go through Web IDL
   bindings on objects whose properties could be mutated by JavaScript. See
@@ -729,8 +729,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        </ol>
 
     1. [=Assert=]: |internal observer|'s [=internal observer/error steps=] is either the [=default
-       error algorithm=], or an algorithm that [=invokes=] the provided {{SubscriptionObserver/error}}
-       [=callback function=].
+       error algorithm=], or an algorithm that [=invokes=] the provided
+       {{SubscriptionObserver/error}} [=callback function=].
 
     1. Let |subscriber| be a [=new=] {{Subscriber}}.
 
@@ -766,7 +766,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
 <h3 id=operators>Operators</h3>
 
-For now, see [https://github.com/wicg/observable#operators](https://github.com/wicg/observable#operators).
+For now, see
+[https://github.com/wicg/observable#operators](https://github.com/wicg/observable#operators).
 
 <h4 id=observable-from>{{Observable/from()}}</h4>
 
@@ -796,18 +797,18 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
          |sourceObservable|. We "unsubscribe" from **both** of them in the following situations:
 
            1. |notifier| starts emitting values (either "next" or "error"). In this case, we
-              unsubscribe from |notifier| since we got all we need from it, and no longer need it
-              to keep producing values. We also unsubscribe from |sourceObservable|, because it
-              no longer needs to produce values that get plumbed through this method's returned
+              unsubscribe from |notifier| since we got all we need from it, and no longer need it to
+              keep producing values. We also unsubscribe from |sourceObservable|, because it no
+              longer needs to produce values that get plumbed through this method's returned
               |observable|, because we're manually ending the subscription to |observable|, since
               |notifier| finally produced a value.
 
            1. |sourceObservable| either {{Subscriber/error()}}s or {{Subscriber/complete()}}s
-              itself. In this case, we unsubscribe from |notifier| since we no longer need to
-              listen for values it emits in order to determine when |observable| can stop
-              mirroring values from |sourceObservable| (since |sourceObservable| ran to
-              completion by itself). Unsubscribing from |sourceObservable| isn't necessary, since
-              its subscription has been exhausted by itself.
+              itself. In this case, we unsubscribe from |notifier| since we no longer need to listen
+              for values it emits in order to determine when |observable| can stop mirroring values
+              from |sourceObservable| (since |sourceObservable| ran to completion by itself).
+              Unsubscribing from |sourceObservable| isn't necessary, since its subscription has been
+              exhausted by itself.
        </div>
 
        1. Let |notifierObserver| be a new [=internal observer=], initialized as follows:
@@ -888,9 +889,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           :: 1. [=Invoke=] |mapper| with the passed in <var ignore>value</var>, and |idx|, and let
                 |mappedValue| be the returned value.
 
-                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
-                steps.
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
 
              1. Increment |idx|.
 
@@ -933,9 +933,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           :: 1. [=Invoke=] |predicate| with the passed in |value| and |idx|, and let |matches| be
                 the returned value.
 
-                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
-                steps.
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
 
              1. Set |idx| to |idx| + 1.
 
@@ -969,6 +968,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+
        1. Let |remaining| be |amount|.
 
        1. If |remaining| is 0, then run |subscriber|'s {{Subscriber/complete()}} method and abort
@@ -1011,6 +1011,7 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+
        1. Let |remaining| be |amount|.
 
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
@@ -1136,9 +1137,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
        If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
        |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
 
-       Issue: We shouldn't invoke {{Observable/from()}} directly. Rather, we should
-       call some internal algorithm that passes-back the exceptions for us to handle
-       properly here, since we want to pipe them to |subscriber|.
+       Issue: We shouldn't invoke {{Observable/from()}} directly. Rather, we should call some
+       internal algorithm that passes-back the exceptions for us to handle properly here, since we
+       want to pipe them to |subscriber|.
 
      1. Let |innerObserver| be a new [=internal observer=], initialized as follows:
 
@@ -1223,10 +1224,10 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
                 Note: The [=switchmap process next value steps=] will subscribe to the
                 {{Observable}} derived from |value| (if one such can be derived) and keep processing
-                values from it until either (1) its subscription becomes inactive (either by error or
-                completion), or (2) |activeInnerAbortController| <a href=#switchmap-next-steps>gets
-                aborted</a>, due to |sourceObservable| pushing another <i>newer</i> value that will
-                replace the current "inner" subscription.
+                values from it until either (1) its subscription becomes inactive (either by error
+                or completion), or (2) |activeInnerAbortController| <a
+                href=#switchmap-next-steps>gets aborted</a>, due to |sourceObservable| pushing
+                another <i>newer</i> value that will replace the current "inner" subscription.
 
           : [=internal observer/error steps=]
           :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
@@ -1254,8 +1255,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 <div algorithm>
   The <dfn>switchmap process next value steps</dfn>, given an {{any}} |value|, a {{Subscriber}}
   |subscriber|, a {{Mapper}} |mapper|, and <b>references</b> to all of the following: an
-  {{AbortController}} |activeInnerAbortController|, a [=boolean=]
-  |outerSubscriptionHasCompleted|, and an {{unsigned long long}} |idx| are to run these steps:
+  {{AbortController}} |activeInnerAbortController|, a [=boolean=] |outerSubscriptionHasCompleted|,
+  and an {{unsigned long long}} |idx| are to run these steps:
 
     1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value| and |idx|.
 
@@ -1297,8 +1298,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
      1. Let |innerOptions| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
         result of [=creating a dependent abort signal=] from the list
         «|activeInnerAbortController|'s [=AbortController/signal=], |subscriber|'s
-        [=Subscriber/subscription controller=]'s [=AbortController/signal=]», using
-        {{AbortSignal}}, and the [=current realm=].
+        [=Subscriber/subscription controller=]'s [=AbortController/signal=]», using {{AbortSignal}},
+        and the [=current realm=].
 
      1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |innerObservable| given
         |innerObserver| and |innerOptions|.
@@ -1370,7 +1371,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           :: 1. If |next callback| is not null, then [=invoke=] |next callback| with the passed in
                 |value|.
 
-                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then:
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
+                then:
 
                   1. [=AbortSignal/Remove=] |abort callback| from |subscriber|'s
                      [=Subscriber/subscription controller=]'s [=AbortController/signal=].
@@ -1378,8 +1380,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                      Note: This step is important, because the |abort callback| is only meant to be
                      called for *consumer-initiated* unsubscriptions. When the producer terminates
                      the subscription (via |subscriber|'s {{Subscriber/error()}} or
-                     {{Subscriber/complete()}} methods) like below, we have to ensure that
-                     |abort callback| is not run.
+                     {{Subscriber/complete()}} methods) like below, we have to ensure that |abort
+                     callback| is not run.
 
                      Issue: This matches Chromium's implementation, but consider holding a reference
                      to the originally-passed-in {{SubscribeOptions}}'s {{SubscribeOptions/signal}}
@@ -1398,9 +1400,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
              1. If |error callback| is not null, then [=invoke=] |error callback| given the passed
                 in |error|.
 
-                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
-                steps.
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
 
              1. Run |subscriber|'s {{Subscriber/error()}} method, given the passed in |error|.
 
@@ -1410,9 +1411,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
              1. If |complete callback| is not null, then [=invoke=] |complete callback|.
 
-                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                then run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these
-                steps.
+                If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
+                run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
 
              1. Run |subscriber|'s {{Subscriber/complete()}} method.
 
@@ -1456,9 +1456,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
                 run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
 
-                Issue: We shouldn't invoke {{Observable/from()}} directly. Rather, we should
-                call some internal algorithm that passes-back the exceptions for us to handle
-                properly here, since we want to pipe them to |subscriber|.
+                Issue: We shouldn't invoke {{Observable/from()}} directly. Rather, we should call
+                some internal algorithm that passes-back the exceptions for us to handle properly
+                here, since we want to pipe them to |subscriber|.
 
              1. Let |innerObserver| be a new [=internal observer=], initialized as follows:
 
@@ -1485,7 +1485,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
                 will keep emitting values, because all of this is happening inside of the [=internal
                 observer/error steps=] associated with |sourceObservable|. This means
                 |sourceObservable| has already completed its subscription and will no longer produce
-                any values, and we are free to safely switch our source of values to |innerObservable|.
+                any values, and we are free to safely switch our source of values to
+                |innerObservable|.
 
           : [=internal observer/complete steps=]
           :: Run |subscriber|'s {{Subscriber/complete()}} method.
@@ -1564,9 +1565,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |visitor callback controller| be a [=new=] {{AbortController}}.
 
     1. Let |internal options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
-       result of [=creating a dependent abort signal=] from the list
-       «|visitor callback controller|'s [=AbortController/signal=], |options|'s
-       {{SubscribeOptions/signal}} if non-null», using {{AbortSignal}}, and the [=current realm=].
+       result of [=creating a dependent abort signal=] from the list «|visitor callback
+       controller|'s [=AbortController/signal=], |options|'s {{SubscribeOptions/signal}} if
+       non-null», using {{AbortSignal}}, and the [=current realm=].
 
        <div class=note>
          <p>Many trivial [=internal observers=] act as pass-throughs, and do not control the
@@ -1602,8 +1603,8 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
           Note: The fact that rejection of |p| is tied to |internal options|'s
           {{SubscribeOptions/signal}}, and not |options|'s {{SubscribeOptions/signal}} means, that
           any [=microtasks=] [=queue a microtask|queued=] during the firing of |options|'s
-          {{SubscribeOptions/signal}}'s {{AbortSignal/abort}} event will run before |p|'s
-          rejection handler runs.
+          {{SubscribeOptions/signal}}'s {{AbortSignal/abort}} event will run before |p|'s rejection
+          handler runs.
 
     1. Let |idx| be an {{unsigned long long}}, initially 0.
 
@@ -1611,13 +1612,13 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
 
        : [=internal observer/next steps=]
        ::
-         1. [=Invoke=] |callback| with the passed in <var ignore>value</var>, and |idx|.
+          1. [=Invoke=] |callback| with the passed in <var ignore>value</var>, and |idx|.
 
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
              [=reject=] |p| with |E|, and [=AbortController/signal abort=] |visitor callback
              controller| with |E|.
 
-         1. Increment |idx|.
+          1. Increment |idx|.
 
        : [=internal observer/error steps=]
        :: [=Reject=] |p| with the passed in <var ignore>error</var>.
@@ -1643,9 +1644,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |controller| be a [=new=] {{AbortController}}.
 
     1. Let |internal options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
-       result of [=creating a dependent abort signal=] from the list
-       «|controller|'s [=AbortController/signal=], |options|'s
-       {{SubscribeOptions/signal}} if non-null», using {{AbortSignal}}, and the [=current realm=].
+       result of [=creating a dependent abort signal=] from the list «|controller|'s
+       [=AbortController/signal=], |options|'s {{SubscribeOptions/signal}} if non-null», using
+       {{AbortSignal}}, and the [=current realm=].
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
@@ -1791,9 +1792,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |controller| be a [=new=] {{AbortController}}.
 
     1. Let |internal options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
-       result of [=creating a dependent abort signal=] from the list
-       «|controller|'s [=AbortController/signal=], |options|'s
-       {{SubscribeOptions/signal}} if non-null», using {{AbortSignal}}, and the [=current realm=].
+       result of [=creating a dependent abort signal=] from the list «|controller|'s
+       [=AbortController/signal=], |options|'s {{SubscribeOptions/signal}} if non-null», using
+       {{AbortSignal}}, and the [=current realm=].
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
@@ -1844,9 +1845,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |controller| be a [=new=] {{AbortController}}.
 
     1. Let |internal options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
-       result of [=creating a dependent abort signal=] from the list
-       «|controller|'s [=AbortController/signal=], |options|'s
-       {{SubscribeOptions/signal}} if non-null», using {{AbortSignal}}, and the [=current realm=].
+       result of [=creating a dependent abort signal=] from the list «|controller|'s
+       [=AbortController/signal=], |options|'s {{SubscribeOptions/signal}} if non-null», using
+       {{AbortSignal}}, and the [=current realm=].
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
@@ -1898,9 +1899,9 @@ For now, see [https://github.com/wicg/observable#operators](https://github.com/w
     1. Let |controller| be a [=new=] {{AbortController}}.
 
     1. Let |internal options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is the
-       result of [=creating a dependent abort signal=] from the list
-       «|controller|'s [=AbortController/signal=], |options|'s
-       {{SubscribeOptions/signal}} if non-null», using {{AbortSignal}}, and the [=current realm=].
+       result of [=creating a dependent abort signal=] from the list «|controller|'s
+       [=AbortController/signal=], |options|'s {{SubscribeOptions/signal}} if non-null», using
+       {{AbortSignal}}, and the [=current realm=].
 
     1. If |internal options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then:
 
@@ -1991,7 +1992,8 @@ partial interface EventTarget {
             1. If |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=]
                is [=AbortSignal/aborted=], abort these steps.
 
-            1. [=Add an event listener=] with |event target| and an [=event listener=] defined as follows:
+            1. [=Add an event listener=] with |event target| and an [=event listener=] defined as
+               follows:
 
                : [=event listener/type=]
                :: |type|
@@ -2015,8 +2017,8 @@ partial interface EventTarget {
                :: |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=]
 
                   Note: This ensures that the [=event listener=] is cleaned up when
-                  [=Subscriber/subscription controller=]'s [=AbortController/signal=] is [=AbortSignal/aborted=],
-                  regardless of an engine's ownership model.
+                  [=Subscriber/subscription controller=]'s [=AbortController/signal=] is
+                  [=AbortSignal/aborted=], regardless of an engine's ownership model.
 
     1. Return |observable|.
 </div>
@@ -2043,7 +2045,6 @@ you can consult the following resources:
 
 <h2 id=acks>Acknowledgements</h2>
 
-A special thanks to [Ben Lesh](https://benlesh.com/) for much of the design
-input for the {{Observable}} API, and his many years of work maintaining
-userland Observable code that made this contribution to the web platform
-possible.
+A special thanks to [Ben Lesh](https://benlesh.com/) for much of the design input for the
+{{Observable}} API, and his many years of work maintaining userland Observable code that made this
+contribution to the web platform possible.
