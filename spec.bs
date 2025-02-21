@@ -1559,12 +1559,14 @@ For now, see
              ignore>value</var>.
 
           : [=internal observer/error steps=]
-          :: 1. Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var ignore>error</var>.
+          :: 1. Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
+                ignore>error</var>.
 
           : [=internal observer/complete steps=]
              1. Run |subscriber|'s {{Subscriber/complete()}} method.
 
-       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
+       1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
+          |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
           given |sourceObserver| and |options|.
