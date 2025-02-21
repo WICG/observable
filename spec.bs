@@ -1563,7 +1563,7 @@ For now, see
                 ignore>error</var>.
 
           : [=internal observer/complete steps=]
-             1. Run |subscriber|'s {{Subscriber/complete()}} method.
+          :: 1. Run |subscriber|'s {{Subscriber/complete()}} method.
 
        1. Let |options| be a new {{SubscribeOptions}} whose {{SubscribeOptions/signal}} is
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
