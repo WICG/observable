@@ -223,8 +223,6 @@ const pattern = [
   'ArrowRight',
   'b',
   'a',
-  'b',
-  'a',
   'Enter',
 ];
 
