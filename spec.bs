@@ -548,7 +548,14 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
                1. If |done|'s \[[Value]] is true, then run |subscriber|'s {{Subscriber/complete()}}
                   and abort these steps.
 
-               1. Run |nextAlgorithm|.
+               1. Let |value| be [$IteratorValue$](|iteratorResult|).
+
+               1. If |value| is a [=throw completion=], then run |subscriber|'s
+                  {{Subscriber/error()}} method with |value|'s \[[Value]] and abort these steps.
+
+               1. Run |subscriber|'s {{Subscriber/next()}} given |value|'s \[[Value]].
+
+               1. Run |nextAlgorithm| given |subscriber| and |iteratorRecord|.
 
              * If |nextPromise| was rejected with reason |r|, then run |subscriber|'s
                {{Subscriber/error()}} method given |r|.
