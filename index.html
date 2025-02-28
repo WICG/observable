@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version 60c422380, updated Thu Feb 20 19:11:22 2025 -0800" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="5e4a6a5e85d567e33d6d6a7f3854d49d21dd93f0" name="revision">
+  <meta content="bebe10d77c7a82989ee4ee6c3a8f3916f3db2907" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -970,7 +970,7 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Observable</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-26">26 February 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-28">28 February 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1384,10 +1384,16 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p>If <var>done</var>’s [[Value]] is true, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete①">complete()</a></code> and abort these steps.</p>
            <li data-md>
-            <p>Run <var>nextAlgorithm</var>.</p>
+            <p>Let <var>value</var> be <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratorvalue" id="ref-for-sec-iteratorvalue">IteratorValue</a>(<var>iteratorResult</var>).</p>
+           <li data-md>
+            <p>If <var>value</var> is a <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-completion-record-specification-type" id="ref-for-sec-completion-record-specification-type③">throw completion</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③">error()</a></code> method with <var>value</var>’s [[Value]] and abort these steps.</p>
+           <li data-md>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next③">next()</a></code> given <var>value</var>’s [[Value]].</p>
+           <li data-md>
+            <p>Run <var>nextAlgorithm</var> given <var>subscriber</var> and <var>iteratorRecord</var>.</p>
           </ol>
          <li data-md>
-          <p>If <var>nextPromise</var> was rejected with reason <var>r</var>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③">error()</a></code> method given <var>r</var>.</p>
+          <p>If <var>nextPromise</var> was rejected with reason <var>r</var>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error④">error()</a></code> method given <var>r</var>.</p>
         </ul>
       </ol>
      <li data-md>
@@ -1403,9 +1409,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
   expectations; see <a href="https://github.com/WICG/observable/issues/127">issue#127</a> for
   discussion—and invokes the protocol itself to obtain an <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-iterator-records" id="ref-for-sec-iterator-records①">Iterator Record</a>.</p>
        <li data-md>
-        <p>If <var>iteratorRecordCompletion</var> is a <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-completion-record-specification-type" id="ref-for-sec-completion-record-specification-type③">throw completion</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error④">error()</a></code> method with <var>iteratorRecordCompletion</var>’s [[Value]] and abort these
+        <p>If <var>iteratorRecordCompletion</var> is a <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-completion-record-specification-type" id="ref-for-sec-completion-record-specification-type④">throw completion</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑤">error()</a></code> method with <var>iteratorRecordCompletion</var>’s [[Value]] and abort these
   steps.</p>
-        <p class="note" role="note"><span class="marker">Note:</span> This means we invoke the <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑤">error()</a></code> method synchronously with respect to
+        <p class="note" role="note"><span class="marker">Note:</span> This means we invoke the <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑥">error()</a></code> method synchronously with respect to
   subscription, which is the only time this can happen for async iterables that are
   converted to <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable②①">Observable</a></code>s. In all other cases, errors are propagated to the observer
   asynchronously, with microtask timing, by virtue of being wrapped in a rejected <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-promise" id="ref-for-idl-promise①⓪">Promise</a></code> that <var>nextAlgorithm</var> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-perform-steps-once-promise-is-settled" id="ref-for-dfn-perform-steps-once-promise-is-settled①">reacts</a> to. This synchronous-error-propagation
@@ -1438,7 +1444,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
        <li data-md>
         <p>Let <var>iteratorRecordCompletion</var> be <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-getiterator" id="ref-for-sec-getiterator③">GetIterator</a>(<var>value</var>, sync).</p>
        <li data-md>
-        <p>If <var>iteratorRecordCompletion</var> is a <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-completion-record-specification-type" id="ref-for-sec-completion-record-specification-type④">throw completion</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑥">error()</a></code> method, given <var>iteratorRecordCompletion</var>’s [[Value]], and abort
+        <p>If <var>iteratorRecordCompletion</var> is a <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-completion-record-specification-type" id="ref-for-sec-completion-record-specification-type⑤">throw completion</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑦">error()</a></code> method, given <var>iteratorRecordCompletion</var>’s [[Value]], and abort
   these steps.</p>
        <li data-md>
         <p>Let <var>iteratorRecord</var> be <a data-link-type="dfn" data-refhint-key="548dbb6b" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands③">!</a> <var>iteratorRecordCompletion</var>.</p>
@@ -1456,7 +1462,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <li data-md>
           <p>Let <var>next</var> be <a data-link-type="abstract-op" href="https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratorstepvalue" id="ref-for-sec-iteratorstepvalue②">IteratorStepValue</a>(<var>iteratorRecord</var>).</p>
          <li data-md>
-          <p>If <var>next</var> is a <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-completion-record-specification-type" id="ref-for-sec-completion-record-specification-type⑤">throw completion</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑦">error()</a></code> method, given <var>next</var>’s [[Value]], and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break">break</a>.</p>
+          <p>If <var>next</var> is a <a data-link-type="dfn" href="https://tc39.es/ecma262/#sec-completion-record-specification-type" id="ref-for-sec-completion-record-specification-type⑥">throw completion</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑧">error()</a></code> method, given <var>next</var>’s [[Value]], and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break">break</a>.</p>
          <li data-md>
           <p>Set <var>next</var> to <a data-link-type="dfn" data-refhint-key="548dbb6b" href="https://tc39.es/ecma262/#sec-returnifabrupt-shorthands" id="ref-for-sec-returnifabrupt-shorthands④">!</a> to <var>next</var>.</p>
          <li data-md>
@@ -1470,7 +1476,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <p>Return.</p>
           </ol>
          <li data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next③">next()</a></code> given <var>next</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next④">next()</a></code> given <var>next</var>.</p>
          <li data-md>
           <p>If <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller①⓪">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal⑧">signal</a> is <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-aborted" id="ref-for-abortsignal-aborted⑤">aborted</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break①">break</a>.</p>
         </ol>
@@ -1490,12 +1496,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <p>If <var>value</var> was fulfilled with value <var>v</var>, then:</p>
             <ol>
              <li data-md>
-              <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next④">next()</a></code> method, given <var>v</var>.</p>
+              <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑤">next()</a></code> method, given <var>v</var>.</p>
              <li data-md>
               <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete③">complete()</a></code> method.</p>
             </ol>
            <li data-md>
-            <p>If <var>value</var> was rejected with reason <var>r</var>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑧">error()</a></code> method, given <var>r</var>.</p>
+            <p>If <var>value</var> was rejected with reason <var>r</var>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑨">error()</a></code> method, given <var>r</var>.</p>
           </ol>
         </ol>
       </ol>
@@ -1623,7 +1629,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②③">this</a>’s <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback⑤">subscribe callback</a> is a <code class="idl"><a data-link-type="idl" href="#callbackdef-subscribecallback" id="ref-for-callbackdef-subscribecallback③">SubscribeCallback</a></code>, <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function⑧">invoke</a> it
  with <var>subscriber</var>.</p>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown⑨">an exception <var>E</var> was thrown</a>, call <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error⑨">error()</a></code> method with <var>E</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown⑨">an exception <var>E</var> was thrown</a>, call <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⓪">error()</a></code> method with <var>E</var>.</p>
      <li data-md>
       <p>Otherwise, run the steps given by <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②④">this</a>’s <a data-link-type="dfn" href="#observable-subscribe-callback" id="ref-for-observable-subscribe-callback⑥">subscribe callback</a>, given <var>subscriber</var>.</p>
     </ol>
@@ -1665,7 +1671,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
   keep producing values. We also unsubscribe from <var>sourceObservable</var>, because it no
   longer needs to produce values that get plumbed through this method’s returned <var>observable</var>, because we’re manually ending the subscription to <var>observable</var>, since <var>notifier</var> finally produced a value.</p>
         <li data-md>
-         <p><var>sourceObservable</var> either <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⓪">error()</a></code>s or <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete④">complete()</a></code>s
+         <p><var>sourceObservable</var> either <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①①">error()</a></code>s or <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete④">complete()</a></code>s
   itself. In this case, we unsubscribe from <var>notifier</var> since we no longer need to listen
   for values it emits in order to determine when <var>observable</var> can stop mirroring values
   from <var>sourceObservable</var> (since <var>sourceObservable</var> ran to completion by itself).
@@ -1705,10 +1711,10 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
         <dl>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps⑥">next steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑤">next()</a></code> method, given the passed in <var>value</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑥">next()</a></code> method, given the passed in <var>value</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps④">error steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①①">error()</a></code> method, given the passed in <var>error</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①②">error()</a></code> method, given the passed in <var>error</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps③">complete steps</a>
          <dd data-md>
           <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete⑧">complete()</a></code> method.</p>
@@ -1748,15 +1754,15 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function⑨">Invoke</a> <var>mapper</var> with the passed in <var>value</var>, and <var>idx</var>, and let <var>mappedValue</var> be the returned value.</p>
             <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⓪">an exception <var>E</var> was thrown</a>, then
-  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①②">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①③">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
            <li data-md>
             <p>Increment <var>idx</var>.</p>
            <li data-md>
-            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑥">next()</a></code> method, given <var>mappedValue</var>.</p>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑦">next()</a></code> method, given <var>mappedValue</var>.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑤">error steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①③">error()</a></code> method, given the passed in <var>error</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①④">error()</a></code> method, given the passed in <var>error</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps④">complete steps</a>
          <dd data-md>
           <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete⑨">complete()</a></code> method.</p>
@@ -1798,15 +1804,15 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①⓪">Invoke</a> <var>predicate</var> with the passed in <var>value</var> and <var>idx</var>, and let <var>matches</var> be
   the returned value.</p>
             <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①①">an exception <var>E</var> was thrown</a>, then
-  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①④">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑤">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
            <li data-md>
             <p>Set <var>idx</var> to <var>idx</var> + 1.</p>
            <li data-md>
-            <p>If <var>matches</var> is true, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑦">next()</a></code> method, given <var>value</var>.</p>
+            <p>If <var>matches</var> is true, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑧">next()</a></code> method, given <var>value</var>.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑥">error steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑤">error()</a></code> method, given the passed in <var>error</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑥">error()</a></code> method, given the passed in <var>error</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps⑤">complete steps</a>
          <dd data-md>
           <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete①⓪">complete()</a></code> method.</p>
@@ -1847,7 +1853,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
          <dd data-md>
           <ol>
            <li data-md>
-            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑧">next()</a></code> method with the passed in <var>value</var>.</p>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑨">next()</a></code> method with the passed in <var>value</var>.</p>
            <li data-md>
             <p>Decrement <var>remaining</var>.</p>
            <li data-md>
@@ -1855,7 +1861,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑦">error steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑥">error()</a></code> method, given the passed in <var>error</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑦">error()</a></code> method, given the passed in <var>error</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps⑥">complete steps</a>
          <dd data-md>
           <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete①③">complete()</a></code> method.</p>
@@ -1897,11 +1903,11 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑦">Assert</a>: <var>remaining</var> is 0.</p>
            <li data-md>
-            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next⑨">next()</a></code> method with the passed in <var>value</var>.</p>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①⓪">next()</a></code> method with the passed in <var>value</var>.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑧">error steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑦">error()</a></code> method, given the passed in <var>error</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑧">error()</a></code> method, given the passed in <var>error</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps⑦">complete steps</a>
          <dd data-md>
           <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete①④">complete()</a></code> method.</p>
@@ -1972,7 +1978,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps⑨">error steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑧">error()</a></code> method, given the passed in <var>error</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑨">error()</a></code> method, given the passed in <var>error</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps⑧">complete steps</a>
          <dd data-md>
           <ol>
@@ -1999,12 +2005,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
     <ol>
      <li data-md>
       <p>Let <var>mappedResult</var> be the result of <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①①">invoking</a> <var>mapper</var> with <var>value</var> and <var>idx</var>.</p>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①②">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error①⑨">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①②">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⓪">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
      <li data-md>
       <p>Set <var>idx</var> to <var>idx</var> + 1.</p>
      <li data-md>
       <p>Let <var>innerObservable</var> be the result of calling <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from③">from()</a></code> with <var>mappedResult</var>.</p>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①③">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⓪">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①③">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②①">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
       <p class="issue" id="issue-4eb2abb1"><a class="self-link" href="#issue-4eb2abb1"></a> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from④">from()</a></code> directly. Rather, we should call some
  internal algorithm that passes-back the exceptions for us to handle properly here, since we
  want to pipe them to <var>subscriber</var>.</p>
@@ -2013,10 +2019,10 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <dl>
        <dt data-md><a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①②">next steps</a>
        <dd data-md>
-        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①⓪">next()</a></code> method, given the passed in <var>value</var>.</p>
+        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①①">next()</a></code> method, given the passed in <var>value</var>.</p>
        <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①⓪">error steps</a>
        <dd data-md>
-        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②①">error()</a></code> method, given the passed in <var>error</var>.</p>
+        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②②">error()</a></code> method, given the passed in <var>error</var>.</p>
        <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps⑨">complete steps</a>
        <dd data-md>
         <ol>
@@ -2097,7 +2103,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①①">error steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②②">error()</a></code> method, given the passed in <var>error</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②③">error()</a></code> method, given the passed in <var>error</var>.</p>
          <dt data-md>
          <dt id="switchmap-complete-steps"><a class="self-link" href="#switchmap-complete-steps"></a><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①⓪">complete steps</a>
          <dd data-md>
@@ -2126,23 +2132,23 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
     <ol>
      <li data-md>
       <p>Let <var>mappedResult</var> be the result of <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①②">invoking</a> <var>mapper</var> with <var>value</var> and <var>idx</var>.</p>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①④">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②③">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①④">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②④">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
      <li data-md>
       <p>Set <var>idx</var> to <var>idx</var> + 1.</p>
      <li data-md>
       <p>Let <var>innerObservable</var> be the result of calling <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from⑤">from()</a></code> with <var>mappedResult</var>.</p>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⑤">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②④">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⑤">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑤">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
      <li data-md>
       <p>Let <var>innerObserver</var> be a new <a data-link-type="dfn" href="#internal-observer" id="ref-for-internal-observer①③">internal observer</a>, initialized as follows:</p>
       <dl>
        <dt data-md><a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①④">next steps</a>
        <dd data-md>
-        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①①">next()</a></code> method, given the passed in <var>value</var>.</p>
+        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①②">next()</a></code> method, given the passed in <var>value</var>.</p>
        <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①②">error steps</a>
        <dd data-md>
-        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑤">error()</a></code> method, given the passed in <var>error</var>.</p>
+        <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑥">error()</a></code> method, given the passed in <var>error</var>.</p>
         <p class="note" role="note"><span class="marker">Note:</span> We don’t have to set <var>activeInnerAbortController</var> to null here, to signal to the <code class="idl"><a data-link-type="idl" href="#dom-observable-switchmap" id="ref-for-dom-observable-switchmap①">switchMap()</a></code> method steps above that the inner "subscription" has been
- canceled. That’s because calling <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑥">error()</a></code> method already
+ canceled. That’s because calling <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑦">error()</a></code> method already
  unsubscribes from the "outer" source Observable, so it will not be able to push any more
  values to the <code class="idl"><a data-link-type="idl" href="#dom-observable-switchmap" id="ref-for-dom-observable-switchmap②">switchMap()</a></code> internal observer.</p>
        <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①①">complete steps</a>
@@ -2213,7 +2219,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
       <ol>
        <li data-md>
         <p>If <var>subscribe callback</var> is not null, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①③">invoke</a> it.</p>
-        <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⑥">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑦">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+        <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⑥">an exception <var>E</var> was thrown</a>, then run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑧">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
         <p class="note" role="note"><span class="marker">Note:</span> The result of this is that <var>sourceObservable</var> is never subscribed to.</p>
        <li data-md>
         <p>If <var>abort callback</var> is not null, then <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-add" id="ref-for-abortsignal-add④">add the following abort
@@ -2238,17 +2244,17 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
               <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortsignal-remove" id="ref-for-abortsignal-remove">Remove</a> <var>abort callback</var> from <var>subscriber</var>’s <a data-link-type="dfn" href="#subscriber-subscription-controller" id="ref-for-subscriber-subscription-controller②③">subscription controller</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#abortcontroller-signal" id="ref-for-abortcontroller-signal②②">signal</a>.</p>
               <p class="note" role="note"><span class="marker">Note:</span> This step is important, because the <var>abort callback</var> is only meant to be
  called for <em>consumer-initiated</em> unsubscriptions. When the producer terminates
- the subscription (via <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑧">error()</a></code> or <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete①⑨">complete()</a></code> methods) like below, we have to ensure that <var>abort
+ the subscription (via <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑨">error()</a></code> or <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete①⑨">complete()</a></code> methods) like below, we have to ensure that <var>abort
  callback</var> is not run.</p>
               <p class="issue" id="issue-bfe2caf4"><a class="self-link" href="#issue-bfe2caf4"></a> This matches Chromium’s implementation, but consider holding a reference
  to the originally-passed-in <code class="idl"><a data-link-type="idl" href="#dictdef-subscribeoptions" id="ref-for-dictdef-subscribeoptions①⑨">SubscribeOptions</a></code>’s <code class="idl"><a data-link-type="idl" href="#dom-subscribeoptions-signal" id="ref-for-dom-subscribeoptions-signal①⑧">signal</a></code> and just invoking <var>abort callback</var> when <em>it</em> aborts. The result is likely the
  same, but needs investigation.</p>
              <li data-md>
-              <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error②⑨">error()</a></code> method, given <var>E</var>, and abort these
+              <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③⓪">error()</a></code> method, given <var>E</var>, and abort these
  steps.</p>
             </ol>
            <li data-md>
-            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①②">next()</a></code> method with the passed in <var>value</var>.</p>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①③">next()</a></code> method with the passed in <var>value</var>.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①③">error steps</a>
          <dd data-md>
@@ -2259,9 +2265,9 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <p>If <var>error callback</var> is not null, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①⑥">invoke</a> <var>error callback</var> given the passed
   in <var>error</var>.</p>
             <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown①⑨">an exception <var>E</var> was thrown</a>, then
-  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③⓪">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③①">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
            <li data-md>
-            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③①">error()</a></code> method, given the passed in <var>error</var>.</p>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③②">error()</a></code> method, given the passed in <var>error</var>.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①②">complete steps</a>
          <dd data-md>
@@ -2271,7 +2277,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
            <li data-md>
             <p>If <var>complete callback</var> is not null, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①⑦">invoke</a> <var>complete callback</var>.</p>
             <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown②⓪">an exception <var>E</var> was thrown</a>, then
-  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③②">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③③">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
            <li data-md>
             <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete②⓪">complete()</a></code> method.</p>
           </ol>
@@ -2305,7 +2311,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
         <dl>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①⑥">next steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①③">next()</a></code> method, given the passed in <var>value</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①④">next()</a></code> method, given the passed in <var>value</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①④">error steps</a>
          <dd data-md>
           <ol>
@@ -2313,11 +2319,11 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#invoke-a-callback-function" id="ref-for-invoke-a-callback-function①⑧">Invoke</a> <var>callback</var> with the passed in <var>error</var>. Let <var>result</var> be
   the returned value.</p>
             <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown②①">an exception <var>E</var> was thrown</a>, then
-  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③③">error()</a></code> with <var>E</var>, and abort these steps.</p>
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③④">error()</a></code> with <var>E</var>, and abort these steps.</p>
            <li data-md>
             <p>Let <var>innerObservable</var> be the result of calling <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from⑥">from()</a></code> with <var>result</var>.</p>
             <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#an-exception-was-thrown" id="ref-for-an-exception-was-thrown②②">an exception <var>E</var> was thrown</a>, then
-  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③④">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
+  run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③⑤">error()</a></code> method, given <var>E</var>, and abort these steps.</p>
             <p class="issue" id="issue-4eb2abb1①"><a class="self-link" href="#issue-4eb2abb1①"></a> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from" id="ref-for-dom-observable-from⑦">from()</a></code> directly. Rather, we should call
   some internal algorithm that passes-back the exceptions for us to handle properly
   here, since we want to pipe them to <var>subscriber</var>.</p>
@@ -2326,10 +2332,10 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
             <dl>
              <dt data-md><a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①⑦">next steps</a>
              <dd data-md>
-              <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①④">next()</a></code> method, given the passed in <var>value</var>.</p>
+              <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①⑤">next()</a></code> method, given the passed in <var>value</var>.</p>
              <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①⑤">error steps</a>
              <dd data-md>
-              <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③⑤">error()</a></code> method, given the passed in <var>error</var>.</p>
+              <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③⑥">error()</a></code> method, given the passed in <var>error</var>.</p>
              <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①③">complete steps</a>
              <dd data-md>
               <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-complete" id="ref-for-dom-subscriber-complete②①">complete()</a></code> method.</p>
@@ -2371,12 +2377,12 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
         <dl>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-next-steps" id="ref-for-internal-observer-next-steps①⑧">next steps</a>
          <dd data-md>
-          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①⑤">next()</a></code> method, given the passed in <var>value</var>.</p>
+          <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①⑥">next()</a></code> method, given the passed in <var>value</var>.</p>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-error-steps" id="ref-for-internal-observer-error-steps①⑦">error steps</a>
          <dd data-md>
           <ol>
            <li data-md>
-            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③⑥">error()</a></code> method, given the passed in <var>error</var>.</p>
+            <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error③⑦">error()</a></code> method, given the passed in <var>error</var>.</p>
           </ol>
          <dt data-md><a data-link-type="dfn" href="#internal-observer-complete-steps" id="ref-for-internal-observer-complete-steps①⑤">complete steps</a>
          <dd data-md>
@@ -2920,7 +2926,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
   an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#event" id="ref-for-event①">Event</a></code> <var>event</var>, and runs these steps: 
     <ol>
      <li data-md>
-      <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①⑥">next()</a></code> method with <var>event</var>.</p>
+      <p>Run <var>subscriber</var>’s <code class="idl"><a data-link-type="idl" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next①⑦">next()</a></code> method with <var>event</var>.</p>
     </ol>
    </div>
    <details class="wpt-tests-block" dir="ltr" lang="en" open>
@@ -3098,6 +3104,7 @@ contribution to the web platform possible.</p>
      <li><span class="dfn-paneled" id="03487a52">IteratorComplete</span>
      <li><span class="dfn-paneled" id="069eabcc">IteratorNext</span>
      <li><span class="dfn-paneled" id="5d0f228f">IteratorStepValue</span>
+     <li><span class="dfn-paneled" id="68d0559e">IteratorValue</span>
      <li><span class="dfn-paneled" id="3ea09d18">Type</span>
      <li><span class="dfn-paneled" id="3aec4bbc">current realm</span>
      <li><span class="dfn-paneled" id="19e79880">Iterator Record</span>
@@ -3521,7 +3528,7 @@ let dfnPanelData = {
 "3ea09d18": {"dfnID":"3ea09d18","dfnText":"Type","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-ecmascript-data-types-and-values"},{"id":"ref-for-sec-ecmascript-data-types-and-values\u2460"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/#sec-ecmascript-data-types-and-values"},
 "3f076bc8": {"dfnID":"3f076bc8","dfnText":"signal (for event listener)","external":true,"refSections":[{"refs":[{"id":"ref-for-event-listener-signal"}],"title":"3. EventTarget integration"}],"url":"https://dom.spec.whatwg.org#event-listener-signal"},
 "4013a022": {"dfnID":"4013a022","dfnText":"this","external":true,"refSections":[{"refs":[{"id":"ref-for-this"},{"id":"ref-for-this\u2460"},{"id":"ref-for-this\u2461"},{"id":"ref-for-this\u2462"},{"id":"ref-for-this\u2463"},{"id":"ref-for-this\u2464"},{"id":"ref-for-this\u2465"},{"id":"ref-for-this\u2466"},{"id":"ref-for-this\u2467"},{"id":"ref-for-this\u2468"},{"id":"ref-for-this\u2460\u24ea"},{"id":"ref-for-this\u2460\u2460"},{"id":"ref-for-this\u2460\u2461"},{"id":"ref-for-this\u2460\u2462"},{"id":"ref-for-this\u2460\u2463"},{"id":"ref-for-this\u2460\u2464"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-this\u2460\u2465"},{"id":"ref-for-this\u2460\u2466"}],"title":"2.2. The Observable interface"},{"refs":[{"id":"ref-for-this\u2460\u2467"},{"id":"ref-for-this\u2460\u2468"},{"id":"ref-for-this\u2461\u24ea"},{"id":"ref-for-this\u2461\u2460"},{"id":"ref-for-this\u2461\u2461"},{"id":"ref-for-this\u2461\u2462"},{"id":"ref-for-this\u2461\u2463"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-this\u2461\u2464"},{"id":"ref-for-this\u2461\u2465"},{"id":"ref-for-this\u2461\u2466"},{"id":"ref-for-this\u2461\u2467"},{"id":"ref-for-this\u2461\u2468"},{"id":"ref-for-this\u2462\u24ea"},{"id":"ref-for-this\u2462\u2460"},{"id":"ref-for-this\u2462\u2461"},{"id":"ref-for-this\u2462\u2462"},{"id":"ref-for-this\u2462\u2463"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-this\u2462\u2464"},{"id":"ref-for-this\u2462\u2465"},{"id":"ref-for-this\u2462\u2466"},{"id":"ref-for-this\u2462\u2467"},{"id":"ref-for-this\u2462\u2468"},{"id":"ref-for-this\u2463\u24ea"},{"id":"ref-for-this\u2463\u2460"},{"id":"ref-for-this\u2463\u2461"},{"id":"ref-for-this\u2463\u2462"},{"id":"ref-for-this\u2463\u2463"},{"id":"ref-for-this\u2463\u2464"}],"title":"2.3.3. Promise-returning operators"},{"refs":[{"id":"ref-for-this\u2463\u2465"},{"id":"ref-for-this\u2463\u2466"}],"title":"3. EventTarget integration"}],"url":"https://webidl.spec.whatwg.org/#this"},
-"4351f192": {"dfnID":"4351f192","dfnText":"normal completion","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-completion-record-specification-type"},{"id":"ref-for-sec-completion-record-specification-type\u2460"},{"id":"ref-for-sec-completion-record-specification-type\u2461"},{"id":"ref-for-sec-completion-record-specification-type\u2462"},{"id":"ref-for-sec-completion-record-specification-type\u2463"},{"id":"ref-for-sec-completion-record-specification-type\u2464"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/#sec-completion-record-specification-type"},
+"4351f192": {"dfnID":"4351f192","dfnText":"normal completion","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-completion-record-specification-type"},{"id":"ref-for-sec-completion-record-specification-type\u2460"},{"id":"ref-for-sec-completion-record-specification-type\u2461"},{"id":"ref-for-sec-completion-record-specification-type\u2462"},{"id":"ref-for-sec-completion-record-specification-type\u2463"},{"id":"ref-for-sec-completion-record-specification-type\u2464"},{"id":"ref-for-sec-completion-record-specification-type\u2465"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/#sec-completion-record-specification-type"},
 "45da773f": {"dfnID":"45da773f","dfnText":"IsPromise","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-ispromise"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-ispromise"},
 "51276d86": {"dfnID":"51276d86","dfnText":"a promise rejected with","external":true,"refSections":[{"refs":[{"id":"ref-for-a-promise-rejected-with"}],"title":"2.2.1. Supporting concepts"}],"url":"https://webidl.spec.whatwg.org#a-promise-rejected-with"},
 "53079ce3": {"dfnID":"53079ce3","dfnText":"queue a microtask","external":true,"refSections":[{"refs":[{"id":"ref-for-queue-a-microtask"}],"title":"2.3.3. Promise-returning operators"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-microtask"},
@@ -3537,6 +3544,7 @@ let dfnPanelData = {
 "622d9f0e": {"dfnID":"622d9f0e","dfnText":"callback","external":true,"refSections":[{"refs":[{"id":"ref-for-event-listener-callback"}],"title":"3. EventTarget integration"}],"url":"https://dom.spec.whatwg.org/#event-listener-callback"},
 "649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-list\u2460"},{"id":"ref-for-list\u2461"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-list\u2462"}],"title":"2.3.3. Promise-returning operators"}],"url":"https://infra.spec.whatwg.org/#list"},
 "670f0339": {"dfnID":"670f0339","dfnText":"abort reason","external":true,"refSections":[{"refs":[{"id":"ref-for-abortsignal-abort-reason"},{"id":"ref-for-abortsignal-abort-reason\u2460"},{"id":"ref-for-abortsignal-abort-reason\u2461"},{"id":"ref-for-abortsignal-abort-reason\u2462"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-abortsignal-abort-reason\u2463"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-abortsignal-abort-reason\u2464"},{"id":"ref-for-abortsignal-abort-reason\u2465"},{"id":"ref-for-abortsignal-abort-reason\u2466"},{"id":"ref-for-abortsignal-abort-reason\u2467"},{"id":"ref-for-abortsignal-abort-reason\u2468"},{"id":"ref-for-abortsignal-abort-reason\u2460\u24ea"},{"id":"ref-for-abortsignal-abort-reason\u2460\u2460"},{"id":"ref-for-abortsignal-abort-reason\u2460\u2461"},{"id":"ref-for-abortsignal-abort-reason\u2460\u2462"},{"id":"ref-for-abortsignal-abort-reason\u2460\u2463"},{"id":"ref-for-abortsignal-abort-reason\u2460\u2464"},{"id":"ref-for-abortsignal-abort-reason\u2460\u2465"},{"id":"ref-for-abortsignal-abort-reason\u2460\u2466"},{"id":"ref-for-abortsignal-abort-reason\u2460\u2467"},{"id":"ref-for-abortsignal-abort-reason\u2460\u2468"},{"id":"ref-for-abortsignal-abort-reason\u2461\u24ea"}],"title":"2.3.3. Promise-returning operators"}],"url":"https://dom.spec.whatwg.org#abortsignal-abort-reason"},
+"68d0559e": {"dfnID":"68d0559e","dfnText":"IteratorValue","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-iteratorvalue"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratorvalue"},
 "692595fe": {"dfnID":"692595fe","dfnText":"ordered set","external":true,"refSections":[{"refs":[{"id":"ref-for-ordered-set"}],"title":"2.1. The Subscriber interface"}],"url":"https://infra.spec.whatwg.org/#ordered-set"},
 "6a288f2a": {"dfnID":"6a288f2a","dfnText":"microtask","external":true,"refSections":[{"refs":[{"id":"ref-for-microtask"}],"title":"2.3.3. Promise-returning operators"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#microtask"},
 "6c6b1005": {"dfnID":"6c6b1005","dfnText":"any","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-any"},{"id":"ref-for-idl-any\u2460"},{"id":"ref-for-idl-any\u2461"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-idl-any\u2462"},{"id":"ref-for-idl-any\u2463"},{"id":"ref-for-idl-any\u2464"},{"id":"ref-for-idl-any\u2465"},{"id":"ref-for-idl-any\u2466"},{"id":"ref-for-idl-any\u2467"},{"id":"ref-for-idl-any\u2468"},{"id":"ref-for-idl-any\u2460\u24ea"},{"id":"ref-for-idl-any\u2460\u2460"},{"id":"ref-for-idl-any\u2460\u2461"},{"id":"ref-for-idl-any\u2460\u2462"},{"id":"ref-for-idl-any\u2460\u2463"},{"id":"ref-for-idl-any\u2460\u2464"},{"id":"ref-for-idl-any\u2460\u2465"},{"id":"ref-for-idl-any\u2460\u2466"},{"id":"ref-for-idl-any\u2460\u2467"},{"id":"ref-for-idl-any\u2460\u2468"},{"id":"ref-for-idl-any\u2461\u24ea"},{"id":"ref-for-idl-any\u2461\u2460"}],"title":"2.2. The Observable interface"},{"refs":[{"id":"ref-for-idl-any\u2461\u2461"},{"id":"ref-for-idl-any\u2461\u2462"},{"id":"ref-for-idl-any\u2461\u2463"},{"id":"ref-for-idl-any\u2461\u2464"},{"id":"ref-for-idl-any\u2461\u2465"},{"id":"ref-for-idl-any\u2461\u2466"},{"id":"ref-for-idl-any\u2461\u2467"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-idl-any\u2461\u2468"},{"id":"ref-for-idl-any\u2462\u24ea"},{"id":"ref-for-idl-any\u2462\u2460"},{"id":"ref-for-idl-any\u2462\u2461"},{"id":"ref-for-idl-any\u2462\u2462"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-idl-any\u2462\u2463"}],"title":"2.3.3. Promise-returning operators"}],"url":"https://webidl.spec.whatwg.org/#idl-any"},
@@ -3553,7 +3561,7 @@ let dfnPanelData = {
 "87bc23a5": {"dfnID":"87bc23a5","dfnText":"add","external":true,"refSections":[{"refs":[{"id":"ref-for-abortsignal-add"},{"id":"ref-for-abortsignal-add\u2460"},{"id":"ref-for-abortsignal-add\u2461"},{"id":"ref-for-abortsignal-add\u2462"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-abortsignal-add\u2463"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-abortsignal-add\u2464"},{"id":"ref-for-abortsignal-add\u2465"},{"id":"ref-for-abortsignal-add\u2466"},{"id":"ref-for-abortsignal-add\u2467"},{"id":"ref-for-abortsignal-add\u2468"},{"id":"ref-for-abortsignal-add\u2460\u24ea"},{"id":"ref-for-abortsignal-add\u2460\u2460"},{"id":"ref-for-abortsignal-add\u2460\u2461"}],"title":"2.3.3. Promise-returning operators"}],"url":"https://dom.spec.whatwg.org/#abortsignal-add"},
 "8855a9aa": {"dfnID":"8855a9aa","dfnText":"DOMString","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-DOMString"}],"title":"3. EventTarget integration"}],"url":"https://webidl.spec.whatwg.org/#idl-DOMString"},
 "89aef5a4": {"dfnID":"89aef5a4","dfnText":"signal abort (for AbortSignal)","external":true,"refSections":[{"refs":[{"id":"ref-for-abortsignal-signal-abort"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-abortsignal-signal-abort\u2460"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-abortsignal-signal-abort\u2461"}],"title":"2.3.3. Promise-returning operators"}],"url":"https://dom.spec.whatwg.org#abortsignal-signal-abort"},
-"8a0f541d": {"dfnID":"8a0f541d","dfnText":"throw completion","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-completion-record-specification-type"},{"id":"ref-for-sec-completion-record-specification-type\u2460"},{"id":"ref-for-sec-completion-record-specification-type\u2461"},{"id":"ref-for-sec-completion-record-specification-type\u2462"},{"id":"ref-for-sec-completion-record-specification-type\u2463"},{"id":"ref-for-sec-completion-record-specification-type\u2464"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/#sec-completion-record-specification-type"},
+"8a0f541d": {"dfnID":"8a0f541d","dfnText":"throw completion","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-completion-record-specification-type"},{"id":"ref-for-sec-completion-record-specification-type\u2460"},{"id":"ref-for-sec-completion-record-specification-type\u2461"},{"id":"ref-for-sec-completion-record-specification-type\u2462"},{"id":"ref-for-sec-completion-record-specification-type\u2463"},{"id":"ref-for-sec-completion-record-specification-type\u2464"},{"id":"ref-for-sec-completion-record-specification-type\u2465"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/#sec-completion-record-specification-type"},
 "8c6dc739": {"dfnID":"8c6dc739","dfnText":"?","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-returnifabrupt-shorthands"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2460"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2461"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2462"},{"id":"ref-for-sec-returnifabrupt-shorthands\u2463"}],"title":"2.2.1. Supporting concepts"}],"url":"https://tc39.es/ecma262/#sec-returnifabrupt-shorthands"},
 "8f5c2179": {"dfnID":"8f5c2179","dfnText":"a promise resolved with","external":true,"refSections":[{"refs":[{"id":"ref-for-a-promise-resolved-with"}],"title":"2.2.1. Supporting concepts"}],"url":"https://webidl.spec.whatwg.org/#a-promise-resolved-with"},
 "8fc9882c": {"dfnID":"8fc9882c","dfnText":"once","external":true,"refSections":[{"refs":[{"id":"ref-for-event-listener-once"}],"title":"3. EventTarget integration"}],"url":"https://dom.spec.whatwg.org#event-listener-once"},
@@ -3664,9 +3672,9 @@ let dfnPanelData = {
 "dom-subscriber-addteardown": {"dfnID":"dom-subscriber-addteardown","dfnText":"addTeardown(teardown)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-subscriber-addteardown"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-dom-subscriber-addteardown\u2460"}],"title":"2.3.2. Observable-returning operators"}],"url":"#dom-subscriber-addteardown"},
 "dom-subscriber-addteardown-teardown-teardown": {"dfnID":"dom-subscriber-addteardown-teardown-teardown","dfnText":"teardown","external":false,"refSections":[],"url":"#dom-subscriber-addteardown-teardown-teardown"},
 "dom-subscriber-complete": {"dfnID":"dom-subscriber-complete","dfnText":"complete()","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-subscriber-complete"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-dom-subscriber-complete\u2460"},{"id":"ref-for-dom-subscriber-complete\u2461"},{"id":"ref-for-dom-subscriber-complete\u2462"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-dom-subscriber-complete\u2463"},{"id":"ref-for-dom-subscriber-complete\u2464"},{"id":"ref-for-dom-subscriber-complete\u2465"},{"id":"ref-for-dom-subscriber-complete\u2466"},{"id":"ref-for-dom-subscriber-complete\u2467"},{"id":"ref-for-dom-subscriber-complete\u2468"},{"id":"ref-for-dom-subscriber-complete\u2460\u24ea"},{"id":"ref-for-dom-subscriber-complete\u2460\u2460"},{"id":"ref-for-dom-subscriber-complete\u2460\u2461"},{"id":"ref-for-dom-subscriber-complete\u2460\u2462"},{"id":"ref-for-dom-subscriber-complete\u2460\u2463"},{"id":"ref-for-dom-subscriber-complete\u2460\u2464"},{"id":"ref-for-dom-subscriber-complete\u2460\u2465"},{"id":"ref-for-dom-subscriber-complete\u2460\u2466"},{"id":"ref-for-dom-subscriber-complete\u2460\u2467"},{"id":"ref-for-dom-subscriber-complete\u2460\u2468"},{"id":"ref-for-dom-subscriber-complete\u2461\u24ea"},{"id":"ref-for-dom-subscriber-complete\u2461\u2460"},{"id":"ref-for-dom-subscriber-complete\u2461\u2461"},{"id":"ref-for-dom-subscriber-complete\u2461\u2462"}],"title":"2.3.2. Observable-returning operators"}],"url":"#dom-subscriber-complete"},
-"dom-subscriber-error": {"dfnID":"dom-subscriber-error","dfnText":"error(error)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-subscriber-error"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-dom-subscriber-error\u2460"},{"id":"ref-for-dom-subscriber-error\u2461"},{"id":"ref-for-dom-subscriber-error\u2462"},{"id":"ref-for-dom-subscriber-error\u2463"},{"id":"ref-for-dom-subscriber-error\u2464"},{"id":"ref-for-dom-subscriber-error\u2465"},{"id":"ref-for-dom-subscriber-error\u2466"},{"id":"ref-for-dom-subscriber-error\u2467"},{"id":"ref-for-dom-subscriber-error\u2468"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-dom-subscriber-error\u2460\u24ea"},{"id":"ref-for-dom-subscriber-error\u2460\u2460"},{"id":"ref-for-dom-subscriber-error\u2460\u2461"},{"id":"ref-for-dom-subscriber-error\u2460\u2462"},{"id":"ref-for-dom-subscriber-error\u2460\u2463"},{"id":"ref-for-dom-subscriber-error\u2460\u2464"},{"id":"ref-for-dom-subscriber-error\u2460\u2465"},{"id":"ref-for-dom-subscriber-error\u2460\u2466"},{"id":"ref-for-dom-subscriber-error\u2460\u2467"},{"id":"ref-for-dom-subscriber-error\u2460\u2468"},{"id":"ref-for-dom-subscriber-error\u2461\u24ea"},{"id":"ref-for-dom-subscriber-error\u2461\u2460"},{"id":"ref-for-dom-subscriber-error\u2461\u2461"},{"id":"ref-for-dom-subscriber-error\u2461\u2462"},{"id":"ref-for-dom-subscriber-error\u2461\u2463"},{"id":"ref-for-dom-subscriber-error\u2461\u2464"},{"id":"ref-for-dom-subscriber-error\u2461\u2465"},{"id":"ref-for-dom-subscriber-error\u2461\u2466"},{"id":"ref-for-dom-subscriber-error\u2461\u2467"},{"id":"ref-for-dom-subscriber-error\u2461\u2468"},{"id":"ref-for-dom-subscriber-error\u2462\u24ea"},{"id":"ref-for-dom-subscriber-error\u2462\u2460"},{"id":"ref-for-dom-subscriber-error\u2462\u2461"},{"id":"ref-for-dom-subscriber-error\u2462\u2462"},{"id":"ref-for-dom-subscriber-error\u2462\u2463"},{"id":"ref-for-dom-subscriber-error\u2462\u2464"},{"id":"ref-for-dom-subscriber-error\u2462\u2465"}],"title":"2.3.2. Observable-returning operators"}],"url":"#dom-subscriber-error"},
+"dom-subscriber-error": {"dfnID":"dom-subscriber-error","dfnText":"error(error)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-subscriber-error"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-dom-subscriber-error\u2460"},{"id":"ref-for-dom-subscriber-error\u2461"},{"id":"ref-for-dom-subscriber-error\u2462"},{"id":"ref-for-dom-subscriber-error\u2463"},{"id":"ref-for-dom-subscriber-error\u2464"},{"id":"ref-for-dom-subscriber-error\u2465"},{"id":"ref-for-dom-subscriber-error\u2466"},{"id":"ref-for-dom-subscriber-error\u2467"},{"id":"ref-for-dom-subscriber-error\u2468"},{"id":"ref-for-dom-subscriber-error\u2460\u24ea"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-dom-subscriber-error\u2460\u2460"},{"id":"ref-for-dom-subscriber-error\u2460\u2461"},{"id":"ref-for-dom-subscriber-error\u2460\u2462"},{"id":"ref-for-dom-subscriber-error\u2460\u2463"},{"id":"ref-for-dom-subscriber-error\u2460\u2464"},{"id":"ref-for-dom-subscriber-error\u2460\u2465"},{"id":"ref-for-dom-subscriber-error\u2460\u2466"},{"id":"ref-for-dom-subscriber-error\u2460\u2467"},{"id":"ref-for-dom-subscriber-error\u2460\u2468"},{"id":"ref-for-dom-subscriber-error\u2461\u24ea"},{"id":"ref-for-dom-subscriber-error\u2461\u2460"},{"id":"ref-for-dom-subscriber-error\u2461\u2461"},{"id":"ref-for-dom-subscriber-error\u2461\u2462"},{"id":"ref-for-dom-subscriber-error\u2461\u2463"},{"id":"ref-for-dom-subscriber-error\u2461\u2464"},{"id":"ref-for-dom-subscriber-error\u2461\u2465"},{"id":"ref-for-dom-subscriber-error\u2461\u2466"},{"id":"ref-for-dom-subscriber-error\u2461\u2467"},{"id":"ref-for-dom-subscriber-error\u2461\u2468"},{"id":"ref-for-dom-subscriber-error\u2462\u24ea"},{"id":"ref-for-dom-subscriber-error\u2462\u2460"},{"id":"ref-for-dom-subscriber-error\u2462\u2461"},{"id":"ref-for-dom-subscriber-error\u2462\u2462"},{"id":"ref-for-dom-subscriber-error\u2462\u2463"},{"id":"ref-for-dom-subscriber-error\u2462\u2464"},{"id":"ref-for-dom-subscriber-error\u2462\u2465"},{"id":"ref-for-dom-subscriber-error\u2462\u2466"}],"title":"2.3.2. Observable-returning operators"}],"url":"#dom-subscriber-error"},
 "dom-subscriber-error-error-error": {"dfnID":"dom-subscriber-error-error-error","dfnText":"error","external":false,"refSections":[],"url":"#dom-subscriber-error-error-error"},
-"dom-subscriber-next": {"dfnID":"dom-subscriber-next","dfnText":"next(value)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-subscriber-next"},{"id":"ref-for-dom-subscriber-next\u2460"},{"id":"ref-for-dom-subscriber-next\u2461"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-dom-subscriber-next\u2462"},{"id":"ref-for-dom-subscriber-next\u2463"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-dom-subscriber-next\u2464"},{"id":"ref-for-dom-subscriber-next\u2465"},{"id":"ref-for-dom-subscriber-next\u2466"},{"id":"ref-for-dom-subscriber-next\u2467"},{"id":"ref-for-dom-subscriber-next\u2468"},{"id":"ref-for-dom-subscriber-next\u2460\u24ea"},{"id":"ref-for-dom-subscriber-next\u2460\u2460"},{"id":"ref-for-dom-subscriber-next\u2460\u2461"},{"id":"ref-for-dom-subscriber-next\u2460\u2462"},{"id":"ref-for-dom-subscriber-next\u2460\u2463"},{"id":"ref-for-dom-subscriber-next\u2460\u2464"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-dom-subscriber-next\u2460\u2465"}],"title":"3. EventTarget integration"}],"url":"#dom-subscriber-next"},
+"dom-subscriber-next": {"dfnID":"dom-subscriber-next","dfnText":"next(value)","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-subscriber-next"},{"id":"ref-for-dom-subscriber-next\u2460"},{"id":"ref-for-dom-subscriber-next\u2461"}],"title":"2.1. The Subscriber interface"},{"refs":[{"id":"ref-for-dom-subscriber-next\u2462"},{"id":"ref-for-dom-subscriber-next\u2463"},{"id":"ref-for-dom-subscriber-next\u2464"}],"title":"2.2.1. Supporting concepts"},{"refs":[{"id":"ref-for-dom-subscriber-next\u2465"},{"id":"ref-for-dom-subscriber-next\u2466"},{"id":"ref-for-dom-subscriber-next\u2467"},{"id":"ref-for-dom-subscriber-next\u2468"},{"id":"ref-for-dom-subscriber-next\u2460\u24ea"},{"id":"ref-for-dom-subscriber-next\u2460\u2460"},{"id":"ref-for-dom-subscriber-next\u2460\u2461"},{"id":"ref-for-dom-subscriber-next\u2460\u2462"},{"id":"ref-for-dom-subscriber-next\u2460\u2463"},{"id":"ref-for-dom-subscriber-next\u2460\u2464"},{"id":"ref-for-dom-subscriber-next\u2460\u2465"}],"title":"2.3.2. Observable-returning operators"},{"refs":[{"id":"ref-for-dom-subscriber-next\u2460\u2466"}],"title":"3. EventTarget integration"}],"url":"#dom-subscriber-next"},
 "dom-subscriber-next-value-value": {"dfnID":"dom-subscriber-next-value-value","dfnText":"value","external":false,"refSections":[],"url":"#dom-subscriber-next-value-value"},
 "dom-subscriber-signal": {"dfnID":"dom-subscriber-signal","dfnText":"signal","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-subscriber-signal"}],"title":"2.1. The Subscriber interface"}],"url":"#dom-subscriber-signal"},
 "dom-subscriptionobserver-complete": {"dfnID":"dom-subscriptionobserver-complete","dfnText":"complete","external":false,"refSections":[{"refs":[{"id":"ref-for-dom-subscriptionobserver-complete"},{"id":"ref-for-dom-subscriptionobserver-complete\u2460"},{"id":"ref-for-dom-subscriptionobserver-complete\u2461"},{"id":"ref-for-dom-subscriptionobserver-complete\u2462"}],"title":"2.2.1. Supporting concepts"}],"url":"#dom-subscriptionobserver-complete"},
@@ -4224,6 +4232,7 @@ let refsData = {
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratorcomplete": {"displayText":"IteratorComplete","export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"IteratorComplete","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratorcomplete"},
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratornext": {"displayText":"IteratorNext","export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"IteratorNext","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratornext"},
 "https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratorstepvalue": {"displayText":"IteratorStepValue","export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"IteratorStepValue","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratorstepvalue"},
+"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratorvalue": {"displayText":"IteratorValue","export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"IteratorValue","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/abstract-operations.html#sec-iteratorvalue"},
 "https://tc39.es/ecma262/multipage/control-abstraction-objects.html#await": {"displayText":"Await","export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"Await","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/control-abstraction-objects.html#await"},
 "https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-ispromise": {"displayText":"IsPromise","export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"IsPromise","type":"abstract-op","url":"https://tc39.es/ecma262/multipage/control-abstraction-objects.html#sec-ispromise"},
 "https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols": {"displayText":"%Symbol.asyncIterator%","export":true,"for_":[],"level":"1","normative":true,"shortname":"ecmascript","spec":"ecmascript","status":"current","text":"%Symbol.asyncIterator%","type":"interface","url":"https://tc39.es/ecma262/multipage/ecmascript-data-types-and-values.html#sec-well-known-symbols"},
