@@ -2083,7 +2083,8 @@ partial interface EventTarget {
                :: |options|'s {{ObservableEventListenerOptions/capture}}
 
                : [=event listener/passive=]
-               :: |options|'s {{ObservableEventListenerOptions/passive}}
+               :: |options|'s {{ObservableEventListenerOptions/passive}} if this member
+                  [=map/exists=]; null otherwise.
 
                : [=event listener/once=]
                :: false
