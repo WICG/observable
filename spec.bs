@@ -226,7 +226,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 <div algorithm>
   The <dfn for=Subscriber method><code>error(|error|)</code></dfn> method steps are:
 
-    1. If [=this=]'s [=Subscriber/active=] is false, [=report the exception=] |error|, then return.
+    1. If [=this=]'s [=Subscriber/active=] is false, [=report an exception=] with |error| and
+       [=this=]'s [=relevant global object=], then return.
 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
@@ -270,10 +271,7 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
     1. If [=this=]'s [=Subscriber/active=] is true, then [=list/append=] |teardown| to [=this=]'s
        [=Subscriber/teardown callbacks=] list.
 
-    1. Otherwise, [=invoke=] |teardown|.
-
-       If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then [=report
-       the exception=] |E|.
+    1. Otherwise, [=invoke=] |teardown| with «» and "`report`".
 </div>
 
 <div algorithm>
@@ -320,10 +318,7 @@ observable.subscribe({}, {signal: outerController.signal});
           Note: This step runs repeatedly because each |teardown| could result in the above
           {{Document}} becoming inactive.
 
-       1. [=Invoke=] |teardown|.
-
-          If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-          [=report the exception=] |E|.
+       1. [=Invoke=] |teardown| with «» and "`report`".
 </div>
 
 <h3 id=observable-api>The {{Observable}} interface</h3>
@@ -442,7 +437,7 @@ callback). The return value of {{EventTarget/when()}} is an example of the latte
   The <dfn>default error algorithm</dfn> is an algorithm that takes an {{any}} |error|, and runs
   these steps:
 
-    1. [=Report the exception=] |error|.
+    1. [=Report an exception=] with |error| and the [=current realm=]'s [=realm/global object=].
 
   Note: We pull this default out separately so that every place in this specification that natively
   <a for=Observable lt="subscribe to an Observable">subscribes</a> to an {{Observable}} (i.e.,
@@ -701,10 +696,7 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
              <dd>Set |internal observer|'s [=internal observer/next steps=] to these steps that take
              an {{any}} |value|:
 
-                 1. [=Invoke=] |observer| with |value|.
-
-                    If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                    then [=report the exception=] |E|.
+                 1. [=Invoke=] |observer| with «|value|» and "`report`".
              </dd>
 
              <dt>If |observer| is a {{SubscriptionObserver}}</dt>
@@ -713,27 +705,21 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
                   observer|'s [=internal observer/next steps=] to these steps that take an {{any}}
                   |value|:
 
-                  1. [=Invoke=] |observer|'s {{SubscriptionObserver/next}} with |value|.
-
-                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                     then [=report the exception=] |E|.
+                  1. [=Invoke=] |observer|'s {{SubscriptionObserver/next}} with «|value|» and
+                     "`report`".
 
                1. If |observer|'s {{SubscriptionObserver/error}} [=map/exists=], then set |internal
                   observer|'s [=internal observer/error steps=] to these steps that take an {{any}}
                   |error|:
 
-                  1. [=Invoke=] |observer|'s {{SubscriptionObserver/error}} with |error|.
-
-                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                     then [=report the exception=] |E|.
+                  1. [=Invoke=] |observer|'s {{SubscriptionObserver/error}} with «|error|» and
+                     "`report`".
 
                1. If |observer|'s {{SubscriptionObserver/complete}} [=map/exists=], then set
                   |internal observer|'s [=internal observer/complete steps=] to these steps:
 
-                  1. [=Invoke=] |observer|'s {{SubscriptionObserver/complete}}.
-
-                     If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
-                     then [=report the exception=] |E|.
+                  1. [=Invoke=] |observer|'s {{SubscriptionObserver/complete}} with «» and
+                     "`report`".
              </dd>
 
              <dt>If |observer| is an [=internal observer=]</dt>
@@ -797,8 +783,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
              subscription|close=] |subscriber| with |options|'s {{SubscribeOptions/signal}}'s
              [=AbortSignal/abort reason=].
 
-    1. If [=this=]'s [=Observable/subscribe callback=] is a {{SubscribeCallback}}, [=invoke=] it
-       with |subscriber|.
+    1. If [=this=]'s [=Observable/subscribe callback=] is a {{SubscribeCallback}}, then [=invoke=]
+       it with «subscriber» with "`rethrow`".
 
        If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
        |subscriber|'s {{Subscriber/error()}} method with |E|.
@@ -935,8 +921,8 @@ For now, see
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
           : [=internal observer/next steps=]
-          :: 1. [=Invoke=] |mapper| with the passed in <var ignore>value</var>, and |idx|, and let
-                |mappedValue| be the returned value.
+          :: 1. [=Invoke=] |mapper| with «the passed in <var ignore>value</var>, |idx|» and
+                "`rethrow`"; let |mappedValue| be the returned value.
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
                 run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
@@ -979,8 +965,8 @@ For now, see
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
           : [=internal observer/next steps=]
-          :: 1. [=Invoke=] |predicate| with the passed in |value| and |idx|, and let |matches| be
-                the returned value.
+          :: 1. [=Invoke=] |predicate| with «the passed in |value|, |idx|» and "`rethrow`"; let
+                |matches| be the returned value.
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
                 run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
@@ -1174,7 +1160,8 @@ For now, see
   {{any}} values |queue|, a [=boolean=] |activeInnerSubscription|, a [=boolean=]
   |outerSubscriptionHasCompleted|, and an {{unsigned long long}} |idx|:
 
-    1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value| and |idx|.
+    1. Let |mappedResult| be the result of [=invoking=] |mapper| with «|value|, |idx|» and
+       "`rethrow`".
 
        If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
        |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
@@ -1307,7 +1294,8 @@ For now, see
   {{AbortController}} |activeInnerAbortController|, a [=boolean=] |outerSubscriptionHasCompleted|,
   and an {{unsigned long long}} |idx| are to run these steps:
 
-    1. Let |mappedResult| be the result of [=invoking=] |mapper| with |value| and |idx|.
+    1. Let |mappedResult| be the result of [=invoking=] |mapper| with «|value|, |idx|» and
+       "`rethrow`".
 
        If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
        |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
@@ -1397,7 +1385,7 @@ For now, see
     1. Let |observable| be a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
        algorithm that takes a {{Subscriber}} |subscriber| and does the following:
 
-       1. If |subscribe callback| is not null, then [=invoke=] it.
+       1. If |subscribe callback| is not null, then [=invoke=] it with «» and "`rethrow`".
 
           If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then run
           |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
@@ -1408,17 +1396,14 @@ For now, see
           algorithm=] to |subscriber|'s [=Subscriber/subscription controller=]'s
           [=AbortController/signal=]:
 
-          1. [=Invoke=] |abort callback| with |subscriber|'s [=Subscriber/subscription
-             controller=]'s [=AbortController/signal=]'s [=AbortSignal/abort reason=].
-
-             If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
-             [=report the exception=] |E|.
+          1. [=Invoke=] |abort callback| with «|subscriber|'s [=Subscriber/subscription
+             controller=]'s [=AbortController/signal=]'s [=AbortSignal/abort reason=]» and "`report`".
 
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
           : [=internal observer/next steps=]
-          :: 1. If |next callback| is not null, then [=invoke=] |next callback| with the passed in
-                |value|.
+          :: 1. If |next callback| is not null, then [=invoke=] |next callback| with «the passed in
+                |value|» and "`rethrow`".
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>,
                 then:
@@ -1446,8 +1431,8 @@ For now, see
           :: 1. [=AbortSignal/Remove=] |abort callback| from |subscriber|'s
                 [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
-             1. If |error callback| is not null, then [=invoke=] |error callback| given the passed
-                in |error|.
+             1. If |error callback| is not null, then [=invoke=] |error callback| with «the passed
+                in |error|» and "`rethrow`".
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
                 run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
@@ -1458,7 +1443,8 @@ For now, see
           :: 1. [=AbortSignal/Remove=] |abort callback| from |subscriber|'s
                 [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
-             1. If |complete callback| is not null, then [=invoke=] |complete callback|.
+             1. If |complete callback| is not null, then [=invoke=] |complete callback| with «»
+                and "`rethrow`".
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
                 run |subscriber|'s {{Subscriber/error()}} method, given |E|, and abort these steps.
@@ -1494,8 +1480,8 @@ For now, see
 
           : [=internal observer/error steps=]
           ::
-             1. [=Invoke=] |callback| with the passed in <var ignore>error</var>. Let |result| be
-                the returned value.
+             1. [=Invoke=] |callback| with «the passed in <var ignore>error</var>» and "`rethrow`".
+                Let |result| be the returned value.
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
                 run |subscriber|'s {{Subscriber/error()}} with |E|, and abort these steps.
@@ -1687,7 +1673,8 @@ For now, see
 
        : [=internal observer/next steps=]
        ::
-          1. [=Invoke=] |callback| with the passed in <var ignore>value</var>, and |idx|.
+          1. [=Invoke=] |callback| with «the passed in <var ignore>value</var>, |idx|» and
+             "`rethrow`".
 
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
              [=reject=] |p| with |E|, and [=AbortController/signal abort=] |visitor callback
@@ -1741,8 +1728,8 @@ For now, see
     1. Let |observer| be a new [=internal observer=], initialized as follows:
 
        : [=internal observer/next steps=]
-       :: 1. [=Invoke=] |predicate| with the passed in <var ignore>value</var> and |idx|, and let
-             |passed| be the returned value.
+       :: 1. [=Invoke=] |predicate| with «the passed in <var ignore>value</var>, |idx|» and
+             "`rethrow`"; let |passed| be the returned value.
 
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
              [=reject=] |p| with |E|, and [=AbortController/signal abort=] |controller| with |E|.
@@ -1889,8 +1876,8 @@ For now, see
     1. Let |observer| be a new [=internal observer=], initialized as follows:
 
        : [=internal observer/next steps=]
-       :: 1. [=Invoke=] |predicate| with the passed in |value| an |idx|, and let |passed| be the
-             returned value.
+       :: 1. [=Invoke=] |predicate| with «the passed in |value|, |idx|» and "`rethrow`"; let
+             |passed| be the returned value.
 
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
              [=reject=] |p| with |E|, and [=AbortController/signal abort=] |controller| with |E|.
@@ -1942,8 +1929,8 @@ For now, see
     1. Let |observer| be a new [=internal observer=], initialized as follows:
 
        : [=internal observer/next steps=]
-       :: 1. [=Invoke=] |predicate| with the passed in <var ignore>value</var> and |idx|, and let
-             |passed| be the returned value.
+       :: 1. [=Invoke=] |predicate| with «the passed in <var ignore>value</var>, |idx|» and
+             "`rethrow`"; let |passed| be the returned value.
 
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
              [=reject=] |p| with |E|, and [=AbortController/signal abort=] |controller| with |E|.
@@ -2007,9 +1994,9 @@ For now, see
              eventually emitted, we will call |reducer| with *it* as the {{Reducer/currentValue}},
              and the first value (that we're saving here) as the {{Reducer/accumulator}}.
 
-          1. [=Invoke=] |reducer| with |accumulator| as {{Reducer/accumulator}}, the passed in
-             |value| as {{Reducer/currentValue}}, and |idx| as {{Reducer/index}}. Let |result| be
-             the returned value.
+          1. [=Invoke=] |reducer| with «|accumulator| as {{Reducer/accumulator}}, the passed in
+             |value| as {{Reducer/currentValue}}, |idx| as {{Reducer/index}}» and "`rethrow`". Let
+             |result| be the returned value.
 
              If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
              [=reject=] |p| with |E|, and [=AbortController/signal abort=] |controller| with |E|.
