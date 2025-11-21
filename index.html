@@ -4,9 +4,9 @@
   <title>Observable</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
+  <meta content="Bikeshed version 86e3be07a, updated Tue Nov 18 16:58:08 2025 +0000" name="generator">
   <link href="https://wicg.github.io/observable/" rel="canonical">
-  <meta content="fdfc3b358fe865bbe601c0b765b6d763bec7e82e" name="revision">
+  <meta content="d74bace7cf80200a01c81cfe20961e29ac7fa3d8" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -415,7 +415,7 @@ body {
 }
 .invalid.example:not(.no-marker)::before,
 .illegal.example:not(.no-marker)::before {
-    content: "Invalid Example" counter(example);
+    content: "Invalid Example " counter(example);
 }
 
 figcaption {
@@ -968,15 +968,15 @@ dd:not(:last-child) > .wpt-tests-block:not([open]):last-child {
 </style>
  <body class="h-entry">
   <div class="head">
-   <h1 class="p-name no-ref" id="title">Observable</h1>
+   <h1 class="no-ref p-name" id="title">Observable</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2025-09-05">5 September 2025</time></p>
+    <time class="dt-updated" datetime="2025-11-21">21 November 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
      <dd><a class="u-url" href="https://wicg.github.io/observable/">https://wicg.github.io/observable/</a>
      <dt class="editor">Editor:
-     <dd class="editor p-author h-card vcard"><a class="p-name fn u-url url" href="https://domfarolino.com">Dominic Farolino</a> (<a class="p-org org" href="https://www.google.com/">Google</a>) <a class="u-email email" href="mailto:domfarolino@gmail.com">domfarolino@gmail.com</a>
+     <dd class="editor h-card p-author vcard"><a class="fn p-name u-url url" href="https://domfarolino.com">Dominic Farolino</a> (<a class="org p-org" href="https://www.google.com/">Google</a>) <a class="email u-email" href="mailto:domfarolino@gmail.com">domfarolino@gmail.com</a>
      <dt>Participate:
      <dd><a href="https://github.com/WICG/observable">GitHub WICG/observable</a> (<a href="https://github.com/WICG/observable/issues/new">new issue</a>, <a href="https://github.com/WICG/observable/issues?state=open">open issues</a>)
      <dt>Commits:
@@ -992,11 +992,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
-   <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
+   <h2 class="heading no-num no-ref no-toc settled" id="abstract"><span class="content">Abstract</span></h2>
    <p>The Observable API provides a composable, ergonomic way of handling an asynchronous stream of events</p>
   </div>
   <div data-fill-with="at-risk"></div>
-  <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
+  <h2 class="heading no-num no-ref no-toc settled" id="status"><span class="content">Status of this document</span></h2>
   <div data-fill-with="status">
    <p>
   This specification was published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a>.
@@ -1013,7 +1013,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
-   <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
+   <h2 class="no-num no-ref no-toc" id="contents">Table of Contents</h2>
    <ol class="toc" role="directory">
     <li><a href="#introduction"><span class="secno">1</span> <span class="content">Introduction</span></a>
     <li>
@@ -1057,7 +1057,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p><em>This section is non-normative.</em></p>
    <h2 class="heading settled" data-level="2" id="core-infrastructure"><span class="secno">2. </span><span class="content">Core infrastructure</span><a class="self-link" href="#core-infrastructure"></a></h2>
    <h3 class="heading settled" data-level="2.1" id="subscriber-api"><span class="secno">2.1. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#subscriber" id="ref-for-subscriber">Subscriber</a></code> interface</span><a class="self-link" href="#subscriber-api"></a></h3>
-<pre class="idl highlight def">[Exposed=*]
+<pre class="def highlight idl">[Exposed=*]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="subscriber"><code><c- g>Subscriber</c-></code></dfn> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-subscriber-next" id="ref-for-dom-subscriber-next"><c- g>next</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any"><c- b>any</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Subscriber/next(value)" data-dfn-type="argument" data-export id="dom-subscriber-next-value-value"><code><c- g>value</c-></code></dfn>);
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined①"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-subscriber-error" id="ref-for-dom-subscriber-error"><c- g>error</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any①"><c- b>any</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Subscriber/error(error)" data-dfn-type="argument" data-export id="dom-subscriber-error-error-error"><code><c- g>error</c-></code></dfn>);
@@ -1234,7 +1234,7 @@ observable<c- p>.</c->subscribe<c- p>({},</c-> <c- p>{</c->signal<c- o>:</c-> ou
     </ol>
    </div>
    <h3 class="heading settled" data-level="2.2" id="observable-api"><span class="secno">2.2. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#observable" id="ref-for-observable">Observable</a></code> interface</span><a class="self-link" href="#observable-api"></a></h3>
-<pre class="idl highlight def">// SubscribeCallback is where the Observable "creator's" code lives. It's
+<pre class="def highlight idl">// SubscribeCallback is where the Observable "creator's" code lives. It's
 // called when subscribe() is called, to set up a new subscription.
 <c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-subscribecallback"><code><c- g>SubscribeCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined④"><c- b>undefined</c-></a> (<a data-link-type="idl-name" href="#subscriber" id="ref-for-subscriber⑦"><c- n>Subscriber</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="SubscribeCallback" data-dfn-type="argument" data-export id="dom-subscribecallback-subscriber"><code><c- g>subscriber</c-></code></dfn>);
 <c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-observablesubscriptioncallback"><code><c- g>ObservableSubscriptionCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined⑤"><c- b>undefined</c-></a> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any" id="ref-for-idl-any③"><c- b>any</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ObservableSubscriptionCallback" data-dfn-type="argument" data-export id="dom-observablesubscriptioncallback-value"><code><c- g>value</c-></code></dfn>);
@@ -3162,7 +3162,7 @@ callback). The return value of <code class="idl"><a data-link-type="idl" href="#
     </ol>
    </div>
    <h2 class="heading settled" data-level="3" id="event-target-integration"><span class="secno">3. </span><span class="content"><code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#eventtarget" id="ref-for-eventtarget">EventTarget</a></code> integration</span><a class="self-link" href="#event-target-integration"></a></h2>
-<pre class="idl highlight def"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-observableeventlisteneroptions"><code><c- g>ObservableEventListenerOptions</c-></code></dfn> {
+<pre class="def highlight idl"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-observableeventlisteneroptions"><code><c- g>ObservableEventListenerOptions</c-></code></dfn> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean④"><c- b>boolean</c-></a> <dfn class="dfn-paneled idl-code" data-default="false" data-dfn-for="ObservableEventListenerOptions" data-dfn-type="dict-member" data-export data-type="boolean" id="dom-observableeventlisteneroptions-capture"><code><c- g>capture</c-></code></dfn> = <c- b>false</c->;
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean⑤"><c- b>boolean</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="ObservableEventListenerOptions" data-dfn-type="dict-member" data-export data-type="boolean" id="dom-observableeventlisteneroptions-passive"><code><c- g>passive</c-></code></dfn>;
 };
@@ -3263,8 +3263,8 @@ you can consult the following resources:</p>
 contribution to the web platform possible.</p>
   </main>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
-  <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#dom-observableinspector-abort">abort</a><span>, in § 2.2</span>
    <li>
@@ -3373,7 +3373,7 @@ contribution to the web platform possible.</p>
    <li><a href="#dom-eventtarget-when">when(type)</a><span>, in § 3</span>
    <li><a href="#dom-eventtarget-when">when(type, options)</a><span>, in § 3</span>
   </ul>
-  <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
+  <h3 class="heading no-num no-ref settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
@@ -3486,8 +3486,8 @@ contribution to the web platform possible.</p>
      <li><span class="dfn-paneled" id="f14b47b8">unsigned long long</span>
     </ul>
   </ul>
-  <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
@@ -3500,8 +3500,8 @@ contribution to the web platform possible.</p>
    <dt id="biblio-webidl">[WEBIDL]
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
   </dl>
-  <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="idl highlight def">[Exposed=*]
+  <h2 class="heading no-num no-ref settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
+<pre class="def highlight idl">[Exposed=*]
 <c- b>interface</c-> <a href="#subscriber"><code><c- g>Subscriber</c-></code></a> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-subscriber-next"><c- g>next</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-subscriber-next-value-value"><code><c- g>value</c-></code></a>);
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined"><c- b>undefined</c-></a> <a class="idl-code" data-link-type="method" href="#dom-subscriber-error"><c- g>error</c-></a>(<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-any"><c- b>any</c-></a> <a href="#dom-subscriber-error-error-error"><code><c- g>error</c-></code></a>);
@@ -3604,7 +3604,7 @@ contribution to the web platform possible.</p>
 };
 
 </pre>
-  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <h2 class="heading no-num no-ref settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
    <div class="issue"> We shouldn’t invoke <code class="idl"><a data-link-type="idl" href="#dom-observable-from">from()</a></code> directly. Rather, we should call some
  internal algorithm that passes-back the exceptions for us to handle properly here, since we
