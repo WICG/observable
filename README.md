@@ -386,8 +386,8 @@ let controller = new AbortController();
 observable.subscribe({
 	next: (data) => {
 		if (data > 100) controller.abort();
-	}}, {signal: controller.signal},
-});
+	}
+}, {signal: controller.signal});
 ```
 
 #### Teardown
