@@ -1712,7 +1712,7 @@ For now, see
 
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
-          : <dt id=switchmap-next-steps>[=internal observer/next steps=]</dt>
+          : <span id=switchmap-next-steps>[=internal observer/next steps=]</span>
           :: 1. If |activeInnerAbortController| is not null, then [=AbortController/signal abort=]
                 |activeInnerAbortController|.
 
@@ -1738,7 +1738,7 @@ For now, see
           :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
              ignore>error</var>.
 
-          : <dt id=switchmap-complete-steps>[=internal observer/complete steps=]</dt>
+          : <span id=switchmap-complete-steps>[=internal observer/complete steps=]</span>
           :: 1. Set |outerSubscriptionHasCompleted| to true.
 
                 Note: If |activeInnerAbortController| is not null, then we don't immediately
