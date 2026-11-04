@@ -180,6 +180,26 @@ interface Subscriber {
 Each {{Subscriber}} has an [=ordered set=] of <dfn for=Subscriber>internal observers</dfn>,
 initially empty.
 
+Note: A {{Subscriber}} represents a single execution of an {{Observable}}'s [=Observable/subscribe
+callback=]. It has more than one [=Subscriber/internal observer=] when other subscriptions
+[=join an execution|join=] that execution, for example via {{Observable/share()}}.
+
+Each {{Subscriber}} has an <dfn for=Subscriber>upstream policy</dfn>, which is a [=subscribe
+policy=], initially null.
+
+Note: This is the [=subscribe policy=] that operators use when they <a for=Observable
+lt="subscribe to an Observable">subscribe</a> to their source {{Observable}}s on behalf of this
+execution. See [[#subscribe-policies]].
+
+Each {{Subscriber}} has an <dfn for=Subscriber>end state</dfn>, which is null,
+"<code>complete</code>", "<code>error</code>", or "<code>unsubscribe</code>", initially null.
+
+Each {{Subscriber}} has an <dfn for=Subscriber>end error</dfn>, which is an {{any}}, initially
+undefined.
+
+Note: The [=Subscriber/end state=] and [=Subscriber/end error=] record how an execution ended, so
+that subscriptions that later try to [=join an execution|join=] it can be told.
+
 Each {{Subscriber}} has a <dfn for=Subscriber>teardown callbacks</dfn>, which is a [=list=] of
 {{VoidFunction}}s, initially empty.
 
@@ -209,20 +229,34 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
        Note: We make a copy of the [=Subscriber/internal observers=] list and iterate over it so
        that if one of the [=internal observer=]'s [=internal observer/next steps=] below causes
-       another subscription, the observer list does not mutate during iteration.
+       another subscription to [=join an execution|join=] this one, the observer list does not
+       mutate during iteration.
 
     1. [=set/For each=] |observer| of |internal observers copy|:
+
+       1. If [=this=]'s [=Subscriber/active=] is false, then [=iteration/break=].
+
+          Note: An earlier |observer|'s [=internal observer/next steps=] can cause the producer to
+          call {{Subscriber/complete()}} or {{Subscriber/error()}}, which notifies all remaining
+          [=Subscriber/internal observers=]. This ensures they do not then receive |value|.
+
+       1. If [=this=]'s [=Subscriber/internal observers=] does not [=set/contain=] |observer|, then
+          [=iteration/continue=].
+
+          Note: An earlier |observer|'s [=internal observer/next steps=] can abort the signal of
+          a later |observer|'s subscription, which removes it from [=this=]'s [=Subscriber/internal
+          observers=]. This ensures it does not receive |value| after it has unsubscribed.
 
        1. Run |observer|'s [=internal observer/next steps=] given |value|.
 
           [=Assert=]: No <a spec=webidl lt="an exception was thrown">exception was thrown</a>.
 
           <div class=note>
-            <p>Note: No exception can be thrown here because in the case where the
-            [=Subscriber/internal observer=]'s [=internal observer/next steps=] is just a wrapper
-            around a script-provided callback, the <a href=#process-observer>process observer</a>
-            steps take care to wrap these callbacks in logic that, when invoking them, catches any
-            exceptions, and reports them to the global.</p>
+            <p>Note: No exception can be thrown here because in the case where the [=internal
+            observer=]'s [=internal observer/next steps=] is just a wrapper around a
+            script-provided callback, the <a href=#process-observer>process observer</a> steps take
+            care to wrap these callbacks in logic that, when invoking them, catches any exceptions,
+            and reports them to the global.</p>
 
             <p>When the [=internal observer/next steps=] is a spec algorithm, those steps take care
             to not throw any exceptions outside of itself, to appease this assert.</p>
@@ -237,6 +271,9 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
+
+    1. Set [=this=]'s [=Subscriber/end state=] to "<code>error</code>", and [=this=]'s
+       [=Subscriber/end error=] to |error|.
 
     1. [=close a subscription|Close=] [=this=].
 
@@ -258,6 +295,8 @@ The <dfn attribute for=Subscriber><code>signal</code></dfn> getter steps are to 
 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
+
+    1. Set [=this=]'s [=Subscriber/end state=] to "<code>complete</code>".
 
     1. [=close a subscription|Close=] [=this=].
 
@@ -316,6 +355,12 @@ observable.subscribe({}, {signal: outerController.signal});
 
     1. Set |subscriber|'s [=Subscriber/active=] boolean to false.
 
+    1. If |subscriber|'s [=Subscriber/end state=] is null, then set it to
+       "<code>unsubscribe</code>".
+
+       Note: This means the execution was ended by its consumers, rather than by the producer
+       calling {{Subscriber/complete()}} or {{Subscriber/error()}}.
+
     1. [=AbortSignal/Signal abort=] |subscriber|'s [=Subscriber/subscription controller=] with
        |reason|, if it is given.
 
@@ -354,6 +399,8 @@ dictionary ObservableInspector {
 
   VoidFunction subscribe;
   ObservableInspectorAbortHandler abort;
+
+  boolean sideEffectFree = false;
 };
 
 typedef (ObservableSubscriptionCallback or SubscriptionObserver) ObserverUnion;
@@ -361,6 +408,29 @@ typedef (ObservableSubscriptionCallback or ObservableInspector) ObservableInspec
 
 dictionary SubscribeOptions {
   AbortSignal signal;
+};
+
+// In the dictionaries below, sideEffectFree declares that the callback has no
+// side effects. For flatMap(), switchMap(), and catch(), it also declares that
+// the Observables returned by the callback have no side effects.
+dictionary ObservableInit {
+  required SubscribeCallback producer;
+  boolean sideEffectFree = false;
+};
+
+dictionary ObservableMapperOptions {
+  required Mapper mapper;
+  boolean sideEffectFree = false;
+};
+
+dictionary ObservableCatchOptions {
+  required CatchCallback handler;
+  boolean sideEffectFree = false;
+};
+
+dictionary ObservableFinallyOptions {
+  required VoidFunction handler;
+  boolean sideEffectFree = false;
 };
 
 callback Predicate = boolean (any value, unsigned long long index);
@@ -376,8 +446,14 @@ callback CatchCallback = any (any value);
 
 [Exposed=*]
 interface Observable {
-  constructor(SubscribeCallback callback);
+  constructor((SubscribeCallback or ObservableInit) callbackOptions);
   undefined subscribe(optional ObserverUnion observer = {}, optional SubscribeOptions options = {});
+
+  // Set how the next subscription behaves. See "Subscribe policies" in the
+  // spec.
+  Observable share();
+  Observable restart();
+  Observable shareOrRestart();
 
   // Constructs a native Observable from value if it's any of the following:
   //   - Observable
@@ -395,11 +471,11 @@ interface Observable {
   Observable filter(Predicate predicate);
   Observable take(unsigned long long amount);
   Observable drop(unsigned long long amount);
-  Observable flatMap(Mapper mapper);
-  Observable switchMap(Mapper mapper);
+  Observable flatMap((Mapper or ObservableMapperOptions) mapperOptions);
+  Observable switchMap((Mapper or ObservableMapperOptions) mapperOptions);
   Observable inspect(optional ObservableInspectorUnion inspectorUnion = {});
-  Observable catch(CatchCallback callback);
-  Observable finally(VoidFunction callback);
+  Observable catch((CatchCallback or ObservableCatchOptions) callbackOptions);
+  Observable finally((VoidFunction or ObservableFinallyOptions) callbackOptions);
 
   // Promise-returning operators.
   Promise<sequence<any>> toArray(optional SubscribeOptions options = {});
@@ -416,21 +492,64 @@ interface Observable {
 Each {{Observable}} has a <dfn for=Observable>subscribe callback</dfn>, which is a
 {{SubscribeCallback}} or a set of steps that take in a {{Subscriber}}.
 
-Each {{Observable}} has a <dfn for=Observable>weak subscriber</dfn>, which is a weak reference to a
-{{Subscriber}}-or-null, initially null.
-
 Note: The "union" of these types is to support both {{Observable}}s created by JavaScript (that are
 always constructed with a {{SubscribeCallback}}), and natively-constructed {{Observable}} objects
 (whose [=Observable/subscribe callback=] could be an arbitrary set of native steps, not a JavaScript
 callback). The return value of {{EventTarget/when()}} is an example of the latter.
 
+Each {{Observable}} has an <dfn for=Observable id=observable-execution-state-slot>execution
+state</dfn>, which is an [=Observable execution state=], initially a new [=Observable execution
+state=].
+
+Note: The [=Observable/execution state=] is shared between an {{Observable}} and the {{Observable}}s
+returned by its {{Observable/share()}}, {{Observable/restart()}}, and
+{{Observable/shareOrRestart()}} methods, since they all represent the same producer.
+
+Each {{Observable}} has a <dfn for=Observable>next subscribe policy</dfn>, which is a [=subscribe
+policy=], initially null.
+
+Each {{Observable}} has a <dfn for=Observable>side effect free</dfn> boolean, initially false.
+
+An <dfn>Observable execution state</dfn> is a [=struct=] with the following [=struct/items=]:
+
+<dl dfn-for="Observable execution state">
+  : <dfn>latest execution</dfn>
+  :: A {{Subscriber}}-or-null, initially null.
+</dl>
+
+<div class=note>
+  <p>Note: The [=Observable execution state/latest execution=] is retained after it ends, so that
+  later subscriptions can [=join an execution|join=] it and be told how it ended. Once a
+  {{Subscriber}}'s [=Subscriber/active=] is false and its [=Subscriber/internal observers=] have
+  been notified, the only parts of it that remain observable are its [=Subscriber/active=],
+  [=Subscriber/end state=], and [=Subscriber/end error=].</p>
+
+  <p>Implementations are therefore encouraged to release everything else at that point, such as
+  the [=Subscriber/internal observers=] and [=Subscriber/teardown callbacks=]. This ensures that
+  retaining an ended execution costs no more than storing its end state and error, and does not keep
+  its former subscribers alive.</p>
+</div>
+
+A <dfn>subscribe policy</dfn> is null, "<code>share</code>", "<code>restart</code>", or
+"<code>share-or-restart</code>".
+
 <div algorithm>
-  The <dfn for=Observable constructor lt="Observable(callback)"><code>new
-  Observable(|callback|)</code></dfn> constructor steps are:
+  The <dfn for=Observable constructor lt="Observable(callbackOptions)"><code>new
+  Observable(|callbackOptions|)</code></dfn> constructor steps are:
 
-    1. Set [=this=]'s [=Observable/subscribe callback=] to |callback|.
+    1. If |callbackOptions| is a {{SubscribeCallback}}, then set [=this=]'s [=Observable/subscribe
+       callback=] to |callbackOptions|.
 
-      Note: This callback will get invoked later when {{Observable/subscribe()}} is called.
+    1. Otherwise:
+
+       1. Set [=this=]'s [=Observable/subscribe callback=] to |callbackOptions|'s
+          {{ObservableInit/producer}}.
+
+       1. Set [=this=]'s [=Observable/side effect free=] to |callbackOptions|'s
+          {{ObservableInit/sideEffectFree}}.
+
+    Note: The [=Observable/subscribe callback=] will get invoked later when
+    {{Observable/subscribe()}} is called.
 </div>
 
 <div algorithm>
@@ -439,6 +558,183 @@ callback). The return value of {{EventTarget/when()}} is an example of the latte
 
     1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to [=this=] given |observer|
        and |options|.
+</div>
+
+<h4 id=subscribe-policies>Subscribe policies</h4>
+
+*This section is non-normative.*
+
+An {{Observable}}'s [=Observable/subscribe callback=] runs at most once without the developer saying
+how further subscriptions should relate to the existing execution. After the first subscription,
+each subscription has to be preceded by one of:
+
+  : {{Observable/share()}}
+  :: Join the latest execution. If that execution has already completed or errored, the new
+     subscription is completed or errored in the same way. If it ended because all of its
+     subscriptions were aborted, the new subscription is errored with a {{TypeError}}.
+
+  : {{Observable/restart()}}
+  :: Start a new execution, by running the [=Observable/subscribe callback=] again.
+
+  : {{Observable/shareOrRestart()}}
+  :: Join the latest execution if it is still active, otherwise start a new one.
+
+Otherwise, the subscription is errored with a {{TypeError}}. Each of these methods returns a new
+{{Observable}} that applies its policy to the next subscription only. Operators such as
+{{Observable/map()}} return {{Observable}}s with no policy set, so the policy has to be chosen
+immediately before subscribing.
+
+<div class=example id=example-subscribe-policies>
+  <pre highlight=js>
+const messages = socketMessages(url);
+
+// Starts the first execution, opening a WebSocket.
+messages.subscribe(log);
+
+// Errors with a TypeError: messages has already been subscribed.
+messages.subscribe(render);
+
+// Joins the existing execution, so no new WebSocket is opened.
+messages.filter(isNotification).share().subscribe(notifyUser);
+
+// Starts a new execution, opening a second WebSocket.
+const firstMessage = await messages.restart().first();
+  </pre>
+</div>
+
+When an operator's {{Observable}} is subscribed with a policy, the policy applies to the operator's
+own execution first:
+
+  * {{Observable/share()}} joins the operator's latest execution, if it has one. Otherwise, the
+    operator starts an execution and subscribes to its source(s) with {{Observable/share()}}, so
+    the policy applies at the nearest {{Observable}} that has been subscribed before.
+
+  * {{Observable/restart()}} starts a new execution of the operator, which subscribes to its
+    source(s) with {{Observable/restart()}}, so every producer up the chain is restarted.
+
+  * {{Observable/shareOrRestart()}} joins the operator's latest execution if it is active.
+    Otherwise, the operator starts an execution and subscribes to its source(s) with
+    {{Observable/shareOrRestart()}}.
+
+  * With no policy, the operator starts an execution only if it has never been subscribed, and
+    subscribes to its source(s) with no policy.
+
+<div class=example id=example-subscribe-policies-operators>
+  <pre highlight=js>
+const ticks = new Observable((subscriber) => {
+  let i = 0;
+  const id = setInterval(() => subscriber.next(++i), 1000);
+  subscriber.addTeardown(() => clearInterval(id));
+});
+const firstThree = ticks.take(3);
+
+// Receives 1, 2, 3.
+firstThree.subscribe(a);
+
+setTimeout(() => {
+  // Joins the execution of take(3) above, so receives 2, 3.
+  firstThree.share().subscribe(b);
+
+  // Starts a new execution of take(3) and of ticks, so receives 1, 2, 3.
+  firstThree.restart().subscribe(c);
+}, 1500);
+  </pre>
+</div>
+
+Operators such as {{Observable/flatMap()}}, {{Observable/switchMap()}}, and {{Observable/catch()}}
+also subscribe to "inner" {{Observable}}s returned by a callback. The policy is not applied to those
+inner {{Observable}}s; each is subscribed with its own [=Observable/next subscribe policy=], so the
+callback has to call {{Observable/share()}} or {{Observable/restart()}} if it returns an
+{{Observable}} that has been subscribed before.
+
+An {{Observable}} can be declared side-effect free, via the {{ObservableInit/sideEffectFree}}
+option. Such an {{Observable}} ignores subscribe policies, and runs its [=Observable/subscribe
+callback=] for every subscription. The {{Observable}}s returned by {{EventTarget/when()}} have no
+side effects, as do the {{Observable}}s returned by operators when all of their source
+{{Observable}}s have no side effects.
+
+The exceptions are operators whose callbacks are likely to have side effects:
+{{Observable/inspect()}} and {{Observable/finally()}}, which exist to attach side effects, and
+{{Observable/flatMap()}}, {{Observable/switchMap()}}, and {{Observable/catch()}}, whose callbacks
+return {{Observable}}s that might have side effects. The {{Observable}}s returned by these operators
+have side effects unless the `sideEffectFree` option is passed.
+
+<div class=example id=example-no-side-effects>
+  <pre highlight=js>
+const ticks = new Observable({
+  producer(subscriber) {
+    let i = 0;
+    const id = setInterval(() => subscriber.next(++i), 1000);
+    subscriber.addTeardown(() => clearInterval(id));
+  },
+  sideEffectFree: true,
+});
+
+// Each subscription gets its own interval. No policy is needed.
+ticks.subscribe(a);
+ticks.subscribe(b);
+
+const clicks = button.when('click');
+
+// Both subscriptions add their own event listener. No policy is needed.
+clicks.subscribe(log);
+clicks.map(toPoint).subscribe(draw);
+
+const tracked = clicks.inspect(() => sendAnalytics('click'));
+tracked.subscribe(updateCounter);
+
+// Errors with a TypeError: tracked has side effects, and has already been
+// subscribed. Without this, every click would be sent to analytics twice.
+tracked.filter(isDoubleClick).subscribe(zoom);
+
+// Joins tracked's execution, so each click is sent to analytics once.
+tracked.filter(isDoubleClick).share().subscribe(zoom);
+
+// Logging is harmless to repeat, so it can be declared side-effect free.
+const logged = clicks.inspect({ next: console.log, sideEffectFree: true });
+logged.subscribe(updateCounter);
+logged.subscribe(zoom);
+  </pre>
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>share()</code></dfn> method steps are to return the result
+  of [=creating an Observable with a subscribe policy=] given [=this=] and "<code>share</code>".
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>restart()</code></dfn> method steps are to return the result
+  of [=creating an Observable with a subscribe policy=] given [=this=] and "<code>restart</code>".
+</div>
+
+<div algorithm>
+  The <dfn for=Observable method><code>shareOrRestart()</code></dfn> method steps are to return the
+  result of [=creating an Observable with a subscribe policy=] given [=this=] and
+  "<code>share-or-restart</code>".
+</div>
+
+<div algorithm>
+  To <dfn>create an Observable with a subscribe policy</dfn> given an {{Observable}} |source| and a
+  [=subscribe policy=] |policy|, run these steps:
+
+    1. Let |observable| be a [=new=] {{Observable}}.
+
+    1. Set |observable|'s [=Observable/subscribe callback=] to |source|'s [=Observable/subscribe
+       callback=].
+
+    1. Set |observable|'s [=Observable/execution state=] to |source|'s [=Observable/execution
+       state=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to |source|'s [=Observable/side effect
+       free=].
+
+    1. Set |observable|'s [=Observable/next subscribe policy=] to |policy|.
+
+    1. Return |observable|.
+
+  Note: |source|'s [=Observable/next subscribe policy=] is left unchanged, so that calling
+  {{Observable/share()}} on an {{Observable}} cannot change the behavior of another part of the
+  program that subscribes to the same {{Observable}}.
 </div>
 
 <h4 id=observable-supporting-concepts>Supporting concepts</h4>
@@ -467,7 +763,37 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
   : <dfn>complete steps</dfn>
   :: An algorithm with no parameters. Initially, these steps do nothing.
+
 </dl>
+
+A <dfn>policy error</dfn> is a {{TypeError}} that was created by [=creating a policy error=].
+
+<div algorithm>
+  To <dfn lt="create a policy error|creating a policy error">create a policy error</dfn>, run these
+  steps:
+
+    1. Let |error| be a new {{TypeError}}.
+
+    1. Mark |error| as a [=policy error=].
+
+       Note: This mark is not visible to script. Implementations need to be able to tell whether a
+       given value is a [=policy error=], for example by using an internal slot.
+
+    1. Return |error|.
+
+  <div class=note>
+    <p>Note: A [=policy error=] means a subscription was rejected because of its [=subscribe
+    policy=]. It is delivered like any other error, but operators that interpret errors from a
+    source rather than passing them on, such as {{Observable/takeUntil()}} and
+    {{Observable/catch()}}, pass [=policy errors=] on instead, so that a misuse of subscribe
+    policies is not mistaken for an ordinary error and silently handled.</p>
+
+    <p>Because the mark is on the error itself, it survives being passed through other operators,
+    being replayed to subscriptions that [=join an execution|join=] an execution that ended with
+    it, and being re-thrown by script, for example from an {{Observable/inspect()}} error
+    callback.</p>
+  </div>
+</div>
 
 <div class=note>
   <p>The [=internal observer=] [=struct=] is used to mirror the {{SubscriptionObserver/next}},
@@ -612,8 +938,15 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
     1. If |iteratorMethod| is undefined, then jump to the step labeled <a
        href=#from-promise-conversion>From Promise</a>.
 
-       Otherwise, return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an
-       algorithm that takes a {{Subscriber}} |subscriber| and does the following:
+    1. Let |isArray| be [=?=] [$IsArray$](|value|).
+
+       Note: Iterating an array has no side effects, so the resulting {{Observable}} can be
+       subscribed any number of times. Other iterables, such as generators, can be exhausted by
+       iterating them, so are not treated this way.
+
+    1. Return a [=new=] {{Observable}} whose [=Observable/side effect free=] is |isArray|,
+       and whose [=Observable/subscribe callback=] is an algorithm that takes a {{Subscriber}}
+       |subscriber| and does the following:
 
          1. If |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=] is
             [=AbortSignal/aborted=], then return.
@@ -659,8 +992,9 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
     1. <i id=from-promise-conversion><b>From Promise</b></i>: If [$IsPromise$](|value|) is true,
        then:
 
-       1. Return a [=new=] {{Observable}} whose [=Observable/subscribe callback=] is an algorithm
-          that takes a {{Subscriber}} |subscriber| and does the following:
+       1. Return a [=new=] {{Observable}} whose [=Observable/side effect free=] is true, and whose
+          [=Observable/subscribe callback=] is an algorithm that takes a {{Subscriber}}
+          |subscriber| and does the following:
 
           1. [=promise/React=] to |value|:
 
@@ -682,8 +1016,8 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
 <div algorithm>
   To <dfn for=Observable>subscribe to an {{Observable}}</dfn> given an
-  {{ObserverUnion}}-or-[=internal observer=] |observer|, and a {{SubscribeOptions}} |options|, run
-  these steps:
+  {{ObserverUnion}}-or-[=internal observer=] |observer|, a {{SubscribeOptions}} |options|, and an
+  optional [=subscribe policy=] |upstream policy| (default null), run these steps:
 
   Note: We split this algorithm out from the Web IDL {{Observable/subscribe()}} method, so that spec
   prose can <a for=Observable lt="subscribe to an Observable">subscribe</a> to an {{Observable}}
@@ -695,6 +1029,18 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
 
     1. If [=this=]'s [=relevant global object=] is a {{Window}} object, and its [=associated
        Document=] is not [=Document/fully active=], then return.
+
+    1. Let |policy| be [=this=]'s [=Observable/next subscribe policy=].
+
+    1. Set [=this=]'s [=Observable/next subscribe policy=] to null.
+
+       Note: A [=subscribe policy=] applies to a single subscription.
+
+    1. If |policy| is null, then set |policy| to |upstream policy|.
+
+       Note: |upstream policy| is given when an operator subscribes to its source {{Observable}},
+       and is the policy the operator's own {{Observable}} was subscribed with. A policy set
+       directly on the source {{Observable}}, as in `source.share().map(fn)`, takes precedence.
 
     1. Let |internal observer| be a new [=internal observer=].
 
@@ -742,65 +1088,136 @@ An <dfn>internal observer</dfn> is a [=struct=] with the following [=struct/item
        error algorithm=], or an algorithm that [=invokes=] the provided
        {{SubscriptionObserver/error}} [=callback function=].
 
-    1. If [=this=]'s [=Observable/weak subscriber=] is not null and [=this=]'s [=Observable/weak
-       subscriber=]'s [=Subscriber/active=] is true:
+    1. If |options|'s {{SubscribeOptions/signal}} [=map/exists=] and is [=AbortSignal/aborted=],
+       then return.
 
-       1. Let |subscriber| be [=this=]'s [=Observable/weak subscriber=].
+       Note: A subscription that is aborted before it begins neither starts nor joins an execution,
+       so it does not affect later subscriptions.
 
-       1. [=set/Append=] |internal observer| to |subscriber|'s [=Subscriber/internal observers=].
+    1. If [=this=]'s [=Observable/side effect free=] is true, then [=start an execution=] of
+       [=this=] given |internal observer|, |options|, and null, and return.
 
-       1. If |options|'s {{SubscribeOptions/signal}} [=map/exists=], then:
+       Note: {{Observable}}s with no side effects ignore subscribe policies, and run their
+       [=Observable/subscribe callback=] for every subscription.
 
-          1. If |options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then
-             [=set/remove=] |internal observer| from |subscriber|'s [=Subscriber/internal
-             observers=].
+    1. Let |latest| be [=this=]'s [=Observable/execution state=]'s [=Observable execution
+       state/latest execution=].
 
-          1. Otherwise, [=AbortSignal/add|add the following abort algorithm=] to |options|'s
-             {{SubscribeOptions/signal}}:
+    1. Switch on |policy|:
 
-             1. If |subscriber|'s [=Subscriber/active=] is false, then abort these steps.
+       <dl class=switch>
+         <dt>null</dt>
+         <dd>
+           1. If |latest| is not null, then run |internal observer|'s [=internal observer/error
+              steps=] given the result of [=creating a policy error=], and return.
 
-             1. [=set/Remove=] |internal observer| from |subscriber|'s [=Subscriber/internal
-                observers=].
+              Note: The {{TypeError}}'s message is expected to explain that the {{Observable}} has
+              already been subscribed, and that {{Observable/share()}} or {{Observable/restart()}}
+              has to be called before subscribing again.
 
-             1. If |subscriber|'s [=Subscriber/internal observers=] is [=set/empty=], then [=close a
-                subscription|close=] |subscriber| with |options|'s {{SubscribeOptions/signal}}'s
-                [=AbortSignal/abort reason=].
+           1. [=Start an execution=] of [=this=] given |internal observer|, |options|, and null.
+         </dd>
 
-       1. Return.
+         <dt>"<code>share</code>"</dt>
+         <dd>
+           1. If |latest| is null, then [=start an execution=] of [=this=] given |internal
+              observer|, |options|, and "<code>share</code>".
+
+           1. Otherwise, [=join an execution|join=] |latest| given |internal observer| and
+              |options|.
+         </dd>
+
+         <dt>"<code>restart</code>"</dt>
+         <dd>
+           1. [=Start an execution=] of [=this=] given |internal observer|, |options|, and
+              "<code>restart</code>".
+         </dd>
+
+         <dt>"<code>share-or-restart</code>"</dt>
+         <dd>
+           1. If |latest| is not null and |latest|'s [=Subscriber/active=] is true, then [=join an
+              execution|join=] |latest| given |internal observer| and |options|.
+
+           1. Otherwise, [=start an execution=] of [=this=] given |internal observer|, |options|,
+              and "<code>share-or-restart</code>".
+         </dd>
+       </dl>
+</div>
+
+<div algorithm>
+  To <dfn>start an execution</dfn> of an {{Observable}} |observable|, given an [=internal observer=]
+  |internal observer|, a {{SubscribeOptions}} |options|, and a [=subscribe policy=] |upstream
+  policy|, run these steps:
 
     1. Let |subscriber| be a [=new=] {{Subscriber}}.
 
-    1. [=set/Append=] |internal observer| to |subscriber|'s [=Subscriber/internal observers=].
+    1. Set |subscriber|'s [=Subscriber/upstream policy=] to |upstream policy|.
 
-    1. Set [=this=]'s [=Observable/weak subscriber=] to |subscriber|.
+    1. If |observable|'s [=Observable/side effect free=] is false, then set |observable|'s
+       [=Observable/execution state=]'s [=Observable execution state/latest execution=] to
+       |subscriber|.
 
-    1. If |options|'s {{SubscribeOptions/signal}} [=map/exists=], then:
+    1. [=Add an observer=] to |subscriber| given |internal observer| and |options|.
 
-       1. If |options|'s {{SubscribeOptions/signal}} is [=AbortSignal/aborted=], then [=close a
-          subscription|close=] |subscriber| given |options|'s {{SubscribeOptions/signal}}
-          [=AbortSignal/abort reason=].
-
-       1. Otherwise, [=AbortSignal/add|add the following abort algorithm=] to |options|'s
-          {{SubscribeOptions/signal}}:
-
-          1. If |subscriber|'s [=Subscriber/active=] is false, then abort these steps.
-
-          1. [=set/Remove=] |internal observer| from |subscriber|'s [=Subscriber/internal
-             observers=].
-
-          1. If |subscriber|'s [=Subscriber/internal observers=] is [=set/empty=], then [=close a
-             subscription|close=] |subscriber| with |options|'s {{SubscribeOptions/signal}}'s
-             [=AbortSignal/abort reason=].
-
-    1. If [=this=]'s [=Observable/subscribe callback=] is a {{SubscribeCallback}}, then [=invoke=]
-       it with «subscriber» with "`rethrow`".
+    1. If |observable|'s [=Observable/subscribe callback=] is a {{SubscribeCallback}}, then
+       [=invoke=] it with «subscriber» with "`rethrow`".
 
        If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, call
        |subscriber|'s {{Subscriber/error()}} method with |E|.
 
-    1. Otherwise, run the steps given by [=this=]'s [=Observable/subscribe callback=], given
+    1. Otherwise, run the steps given by |observable|'s [=Observable/subscribe callback=], given
        |subscriber|.
+</div>
+
+<div algorithm>
+  To <dfn>join an execution</dfn> given a {{Subscriber}} |subscriber|, an [=internal observer=]
+  |internal observer|, and a {{SubscribeOptions}} |options|, run these steps:
+
+    1. If |subscriber|'s [=Subscriber/active=] is true, then [=add an observer=] to |subscriber|
+       given |internal observer| and |options|, and return.
+
+       Note: |internal observer| only receives values that |subscriber| produces from now on.
+       Earlier values are not replayed.
+
+    1. If |subscriber|'s [=Subscriber/end state=] is "<code>complete</code>", then run |internal
+       observer|'s [=internal observer/complete steps=].
+
+    1. Otherwise, if |subscriber|'s [=Subscriber/end state=] is "<code>error</code>", then run
+       |internal observer|'s [=internal observer/error steps=] given |subscriber|'s
+       [=Subscriber/end error=].
+
+    1. Otherwise:
+
+       1. [=Assert=]: |subscriber|'s [=Subscriber/end state=] is "<code>unsubscribe</code>".
+
+       1. Run |internal observer|'s [=internal observer/error steps=] given the result of
+          [=creating a policy error=].
+
+          Note: The execution ended because all of its subscriptions were aborted, not because the
+          producer completed. Rather than silently completing, which would make the result depend
+          on whether anything happened to be subscribed in the meantime, this signals that
+          {{Observable/restart()}} or {{Observable/shareOrRestart()}} is needed.
+</div>
+
+<div algorithm>
+  To <dfn>add an observer</dfn> to a {{Subscriber}} |subscriber|, given an [=internal observer=]
+  |internal observer| and a {{SubscribeOptions}} |options|, run these steps:
+
+    1. [=set/Append=] |internal observer| to |subscriber|'s [=Subscriber/internal observers=].
+
+    1. If |options|'s {{SubscribeOptions/signal}} [=map/exists=], then [=AbortSignal/add|add the
+       following abort algorithm=] to |options|'s {{SubscribeOptions/signal}}:
+
+       1. If |subscriber|'s [=Subscriber/active=] is false, then abort these steps.
+
+       1. [=set/Remove=] |internal observer| from |subscriber|'s [=Subscriber/internal observers=].
+
+       1. If |subscriber|'s [=Subscriber/internal observers=] is [=set/empty=], then [=close a
+          subscription|close=] |subscriber| with |options|'s {{SubscribeOptions/signal}}'s
+          [=AbortSignal/abort reason=].
+
+          Note: An execution is ended only when all of the subscriptions sharing it have been
+          aborted, regardless of which subscription started it.
 </div>
 
 <wpt>
@@ -868,7 +1285,15 @@ For now, see
              "outer" |subscriber|'s {{Subscriber/complete()}} is called above (and below).
 
           : [=internal observer/error steps=]
-          :: Run |subscriber|'s {{Subscriber/complete()}} method.
+          :: 1. If the passed in |error| is a [=policy error=], then run |subscriber|'s
+                {{Subscriber/error()}} method, given |error|, and abort these steps.
+
+                Note: Without this, subscribing to a |notifier| that has already been subscribed,
+                without a [=subscribe policy=], would be treated as the |notifier| emitting an
+                error, and so would silently complete |observable| instead of reporting the
+                mistake.
+
+             1. Run |subscriber|'s {{Subscriber/complete()}} method.
 
           Note: We do not specify [=internal observer/complete steps=], because if the |notifier|
           {{Observable}} completes itself, we do not need to complete the |subscriber| associated
@@ -879,7 +1304,7 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |notifier| given
-          |notifierObserver| and |options|.
+          |notifierObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
 
        1. If |subscriber|'s [=Subscriber/active=] is false, then return.
 
@@ -908,7 +1333,11 @@ For now, see
           |notifier| emits anything.
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to true if [=this=]'s
+       [=Observable/side effect free=] and |notifier|'s [=Observable/side effect free=] are both
+       true, and false otherwise.
 
     1. Return |observable|.
 
@@ -952,7 +1381,10 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to [=this=]'s [=Observable/side effect
+       free=].
 
     1. Return |observable|.
 
@@ -997,7 +1429,10 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to [=this=]'s [=Observable/side effect
+       free=].
 
     1. Return |observable|.
 
@@ -1040,7 +1475,10 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to [=this=]'s [=Observable/side effect
+       free=].
 
     1. Return |observable|.
 
@@ -1080,7 +1518,10 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to [=this=]'s [=Observable/side effect
+       free=].
 
     1. Return |observable|.
 
@@ -1090,7 +1531,14 @@ For now, see
 </div>
 
 <div algorithm>
-  The <dfn for=Observable method><code>flatMap(|mapper|)</code></dfn> method steps are:
+  The <dfn for=Observable method><code>flatMap(|mapperOptions|)</code></dfn>
+  method steps are:
+
+    1. Let |mapper| be |mapperOptions| if it is a {{Mapper}}; otherwise |mapperOptions|'s
+       {{ObservableMapperOptions/mapper}}.
+
+    1. Let |sideEffectFree| be false if |mapperOptions| is a {{Mapper}}; otherwise
+       |mapperOptions|'s {{ObservableMapperOptions/sideEffectFree}}.
 
     1. Let |sourceObservable| be [=this=].
 
@@ -1159,7 +1607,11 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to true if [=this=]'s
+       [=Observable/side effect free=] and |sideEffectFree| are
+       both true, and false otherwise.
 
     1. Return |observable|.
 </div>
@@ -1229,7 +1681,14 @@ For now, see
 </div>
 
 <div algorithm>
-  The <dfn for=Observable method><code>switchMap(|mapper|)</code></dfn> method steps are:
+  The <dfn for=Observable method><code>switchMap(|mapperOptions|)</code></dfn>
+  method steps are:
+
+    1. Let |mapper| be |mapperOptions| if it is a {{Mapper}}; otherwise |mapperOptions|'s
+       {{ObservableMapperOptions/mapper}}.
+
+    1. Let |sideEffectFree| be false if |mapperOptions| is a {{Mapper}}; otherwise
+       |mapperOptions|'s {{ObservableMapperOptions/sideEffectFree}}.
 
     1. Let |sourceObservable| be [=this=].
 
@@ -1253,7 +1712,7 @@ For now, see
 
        1. Let |sourceObserver| be a new [=internal observer=], initialized as follows:
 
-          : <dt id=switchmap-next-steps>[=internal observer/next steps=]</dt>
+          : <span id=switchmap-next-steps>[=internal observer/next steps=]</span>
           :: 1. If |activeInnerAbortController| is not null, then [=AbortController/signal abort=]
                 |activeInnerAbortController|.
 
@@ -1279,7 +1738,7 @@ For now, see
           :: Run |subscriber|'s {{Subscriber/error()}} method, given the passed in <var
              ignore>error</var>.
 
-          : <dt id=switchmap-complete-steps>[=internal observer/complete steps=]</dt>
+          : <span id=switchmap-complete-steps>[=internal observer/complete steps=]</span>
           :: 1. Set |outerSubscriptionHasCompleted| to true.
 
                 Note: If |activeInnerAbortController| is not null, then we don't immediately
@@ -1293,7 +1752,11 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to true if [=this=]'s
+       [=Observable/side effect free=] and |sideEffectFree| are
+       both true, and false otherwise.
 
     1. Return |observable|.
 </div>
@@ -1365,6 +1828,8 @@ For now, see
 
     1. Let |abort callback| be a {{ObservableInspectorAbortHandler}}-or-null, initially null.
 
+    1. Let |sideEffectFree| be false.
+
     1. Process |inspectorUnion| as follows:
          <dl class="switch">
            <dt>If |inspectorUnion| is an {{ObservableSubscriptionCallback}}</dt>
@@ -1387,6 +1852,8 @@ For now, see
 
              1. If {{ObservableInspector/abort}} [=map/exists=] in |inspectorUnion|, then set |abort
                 callback| to it.
+
+             1. Set |sideEffectFree| to |inspectorUnion|'s {{ObservableInspector/sideEffectFree}}.
            </dd>
          </dl>
 
@@ -1465,7 +1932,15 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to true if [=this=]'s
+       [=Observable/side effect free=] and |sideEffectFree| are
+       both true, and false otherwise.
+
+       Note: Unlike most operators, this operator does not inherit [=Observable/side effect free=]
+       from [=this=] unless |sideEffectFree| is true, because its callbacks exist to perform side
+       effects.
 
     1. Return |observable|.
 
@@ -1475,7 +1950,14 @@ For now, see
 </div>
 
 <div algorithm>
-  The <dfn for=Observable method><code>catch(|callback|)</code></dfn> method steps are:
+  The <dfn for=Observable method><code>catch(|callbackOptions|)</code></dfn>
+  method steps are:
+
+    1. Let |callback| be |callbackOptions| if it is a {{CatchCallback}}; otherwise
+       |callbackOptions|'s {{ObservableCatchOptions/handler}}.
+
+    1. Let |sideEffectFree| be false if |callbackOptions| is a {{CatchCallback}}; otherwise
+       |callbackOptions|'s {{ObservableCatchOptions/sideEffectFree}}.
 
     1. Let |sourceObservable| be [=this=].
 
@@ -1490,8 +1972,15 @@ For now, see
 
           : [=internal observer/error steps=]
           ::
-             1. [=Invoke=] |callback| with «the passed in <var ignore>error</var>» and "`rethrow`".
-                Let |result| be the returned value.
+             1. If the passed in |error| is a [=policy error=], then run |subscriber|'s
+                {{Subscriber/error()}} method, given |error|, and abort these steps.
+
+                Note: This means a misuse of [=subscribe policies=] is reported downstream, rather
+                than being passed to |callback|, which might otherwise recover from it without
+                anyone noticing.
+
+             1. [=Invoke=] |callback| with «|error|» and "`rethrow`". Let |result| be the returned
+                value.
 
                 If <a spec=webidl lt="an exception was thrown">an exception |E| was thrown</a>, then
                 run |subscriber|'s {{Subscriber/error()}} with |E|, and abort these steps.
@@ -1540,13 +2029,24 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to true if [=this=]'s
+       [=Observable/side effect free=] and |sideEffectFree| are
+       both true, and false otherwise.
 
     1. Return |observable|.
 </div>
 
 <div algorithm>
-  The <dfn for=Observable method><code>finally(|callback|)</code></dfn> method steps are:
+  The <dfn for=Observable method><code>finally(|callbackOptions|)</code></dfn>
+  method steps are:
+
+    1. Let |callback| be |callbackOptions| if it is a {{VoidFunction}}; otherwise
+       |callbackOptions|'s {{ObservableFinallyOptions/handler}}.
+
+    1. Let |sideEffectFree| be false if |callbackOptions| is a {{VoidFunction}}; otherwise
+       |callbackOptions|'s {{ObservableFinallyOptions/sideEffectFree}}.
 
     1. Let |sourceObservable| be [=this=].
 
@@ -1572,7 +2072,15 @@ For now, see
           |subscriber|'s [=Subscriber/subscription controller=]'s [=AbortController/signal=].
 
        1. <a for=Observable lt="subscribe to an Observable">Subscribe</a> to |sourceObservable|
-          given |sourceObserver| and |options|.
+          given |sourceObserver|, |options|, and |subscriber|'s [=Subscriber/upstream policy=].
+
+    1. Set |observable|'s [=Observable/side effect free=] to true if [=this=]'s
+       [=Observable/side effect free=] and |sideEffectFree| are
+       both true, and false otherwise.
+
+       Note: Unlike most operators, this operator does not inherit [=Observable/side effect free=]
+       from [=this=] unless |sideEffectFree| is true, because its callbacks exist to perform side
+       effects.
 
     1. Return |observable|.
 </div>
@@ -2052,6 +2560,12 @@ partial interface EventTarget {
     1. Let |event target| be [=this=].
 
     1. Let |observable| be a [=new=] {{Observable}}, initialized as follows:
+
+       : [=Observable/side effect free=]
+       :: true
+
+          Note: Adding an event listener has no side effects, so each subscription adds its own
+          listener, and no [=subscribe policy=] is needed.
 
        : [=Observable/subscribe callback=]
        :: An algorithm that takes a {{Subscriber}} |subscriber| and runs these steps:
