@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Observable sharing reference example</title>
+	<style>
+		body {
+			font:
+				17px/1.5 system-ui,
+				sans-serif;
+			max-width: 850px;
+			margin: 40px auto;
+			padding: 0 20px;
+			color: #172a3a;
+		}
+		button {
+			font: inherit;
+			padding: 7px 12px;
+			margin: 5px 5px 5px 0;
+			cursor: pointer;
+		}
+		pre {
+			padding: 20px;
+			background: #f1f4f6;
+			white-space: pre-wrap;
+			overflow-wrap: anywhere;
+		}
+	</style>
+	<h1>Observable sharing</h1>
+	<p>
+		This example uses one shared instance with two retained values and default
+		reset policies. Attach A, emit values, then attach B to see replay. Cancel
+		both, then attach again to see a new execution. Permanent completion retains
+		history for later observers.
+	</p>
+	<div id="controls">
+		<button id="a">Subscribe A</button><button id="b">Subscribe B</button>
+		<button id="next">Emit value</button>
+		<button id="cancel-a">Cancel A</button
+		><button id="cancel-b">Cancel B</button>
+		<button id="complete">Complete and reset</button>
+		<button id="close">Complete permanently</button>
+		<button id="reset">New shared instance</button>
+	</div>
+	<p id="status" role="status"></p>
+	<pre id="log" aria-label="Notification log"></pre>
+	<script type="module">
+		import { SharedObservable } from './observable.js';
+		let source,
+			sink,
+			starts = 0,
+			value = 0;
+		const controllers = new Map();
+		const output = document.querySelector('#log');
+		const log = (message) => {
+			output.textContent += `${message}\n`;
+		};
+		function status() {
+			document.querySelector('#status').textContent =
+				`Executions: ${starts} · Active observations: ${source.activeSubscribers} · Replay: ${JSON.stringify(source.replayValues)}`;
+		}
+		function reset() {
+			for (const controller of controllers.values()) controller.abort();
+			controllers.clear();
+			sink = null;
+			starts = 0;
+			value = 0;
+			output.textContent = '';
+			source = new SharedObservable({
+				maxReplayValues: 2,
+				producer(s) {
+					sink = s;
+					log(`Start execution ${++starts}`);
+					s.addTeardown(() => log('Execution cleaned up'));
+				},
+			});
+			status();
+		}
+		function attach(name) {
+			controllers.get(name)?.abort();
+			const controller = new AbortController();
+			controllers.set(name, controller);
+			log(`Subscribe ${name}`);
+			source.subscribe(
+				{
+					next: (v) => log(`${name}: ${v}`),
+					complete: () => log(`${name}: complete`),
+				},
+				{ signal: controller.signal },
+			);
+			status();
+		}
+		for (const name of ['A', 'B']) {
+			document.querySelector(`#${name.toLowerCase()}`).onclick = () =>
+				attach(name);
+			document.querySelector(`#cancel-${name.toLowerCase()}`).onclick = () => {
+				log(`Cancel ${name}`);
+				controllers.get(name)?.abort();
+				status();
+			};
+		}
+		document.querySelector('#next').onclick = () => {
+			if (sink?.active) sink.next(++value);
+			else log('No running producer; subscribe to start one.');
+			status();
+		};
+		document.querySelector('#complete').onclick = () => {
+			sink?.complete();
+			status();
+		};
+		document.querySelector('#close').onclick = () => {
+			sink?.complete({ close: true });
+			status();
+		};
+		document.querySelector('#reset').onclick = reset;
+		reset();
+	</script>
+</html>

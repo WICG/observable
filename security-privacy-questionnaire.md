@@ -5,8 +5,12 @@ questionnaire](https://w3ctag.github.io/security-questionnaire/).
 
 **What information does this feature expose, and for what purposes?**
 
-This API exposes the same event handling information as the web's existing
-native event handling mechanism, just in a more ergonomic way.
+Event observation exposes the same events as existing event listeners.
+`sharedSources` also exposes explicitly declared upstream SharedObservable
+references, `activeSubscribers` exposes their current observation counts, and
+`replayValues` exposes retained values. These are passive inspections of objects
+already shared by script; declared references intentionally permit upstream
+observation. They do not grant access across origin boundaries.
 
 **Do features in your specification expose the minimum amount of information necessary to implement the intended functionality?**
 
@@ -18,8 +22,11 @@ No.
 
 **How do the features in your specification deal with sensitive information?**
 
-There isn't really sensitive information directly involved with this API. In
-this area, its properties are the same as the web's native event handling mechanism.
+Values can contain application-sensitive information, as can existing event
+payloads. Replay retains those values by reference and exposes them to later
+observers of the same shared instance. Producers choose the replay capacity and
+lifetime policy before exposing it. Reset clears retained values; permanent
+closure retains them. Capacity limits value count, not retained object sizes.
 
 **Do the features in your specification introduce state that persists across browsing sessions?**
 
@@ -68,7 +75,8 @@ outside of this API's purview.
 
 **Does this specification have both "Security Considerations" and "Privacy Considerations" sections?**
 
-No, there is no specification just yet.
+Yes. The specification includes a combined Security & Privacy Considerations
+section covering retained data, shared references, counts, and resource lifetime.
 
 **Do features in your specification enable origins to downgrade default security protections?**
 
@@ -76,18 +84,17 @@ No.
 
 **What happens when a document that uses your feature is kept alive in BFCache (instead of getting destroyed) after navigation, and potentially gets reused on future navigations back to the document?**
 
-The same exact thing that happens with the web's native event handling
-mechanisms, which this API largely piggy-backs off of. Assuming events are
-"paused" in those contexts (either by pausing script execution or making it
-impossible for users to trigger script-observable events), then an Observable's
-handlers would not be called, because the stream of events would be inactive for
-a period of time. But otherwise, this API does not prescribe anything specific.
+The specification guards subscription and Subscriber delivery when the associated
+Document is not fully active. Event production still follows the underlying
+platform source's lifecycle. Keep-alive does not bypass these guards. The
+JavaScript reference implementation cannot reproduce the browser's native
+document-liveness integration.
 
 **What happens when a document that uses your feature gets disconnected?**
 
-Nothing specific to this API. Any event sources that are stopped, because script
-execution is stopped, would result in an Observable whose handlers stop getting
-fired.
+Subscription and Subscriber operations are guarded by the associated Document's
+fully-active state. Cleanup and underlying platform resources also follow their
+existing document lifecycle rules.
 
 **What should this questionnaire have asked?**
 
