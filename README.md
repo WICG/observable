@@ -1,476 +1,303 @@
-# Observable
+# Observable and SharedObservable
 
-This is the explainer for the Observable API proposal for more ergonomic and
-composable event handling.
+This repository contains the specification, explainer, and JavaScript reference
+implementation of [issue #221](https://github.com/WICG/observable/issues/221).
+`Observable` runs its producer independently for each subscription.
+`SharedObservable` shares one current execution. The source owner chooses which
+to expose; consumers use the same subscription interface for both.
 
-## Introduction
+- [Specification source](spec.bs)
+- [Reference implementation and usage](reference-implementation/README.md)
+- [Proposal decisions and optional additions](docs/sharing.md)
+- Run `npm test` for the reference tests or `npm run demo` for a short example.
 
-### `EventTarget` integration
+The published specification may lag this working draft. This is a proposed API,
+and an existing browser's `Observable` implementation may have different behavior.
 
-This proposal adds a `.when()` method to `EventTarget` that becomes a better
-`addEventListener()`; specifically it returns a [new
-`Observable`](#the-observable-api) that adds a new event listener to the target
-when its `subscribe()` method is called. The Observable calls the subscriber's
-`next()` handler with each event.
+## EventTarget integration
 
-Observables turn event handling, filtering, and termination, into an explicit, declarative flow
-that's easier to understand and
-[compose](https://stackoverflow.com/questions/44112364/what-does-this-mean-in-the-observable-tc-39-proposal)
-than today's imperative version, which often requires nested calls to `addEventListener()` and
-hard-to-follow callback chains.
-
-#### Example 1
+`EventTarget.when()` returns an ordinary observable. Each subscription installs
+its own event listener; aborting that subscription removes its listener.
+Construction and composition do not add listeners.
 
 ```js
-// Filtering and mapping:
-element
-	.when('click')
-	.filter((e) => e.target.matches('.foo'))
-	.map((e) => ({ x: e.clientX, y: e.clientY }))
-	.subscribe({ next: handleClickAtPoint });
+const clicks = button.when('click')
+  .filter(event => event.target.matches('.action'))
+  .map(event => ({ x: event.clientX, y: event.clientY }));
+
+const lifetime = new AbortController();
+clicks.subscribe(point => console.log(point), { signal: lifetime.signal });
+// Later:
+lifetime.abort();
 ```
 
-#### Example 2
+Delivery is synchronous, including replay. Live event handlers can cancel DOM
+defaults during dispatch:
 
 ```js
-// Automatic, declarative unsubscription via the takeUntil method:
-element.when('mousemove')
-  .takeUntil(document.when('mouseup'))
-  .subscribe({next: e => … });
-
-// Since reduce and some other terminators return promises, they also play
-// well with async functions:
-await element.when('mousemove')
-  .takeUntil(element.when('mouseup'))
-  .reduce((soFar, e) => …);
+form.when('submit', { passive: false })
+  .subscribe(event => event.preventDefault());
 ```
 
-<details>
-<summary>Imperative version</summary>
+Replay of an old event repeats consumer callbacks; it cannot undo an event's
+already-performed default action. Use replay for data when that is the intended
+contract, rather than replaying commands or navigation accidentally.
+
+## Creating observables
+
+Both constructors accept a producer callback, or a configuration object with a
+`producer` callback. Construction is lazy. `subscribe()` is the only public
+consuming method and returns `undefined`. Callbacks can run before it returns.
 
 ```js
-// Imperative
-const controller = new AbortController();
-element.addEventListener('mousemove', e => {
-  console.log(e);
+const ticks = new Observable(subscriber => {
+  let tick = 0;
+  const timer = setInterval(() => subscriber.next(++tick), 1000);
+  subscriber.addTeardown(() => clearInterval(timer));
+});
 
-  element.addEventListener('mouseup', e => {
-    controller.abort();
-  });
-}, { signal: controller.signal });
+ticks.take(3).subscribe(console.log); // Its own timer and counter.
+ticks.take(3).subscribe(console.log); // Another timer and counter.
 ```
 
-</details>
+The producer receives a `Subscriber` with `next(value)`, `error(reason, config?)`,
+`complete(config?)`, `addTeardown(callback)`, `active`, and `signal`. There is no
+public Subscriber constructor. Cleanup runs when production ends or its
+observation is canceled, with registered teardown callbacks in reverse order.
+Teardown registered after termination runs immediately. Exceptions thrown by
+observers are reported globally without breaking delivery to other observers.
 
-#### Example 3
-
-Tracking all link clicks within a container
-([example](https://github.com/whatwg/dom/issues/544#issuecomment-351705380)):
+An already-aborted subscription is inert. For synchronous sources, create the
+AbortController before subscribing:
 
 ```js
-container
-	.when('click')
-	.filter((e) => e.target.closest('a'))
-	.subscribe({
-		next: (e) => {
-			// …
-		},
-	});
+const stop = new AbortController();
+Observable.from([1, 2, 3]).subscribe(value => {
+  console.log(value); // 1, 2
+  if (value === 2) stop.abort();
+}, { signal: stop.signal });
 ```
 
-#### Example 4
+### Conversion
 
-Find the maximum Y coordinate while the mouse is held down
-([example](https://github.com/whatwg/dom/issues/544#issuecomment-351762493)):
+`Observable.from(input)` accepts objects in this order:
+
+1. Native `Observable` or `SharedObservable`: returns the same instance.
+2. Async iterable: obtains an iterator for each subscription.
+3. Iterable: obtains an iterator for each subscription.
+4. Promise: observes that existing Promise.
+
+Other inputs, including arbitrary thenables, objects with only `subscribe`, and
+primitive strings, throw `TypeError`. Conversion of a Promise does not recreate
+the operation that produced it. Reobserving an iterator object does not rewind it.
+A fresh operation requires a source-owned factory.
+
+There is no `SharedObservable.from()`. Use `Observable.from(input).share(config)`.
+
+## Explicit sharing
+
+`share()` establishes a lazy shared boundary. By default, overlapping observers
+share an execution. The last unsubscribe stops it and clears replay; a later
+subscription starts a new execution. Completion and error reset the instance too.
+Reset permits a later attempt; it does not automatically retry.
 
 ```js
-const maxY = await element
-	.when('mousemove')
-	.takeUntil(element.when('mouseup'))
-	.map((e) => e.clientY)
-	.reduce((soFar, y) => Math.max(soFar, y), 0);
+const sharedTicks = ticks.share();
+sharedTicks.subscribe(updateClock);
+sharedTicks.filter(tick => tick % 2 === 0).subscribe(updateChart);
+// One timer while these observations overlap.
 ```
 
-#### Example 5
-
-Multiplexing a `WebSocket`, such that a subscription message is send on connection,
-and an unsubscription message is send to the server when the user unsubscribes.
+Producers can expose that policy directly:
 
 ```js
-const socket = new WebSocket('wss://example.com');
-
-function multiplex({ startMsg, stopMsg, match }) {
-  if (socket.readyState !== WebSocket.OPEN) {
-    return socket
-      .when('open')
-      .flatMap(() => multiplex({ startMsg, stopMsg, match }));
-  } else {
-    socket.send(JSON.stringify(startMsg));
-    return socket
-      .when('message')
-      .filter(match)
-      .takeUntil(socket.when('close'))
-      .takeUntil(socket.when('error'))
-      .map((e) => JSON.parse(e.data))
-      .finally(() => {
-        socket.send(JSON.stringify(stopMsg));
-      });
-  }
-}
-
-function streamStock(ticker) {
-  return multiplex({
-    startMsg: { ticker, type: 'sub' },
-    stopMsg: { ticker, type: 'unsub' },
-    match: (data) => data.ticker === ticker,
+function socketMessages(url) {
+  return new SharedObservable(subscriber => {
+    const socket = new WebSocket(url);
+    subscriber.addTeardown(() => socket.close());
+    socket.onmessage = event => subscriber.next(event.data);
+    socket.onerror = event => subscriber.error(event);
+    socket.onclose = () => subscriber.complete();
   });
 }
-
-const googTrades = streamStock('GOOG');
-const nflxTrades = streamStock('NFLX');
-
-const googController = new AbortController();
-googTrades.subscribe({next: updateView}, {signal: googController.signal});
-nflxTrades.subscribe({next: updateView, ...});
-
-// And the stream can disconnect later, which
-// automatically sends the unsubscription message
-// to the server.
-googController.abort();
 ```
 
-<details>
-<summary>Imperative version</summary>
+Each call creates a distinct shared instance. Canceling one observer only detaches
+that observer. Shared work owns its upstream observation and continues for the others.
+
+### Sharing configuration
+
+These options work with `new SharedObservable({ producer, ...options })` and
+`observable.share(options)`:
+
+| Option | Default | Meaning when enabled |
+| --- | --- | --- |
+| `maxReplayValues` | `0` | Retain up to this many values for synchronous replay, oldest first. |
+| `closeOnComplete` | `false` | Retain replay and completion permanently. |
+| `closeOnError` | `false` | Retain replay and error permanently. |
+| `closeOnLastUnsubscribe` | `false` | Stop on last cancellation and retain replay followed by completion. |
+| `keepAliveOnLastUnsubscribe` | `false` | Continue the current execution with no observers. |
+
+Replay capacity must convert to a finite, nonnegative safe integer; invalid
+capacities throw `RangeError`. Boolean settings use ordinary boolean conversion.
+Enabling both last-unsubscribe flags throws `TypeError`. They apply only when a
+running execution loses its final observation through cancellation, and never
+override producer completion or error.
+
+To cache a successful request while permitting retry after failure:
 
 ```js
-// Imperative
-function multiplex({ startMsg, stopMsg, match }) {
-	const start = (callback) => {
-		const teardowns = [];
+const profile = new SharedObservable({
+  maxReplayValues: 1,
+  closeOnComplete: true,
+  keepAliveOnLastUnsubscribe: true,
+  producer(subscriber) {
+    fetch('/profile', { signal: subscriber.signal })
+      .then(response => response.json())
+      .then(profile => {
+        subscriber.next(profile);
+        subscriber.complete();
+      }, error => subscriber.error(error));
+  },
+});
 
-		if (socket.readyState !== WebSocket.OPEN) {
-			const openHandler = () => start({ startMsg, stopMsg, match })(callback);
-			socket.addEventListener('open', openHandler);
-			teardowns.push(() => {
-				socket.removeEventListener('open', openHandler);
-			});
-		} else {
-			socket.send(JSON.stringify(startMsg));
-			const messageHandler = (e) => {
-				const data = JSON.parse(e.data);
-				if (match(data)) {
-					callback(data);
-				}
-			};
-			socket.addEventListener('message', messageHandler);
-			teardowns.push(() => {
-				socket.send(JSON.stringify(stopMsg));
-				socket.removeEventListener('message', messageHandler);
-			});
-		}
+profile.subscribe({ next: renderHeader, error: showError });
+profile.subscribe({ next: renderSidebar, error: showError });
+// Share an in-flight request or replay its successful parsed result.
+```
 
-		const finalize = () => {
-			teardowns.forEach((t) => t());
-		};
+Keep one instance per operation when observers should share it. This only shares
+work within that instance; server-enforced operation IDs are needed to deduplicate
+submissions across retries, reloads, tabs, or separate instances.
 
-		socket.addEventListener('close', finalize);
-		teardowns.push(() => socket.removeEventListener('close', finalize));
-		socket.addEventListener('error', finalize);
-		teardowns.push(() => socket.removeEventListener('error', finalize));
+Calling `share()` on a shared instance inherits omitted or undefined settings.
+If all five normalized settings match, it returns the same instance, even when
+closed. Different settings create a wrapper with its own replay and lifetime.
+The wrapper cannot reopen its source, recover discarded history, or override the
+source's lifetime. Explicitly disable an inherited last-unsubscribe flag before
+enabling its opposite.
 
-		return finalize;
-	};
+### Producer-selected permanent closure
 
-	return start;
+```js
+const result = new SharedObservable({
+  maxReplayValues: 1,
+  keepAliveOnLastUnsubscribe: true,
+  producer(subscriber) {
+    subscriber.next(42);
+    subscriber.complete({ close: true });
+  },
+});
+
+result.take(1).subscribe(console.log); // 42
+result.subscribe(console.log);         // Replayed 42, then completion; no rerun.
+```
+
+`error(reason, { close: true })` permanently retains an error instead. The close
+option is local to the producing owner and is not passed to Observer callbacks.
+On an ordinary observable it ends only that execution, leaving siblings and
+future subscriptions unaffected. Consumers have no public `close()` method.
+
+Keep-alive matters in this example: `take(1)` detaches upstream **before** forwarding
+its final value. Without keep-alive, last-observer reset would stop the execution
+before the producer reached `complete({ close: true })`.
+
+## Operators
+
+Every composition operator returns an ordinary observable, including on shared
+input. Each observation gets its own counters and callback state. Put `share()`
+after the work or state that should happen once:
+
+```js
+const trackedClicks = button.when('click')
+  .inspect(() => sendAnalytics('click'))
+  .share();
+
+trackedClicks.subscribe(updateCounter);
+trackedClicks.subscribe(updateChart);
+// One analytics call per click while observed.
+```
+
+Moving `share()` before `inspect()` runs analytics per observation. Storing an
+ordinary operator result in a variable does not share its state:
+
+```js
+const liveTicks = ticks.share();
+const perObserver = liveTicks.take(3);
+const oneSession = liveTicks.take(3).share({ closeOnComplete: true });
+// A starts before tick 1; B joins after tick 1:
+// perObserver: A gets [1, 2, 3], B gets [2, 3, 4].
+// oneSession:  A gets [1, 2, 3], B gets [2, 3].
+```
+
+| Method | Behavior |
+| --- | --- |
+| `map(mapper)` | Transform values with a per-observation zero-based index. |
+| `filter(predicate)` | Forward matching values with a per-observation index. |
+| `take(amount)` | Forward at most `amount`; detach before the final value. Zero skips upstream entirely. |
+| `drop(amount)` | Skip the first `amount` values. |
+| `takeUntil(notifier)` | Observe notifier first; complete on its next or error. Notifier completion alone does not stop the source. |
+| `flatMap(mapper)` | Map and consume inner inputs sequentially, queueing outer values until the current inner completes. |
+| `switchMap(mapper)` | Detach the previous inner before mapping and observing its replacement. |
+| `inspect(inspector?)` | Observe next, error, complete, subscribe, and consumer abort. A function inspects next values. |
+| `catch(callback)` | Replace a failed observation with the returned Observable input. |
+| `finally(callback)` | Run cleanup on completion, error, or cancellation. |
+
+`take` and `drop` retain the existing unsigned-long-long argument conversion.
+Inputs to `takeUntil`, inner mapping, and recovery use the same conversion as
+`Observable.from()`. Callback exceptions error the result; observer exceptions
+are reported globally. Cleanup runs before terminal callbacks and replacement work.
+
+Promise-returning `toArray`, `forEach`, `every`, `some`, `first`, `last`, `find`,
+and `reduce` are omitted. `scan` and `takeLast` remain
+[documented options for later](docs/sharing.md#optional-composition-additions),
+not methods in this draft. There are no native `retry`, `repeat`, or `restart` methods.
+
+## Introspection and custom composition
+
+`sharedSources` is a frozen array of nearest declared upstream shared boundaries,
+deduplicated in input order, or `null` when none are declared. A shared input is
+itself a boundary; an ordinary input passes its declared boundaries through.
+`takeUntil` considers the receiver first, then the notifier.
+
+```js
+const messages = socketMessages(url);
+const stop = button.when('click').share();
+const view = messages.map(parseMessage).takeUntil(stop);
+
+console.log(view.sharedSources); // [messages, stop]
+console.log(messages.activeSubscribers); // Current observations, including operators.
+console.log(messages.replayValues);       // Frozen snapshot, oldest first.
+console.log(messages.maxReplayValues);    // Configured capacity.
+```
+
+Inspection never starts work. Counts are snapshots, not locks or reliable counts
+of other UI consumers. References intentionally allow upstream observation;
+values are not deep-frozen. `null` does not prove absence of sharing, hidden
+resources, or side effects. Dynamic inner sources are not automatically recorded.
+
+A custom operator can preserve known ancestry with the object constructor:
+
+```js
+function withTimestamp(source) {
+  return new Observable({
+    sharedSources: source instanceof SharedObservable
+      ? [source]
+      : source.sharedSources,
+    producer(subscriber) {
+      source.subscribe({
+        next: value => subscriber.next({ value, time: Date.now() }),
+        error: error => subscriber.error(error),
+        complete: () => subscriber.complete(),
+      }, { signal: subscriber.signal });
+    },
+  });
 }
-
-function streamStock(ticker) {
-	return multiplex({
-		startMsg: { ticker, type: 'sub' },
-		stopMsg: { ticker, type: 'unsub' },
-		match: (data) => data.ticker === ticker,
-	});
-}
-
-const googTrades = streamStock('GOOG');
-const nflxTrades = streamStock('NFLX');
-
-const unsubGoogTrades = googTrades(updateView);
-const unsubNflxTrades = nflxTrades(updateView);
-
-// And the stream can disconnect later, which
-// automatically sends the unsubscription message
-// to the server.
-unsubGoogTrades();
 ```
 
-</details>
-
-#### Example 6
-
-Here we're leveraging observables to match a secret code, which is a pattern of
-keys the user might hit while using an app:
-
-```js
-const pattern = [
-  'ArrowUp',
-  'ArrowUp',
-  'ArrowDown',
-  'ArrowDown',
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowLeft',
-  'ArrowRight',
-  'b',
-  'a',
-  'Enter',
-];
-
-const keys = document.when('keydown').map(e => e.key);
-
-keys
-  .flatMap(firstKey => {
-    if (firstKey === pattern[0]) {
-      return keys
-        .take(pattern.length - 1)
-        .every((k, i) => k === pattern[i + 1]);
-    }
-  })
-  .filter(matched => matched)
-  .subscribe(() => console.log('Secret code matched!'));
-```
-
-<details>
-<summary>Imperative version</summary>
-
-```js
-const pattern = [...];
-
-// Imperative
-document.addEventListener('keydown', e => {
-  const key = e.key;
-  if (key === pattern[0]) {
-    let i = 1;
-    const handler = (e) => {
-      const nextKey = e.key;
-      if (nextKey !== pattern[i++]) {
-        document.removeEventListener('keydown', handler)
-      } else if (pattern.length === i) {
-        console.log('Secret code matched!');
-        document.removeEventListener('keydown', handler)
-      }
-    };
-
-    document.addEventListener('keydown', handler);
-  }
-}, {once: true});
-```
-
-</details>
-
-### The `Observable` API
-
-Observables are first-class objects representing composable, repeated events.
-They're like Promises but for multiple events, and specifically with
-[`EventTarget` integration](#eventtarget-integration), they are to events what
-Promises are to callbacks. They can be:
-
-- Created by script or by platform APIs, and passed to anyone interested in
-  consuming events via `subscribe()`
-- Fed to [operators](#operators) like `Observable.map()`, to be composed &
-  transformed without a web of nested callbacks
-
-Better yet, the transition from event handlers ➡️ Observables is simpler than
-that of callbacks ➡️ Promises, since Observables integrate nicely on top of
-`EventTarget`, the de facto way of subscribing to events from the platform [and
-custom script](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget#examples).
-As a result, developers can use Observables without migrating tons of code on
-the platform, since it's an easy drop-in wherever you're handling events today.
-
-The proposed API shape can be found in
-https://wicg.github.io/observable/#core-infrastructure.
-
-The creator of an Observable passes in a callback that gets invoked
-synchronously whenever `subscribe()` is called. The `subscribe()` method can be
-called _any number of times_, and the callback it invokes sets up a new
-"subscription" by registering the caller of `subscribe()` as a Observer. With
-this in place, the Observable can signal any number of events to the Observer
-via the `next()` callback, optionally followed by a single call to either
-`complete()` or `error()`, signaling that the stream of data is finished.
-
-```js
-const observable = new Observable((subscriber) => {
-	let i = 0;
-	setInterval(() => {
-		if (i >= 10) subscriber.complete();
-		else subscriber.next(i++);
-	}, 2000);
-});
-
-observable.subscribe({
-	// Print each value the Observable produces.
-	next: console.log,
-});
-```
-
-While custom Observables can be useful on their own, the primary use case they
-unlock is with event handling. Observables returned by the new
-`EventTarget#when()` method are created natively with an internal callback that
-uses the same [underlying
-mechanism](https://dom.spec.whatwg.org/#add-an-event-listener) as
-`addEventListener()`. Therefore calling `subscribe()` essentially registers a
-new event listener whose events are exposed through the Observer handler
-functions and are composable with the various
-[combinators](#operators) available to all Observables.
-
-#### Constructing & converting objects to Observables
-
-Observables can be created by their native constructor, as demonstrated above,
-or by the `Observable.from()` static method. This method constructs a native
-Observable from objects that are any of the following, _in this order_:
-
-- `Observable` (in which case it just returns the given object)
-- `AsyncIterable` (anything with `Symbol.asyncIterator`)
-- `Iterable` (anything with `Symbol.iterator`)
-- `Promise` (or any thenable)
-
-Furthermore, any method on the platform that wishes to accept an Observable as a
-Web IDL argument, or return one from a callback whose return type is
-`Observable` can do so with any of the above objects as well, that get
-automatically converted to an Observable. We can accomplish this in one of two
-ways that we'll finalize in the Observable specification:
-
-1.  By making the `Observable` type a special Web IDL type that performs this
-    ECMAScript Object ➡️ Web IDL conversion automatically, like Web IDL does for
-    other types.
-2.  Require methods and callbacks that work with Observables to specify the type
-    `any`, and have the corresponding spec prose immediately invoke a conversion
-    algorithm that the Observable specification will supply. This is similar to
-    what the Streams Standard [does with async iterables
-    today](https://streams.spec.whatwg.org/#rs-from).
-
-The conversation in https://github.com/domfarolino/observable/pull/60 leans
-towards option (1).
-
-#### Lazy, synchronous delivery
-
-Crucially, Observables are "lazy" in that they do not start emitting data until
-they are subscribed to, nor do they queue any data _before_ subscription. They
-can also start emitting data synchronously during subscription, unlike Promises
-which always queue microtasks when invoking `.then()` handlers. Consider this
-[example](https://github.com/whatwg/dom/issues/544#issuecomment-351758385):
-
-```js
-el.when('click').subscribe({next: () => console.log('One')});
-el.when('click').find(() => {…}).then(() => console.log('Three'));
-el.click();
-console.log('Two');
-// Logs "One" "Two" "Three"
-```
-
-#### Firehose of synchronous data
-
-By using `AbortController`, you can unsubscribe from an Observable even as it
-synchronously emits data _during_ subscription:
-
-```js
-// An observable that synchronously emits unlimited data during subscription.
-let observable = new Observable((subscriber) => {
-	let i = 0;
-	while (true) {
-		subscriber.next(i++);
-	}
-});
-
-let controller = new AbortController();
-observable.subscribe({
-	next: (data) => {
-		if (data > 100) controller.abort();
-	}
-}, {signal: controller.signal});
-```
-
-#### Teardown
-
-It is critical for an Observable subscriber to be able to register an arbitrary
-teardown callback to clean up any resources relevant to the subscription. The
-teardown can be registered from within the subscription callback passed into the
-`Observable` constructor. When run (upon subscribing), the subscription callback
-can register a teardown function via `subscriber.addTeardown()`.
-
-If the subscriber has already been aborted (i.e., `subscriber.signal.aborted` is
-`true`), then the given teardown callback is invoked immediately from within
-`addTeardown()`. Otherwise, it is invoked synchronously:
-
-- From `complete()`, after the subscriber's complete handler (if any) is
-  invoked
-- From `error()`, after the subscriber's error handler (if any) is invoked
-- The signal passed to the subscription is aborted by the user.
-
-### Operators
-
-We propose the following operators in addition to the `Observable` interface:
-
-- `catch()`
-  - Like `Promise#catch()`, it takes a callback which gets fired after the source
-    observable errors. It will then map to a new observable, returned by the callback,
-    unless the error is rethrown.
-- `takeUntil(Observable)`
-  - Returns an observable that mirrors the one that this method is called on,
-    until the input observable emits its first value
-- `finally()`
-  - Like `Promise.finally()`, it takes a callback which gets fired after the
-    observable completes in any way (`complete()`/`error()`).
-  - Returns an `Observable` that mirrors the source observable exactly. The callback
-    passed to `finally` is fired when a subscription to the resulting observable is terminated
-    for _any reason_. Either immediately after the source completes or errors, or when the consumer
-    unsubscribes by aborting the subscription.
-
-Versions of the above are often present in userland implementations of
-observables as they are useful for observable-specific reasons, but in addition
-to these we offer a set of common operators that follow existing platform
-precedent and can greatly increase utility and adoption. These exist on other
-iterables, and are derived from TC39's [iterator helpers
-proposal](https://github.com/tc39/proposal-iterator-helpers) which adds the
-[following
-methods](https://tc39.es/proposal-iterator-helpers/#sec-iteratorprototype) to
-`Iterator.prototype`:
-
-- `map()`
-- `filter()`
-- `take()`
-- `drop()`
-- `flatMap()`
-- `reduce()`
-- `toArray()`
-- `forEach()`
-- `some()`
-- `every()`
-- `find()`
-
-And the following method statically on the `Iterator` constructor:
-
-- `from()`
-
-We expect userland libraries to provide more niche operators that integrate with
-the `Observable` API central to this proposal, potentially shipping natively if
-they get enough momentum to graduate to the platform. But for this initial
-proposal, we'd like to restrict the set of operators to those that follow the
-precedent stated above, similar to how web platform APIs that are declared
-[Setlike](https://webidl.spec.whatwg.org/#es-setlike) and
-[Maplike](https://webidl.spec.whatwg.org/#es-maplike) have native properties
-inspired by TC39's
-[Map](https://tc39.es/ecma262/#sec-properties-of-the-map-prototype-object) and
-[Set](https://tc39.es/ecma262/#sec-properties-of-the-set-prototype-object)
-objects. Therefore we'd consider most discussion of expanding this set as
-out-of-scope for the _initial_ proposal, suitable for discussion in an appendix.
-Any long tail of operators could _conceivably_ follow along if there is support
-for the native Observable API presented in this explainer.
-
-Note that the operators `every()`, `find()`, `some()`, and `reduce()` return
-Promises whose scheduling differs from that of Observables, which sometimes
-means event handlers that call `e.preventDefault()` will run too late. See the
-[Concerns](#concerns) section which goes into more detail.
+Shared instances inherit `Observable.prototype`, so they pass `instanceof Observable`.
+Custom metadata propagation remains a tradeoff of including introspection.
+See [the design notes](docs/sharing.md) for open questions and lifecycle details.
 
 ## Background & landscape
 
@@ -568,91 +395,6 @@ per week. This means that there are a minimum of 479 packages on npm that are us
 
 This is similar to how [Promises/A+](https://promisesaplus.com/) specification that was developed before `Promise`s were
 adopted into ES2015 as a first-class language primitive.
-
-## Concerns
-
-One of the main [concerns](https://github.com/whatwg/dom/issues/544#issuecomment-351443624)
-expressed in the original WHATWG DOM thread has to do with Promise-ifying APIs on Observable,
-such as the proposed `first()`. The potential footgun here with microtask scheduling and event
-integration. Specifically, the following innocent-looking code would not _always_ work:
-
-```js
-element
-	.when('click')
-	.first()
-	.then((e) => {
-		e.preventDefault();
-		// Do something custom...
-	});
-```
-
-If `Observable#first()` returns a Promise that resolves when the first event is fired on an
-`EventTarget`, then the user-supplied Promise `.then()` handler will run:
-
-- ✅ Synchronously after event firing, for events triggered by the user
-- ❌ Asynchronously after event firing, for all events triggered by script (i.e., `element.click()`)
-  - This means `e.preventDefault()` will have happened too late and effectively been ignored
-
-<details>
-To understand why this is the case, you must understand how and when the microtask queue is flushed
-(and thus how microtasks, including Promise resolution handlers, are invoked).
-
-In WebIDL after a callback is invoked, the HTML algorithm
-_[clean up after running script](https://html.spec.whatwg.org/C#clean-up-after-running-script)_
-[is called](https://webidl.spec.whatwg.org/#ref-for-clean-up-after-running-script%E2%91%A0), and
-this algorithm calls _[perform a microtask checkpoint](https://html.spec.whatwg.org/C#perform-a-microtask-checkpoint)_
-if and only if the JavaScript stack is empty.
-
-Concretely, that means for `element.click()` in the above example, the following steps occur:
-
-1. To run `element.click()`, a JavaScript execution context is first pushed onto the stack
-1. To run the internal `click` event listener callback (the one created natively by the
-   `Observable#from()` implementation), _another_ JavaScript execution context is pushed onto
-   the stack, as WebIDL prepares to run the internal callback
-1. The internal callback runs, which immediately resolves the Promise returned by `Observable#first()`;
-   now the microtask queue contains the Promise's user-supplied `then()` handler which will cancel
-   the event once it runs
-1. The top-most execution context is removed from the stack, and the microtask queue **cannot be
-   flushed**, because there is still JavaScript on the stack.
-1. After the internal `click` event callback is executed, the rest of the event path continues since
-   event was not canceled during or immediately after the callback. The event does whatever it would
-   normally do (submit the form, `alert()` the user, etc.)
-1. Finally, the JavaScript containing `element.click()` is finished, and the final execution context
-is popped from the stack and the microtask queue is flushed. The user-supplied `.then()` handler
-is run, which attempts to cancel the event too late
-</details>
-
-Two things mitigate this concern. First, there is a very simple workaround to _always_ avoid the
-case where your `e.preventDefault()` might run too late:
-
-```js
-element
-	.when('click')
-	.map((e) => (e.preventDefault(), e))
-	.first();
-```
-
-...or if Observable had a `.do()` method (see https://github.com/whatwg/dom/issues/544#issuecomment-351457179):
-
-```js
-element
-	.when('click')
-	.do((e) => e.preventDefault())
-	.first();
-```
-
-...or by [modifying](https://github.com/whatwg/dom/issues/544#issuecomment-351779661) the semantics of
-`first()` to take a callback that produces a value that the returned Promise resolves to:
-
-```js
-el.when('submit')
-	.first((e) => e.preventDefault())
-	.then(doMoreStuff);
-```
-
-Second, this "quirk" already exists in today's thriving Observable ecosystem, and there are no serious
-concerns or reports from that community that developers are consistently running into this. This gives
-some confidence that baking this behavior into the web platform will not be dangerous.
 
 ## Standards venue
 

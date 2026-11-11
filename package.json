@@ -1,0 +1,12 @@
+{
+	"name": "observable-reference-implementation",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"test": "node --test reference-implementation/*.test.js",
+		"demo": "node reference-implementation/demo.js"
+	},
+	"engines": {
+		"node": ">=20"
+	}
+}
